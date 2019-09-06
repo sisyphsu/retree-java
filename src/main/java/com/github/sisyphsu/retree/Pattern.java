@@ -257,17 +257,22 @@ final class Pattern {
                 case '{':
                     next();
                     throw error("Dangling meta character '" + ((char) ch) + "'");
+                case '\\':
+                    ch = this.parseEscape();
+                    if (ch < 0) {
+                        node = ret; // hit excape, return it directly
+                    } else {
+                        node = new CharSingleNode(ch);
+                    }
+                    break;
                 case 0:
                     if (cursor >= patternLength) {
                         break LOOP;
                     }
                 default:
-                    node = parseAtom();
+                    next();
+                    node = new CharSingleNode(ch);
                     break;
-            }
-
-            if (node == null) {
-                continue;
             }
 
             node = parseRepetition(node, node);
@@ -285,40 +290,6 @@ final class Pattern {
         tail.setNext(end);
         ret = tail;
         return head;
-    }
-
-    /**
-     * Parse an atom Node, mainly CharNode.
-     */
-    private Node parseAtom() {
-        int ch = peek();
-        switch (ch) {
-            case '*':
-            case '+':
-            case '?':
-            case '{':
-            case '$':
-            case '.':
-            case '^':
-            case '(':
-            case '[':
-            case '|':
-            case ')':
-                return null;
-            case '\\':
-                ch = this.parseEscape();
-                if (ch < 0) {
-                    return ret; // hit excape, return it directly
-                }
-                return new CharSingleNode(ch);
-            case 0:
-                if (cursor >= patternLength) {
-                    return null;
-                }
-            default:
-                next();
-                return new CharSingleNode(ch);
-        }
     }
 
     /**
