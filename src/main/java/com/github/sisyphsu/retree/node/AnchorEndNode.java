@@ -8,11 +8,11 @@ import com.github.sisyphsu.retree.MatchContext;
  * @author sulinµ
  * @since 2019-08-26 11:10:27
  */
-public final class ArchorEndNode extends Node {
+public final class AnchorEndNode extends Node {
 
     private final boolean absolute;
 
-    public ArchorEndNode(boolean absolute) {
+    public AnchorEndNode(boolean absolute) {
         this.absolute = absolute;
     }
 
@@ -58,8 +58,8 @@ public final class ArchorEndNode extends Node {
 
     @Override
     public boolean alike(Node node) {
-        if (node instanceof ArchorEndNode) {
-            return absolute == ((ArchorEndNode) node).absolute;
+        if (node instanceof AnchorEndNode) {
+            return absolute == ((AnchorEndNode) node).absolute;
         }
         return false;
     }

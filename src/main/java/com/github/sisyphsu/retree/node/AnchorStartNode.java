@@ -8,7 +8,7 @@ import com.github.sisyphsu.retree.MatchContext;
  * @author sulin
  * @since 2019-08-26 11:10:27
  */
-public final class ArchorStartNode extends Node {
+public final class AnchorStartNode extends Node {
 
     @Override
     public int match(MatchContext cxt, CharSequence input, int offset) {
@@ -22,7 +22,7 @@ public final class ArchorStartNode extends Node {
 
     @Override
     public boolean alike(Node node) {
-        return node instanceof ArchorStartNode;
+        return node instanceof AnchorStartNode;
     }
 
 }

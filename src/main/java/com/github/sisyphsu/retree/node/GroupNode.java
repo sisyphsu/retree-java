@@ -23,9 +23,6 @@ public final class GroupNode extends Node {
 
     @Override
     public int match(MatchContext cxt, CharSequence input, int offset) {
-        if (cxt.getTo() - offset < minInput) {
-            return FAIL;
-        }
         long startOff = cxt.getGroupStart(groupIndex);
         long endOff = cxt.getGroupEnd(groupIndex);
 
@@ -67,10 +64,6 @@ public final class GroupNode extends Node {
 
         @Override
         public int match(MatchContext cxt, CharSequence input, int offset) {
-            if (cxt.getTo() - offset < minInput) {
-                return FAIL;
-            }
-
             // mark the end postion of this group
             if (groupIndex > 0) {
                 cxt.setGroupEnd(groupIndex, offset);

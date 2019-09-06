@@ -29,7 +29,6 @@ public final class CharSetNode extends CharNode {
     }
 
     public CharSetNode add(int c) {
-        assert c >= 0 && c <= 255;
         bits[c] = true;
         return this;
     }

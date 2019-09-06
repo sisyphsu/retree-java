@@ -241,11 +241,11 @@ final class Pattern {
                     break;
                 case '^':
                     next();
-                    node = new ArchorStartNode();
+                    node = new AnchorStartNode();
                     break;
                 case '$':
                     next();
-                    node = new ArchorEndNode(false);
+                    node = new AnchorEndNode(false);
                     break;
                 case '.':
                     next();
@@ -337,10 +337,10 @@ final class Pattern {
                 ret = backReferenceEscape(ch - '0');
                 return -1;
             case 'b':
-                ret = new ArchorBoundNode(ArchorBoundNode.WORD);
+                ret = new AnchorBoundNode(AnchorBoundNode.WORD);
                 return -1;
             case 'B':
-                ret = new ArchorBoundNode(ArchorBoundNode.NON_WORD);
+                ret = new AnchorBoundNode(AnchorBoundNode.NON_WORD);
                 return -1;
             case 'd':
                 ret = new CharTypeNode(Util.DIGIT, true);
@@ -373,13 +373,13 @@ final class Pattern {
                 ret = new CharTypeNode(Util.WORD, false);
                 return -1;
             case 'A':
-                ret = new ArchorStartNode();
+                ret = new AnchorStartNode();
                 return -1;
             case 'z':
-                ret = new ArchorEndNode(true);
+                ret = new AnchorEndNode(true);
                 return -1;
             case 'Z':
-                ret = new ArchorEndNode(false);
+                ret = new AnchorEndNode(false);
                 return -1;
             case 'c':
                 return parseControlEscape();

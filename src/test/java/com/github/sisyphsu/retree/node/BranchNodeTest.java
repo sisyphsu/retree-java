@@ -3,6 +3,8 @@ package com.github.sisyphsu.retree.node;
 import org.junit.jupiter.api.Test;
 
 /**
+ * Perfect BranchNode's test coverage
+ *
  * @author sulin
  * @since 2019-09-06 19:36:22
  */

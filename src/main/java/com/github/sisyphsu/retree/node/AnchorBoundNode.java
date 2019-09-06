@@ -8,23 +8,19 @@ import com.github.sisyphsu.retree.MatchContext;
  * @author sulin
  * @since 2019-08-26 11:10:27
  */
-public final class ArchorBoundNode extends Node {
+public final class AnchorBoundNode extends Node {
 
     public static int NON_WORD = 0x0;
     public static int WORD = 0x3;
 
     private final int type;
 
-    public ArchorBoundNode(int n) {
+    public AnchorBoundNode(int n) {
         type = n;
     }
 
     @Override
     public int match(MatchContext cxt, CharSequence input, int offset) {
-        if (cxt.getTo() - offset < minInput) {
-            return FAIL;
-        }
-
         // execute matching
         boolean leftIsWord = false;
         boolean rightIsWord = false;
@@ -54,8 +50,8 @@ public final class ArchorBoundNode extends Node {
 
     @Override
     public boolean alike(Node node) {
-        if (node instanceof ArchorBoundNode) {
-            return ((ArchorBoundNode) node).type == this.type;
+        if (node instanceof AnchorBoundNode) {
+            return ((AnchorBoundNode) node).type == this.type;
         }
         return false;
     }

@@ -7,6 +7,7 @@ package com.github.sisyphsu.retree.node;
  * @since 2019-09-02 12:25:57
  */
 public final class CharUnionNode extends CharNode {
+
     private final CharNode prev;
     private final CharNode next;
 
@@ -28,4 +29,5 @@ public final class CharUnionNode extends CharNode {
                 && next.alike(((CharUnionNode) node).next)
                 && matched == ((CharUnionNode) node).matched;
     }
+
 }

@@ -174,8 +174,9 @@ public final class LoopNode extends Node {
                 return false;
             if (maxTimes != ((LoopNode) node).maxTimes)
                 return false;
-            if (!body.alike(((LoopNode) node).body))
+            if (offsetVar != ((LoopNode) node).offsetVar)
                 return false;
+            return body.alike(((LoopNode) node).body);
         }
         return false;
     }
