@@ -176,6 +176,10 @@ public final class Util {
         return isType(ch, HEX);
     }
 
+    public static int toDigit(int ch) {
+        return (ctype[ch & 0x7F] & 0x3F);
+    }
+
     public static boolean isLower(int ch) {
         return ((ch - 'a') | ('z' - ch)) >= 0;
     }
@@ -184,8 +188,6 @@ public final class Util {
         return ((ch - 'A') | ('Z' - ch)) >= 0;
     }
 
-    public static int toDigit(int ch) {
-        return (ctype[ch & 0x7F] & 0x3F);
+    private Util() {
     }
-
 }

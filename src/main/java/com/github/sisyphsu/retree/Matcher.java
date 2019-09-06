@@ -65,7 +65,7 @@ public final class Matcher {
     public MatchResult matches() {
         if (search(0)) {
             results.removeIf(r -> {
-                if (r.start() != from || r.end() != to) {
+                if (r.end() != to) {
                     contextPool.add((MatchContext) r);
                     return true;
                 }
@@ -102,10 +102,6 @@ public final class Matcher {
      * @return Success or not
      */
     private boolean search(final int from) {
-        if (contexts.size() > 0) {
-            contextPool.addAll(contexts);
-            contexts.clear();
-        }
         results.clear();
 
         MatchContext rootCxt;
@@ -140,6 +136,7 @@ public final class Matcher {
                 }
             }
         }
+
         return results.size() > 0;
     }
 

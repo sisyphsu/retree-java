@@ -66,9 +66,9 @@ public final class MatchContext implements MatchResult {
     }
 
     /**
-     * 参考当前Context克隆一个新的实例
+     * Split and clone an new MatchContext from current instance
      *
-     * @return
+     * @return new MatchContext instance
      */
     public MatchContext split() {
         MatchContext result;
@@ -189,10 +189,7 @@ public final class MatchContext implements MatchResult {
 
     @Override
     public int start() {
-        if (activedNode instanceof EndNode) {
-            return this.getGroupStart(0);
-        }
-        throw new IllegalStateException("Invalid MatchResult");
+        return this.start(0);
     }
 
     @Override
@@ -205,11 +202,7 @@ public final class MatchContext implements MatchResult {
 
     @Override
     public int end() {
-        if (activedNode instanceof EndNode) {
-            return this.getGroupEnd(0);
-        }
-        throw new IllegalStateException("Invalid MatchResult");
-
+        return this.end(0);
     }
 
     @Override
@@ -218,15 +211,11 @@ public final class MatchContext implements MatchResult {
             return this.getGroupEnd(group);
         }
         throw new IllegalStateException("Invalid MatchResult");
-
     }
 
     @Override
     public String group() {
-        if (activedNode instanceof EndNode) {
-            return this.group(0);
-        }
-        throw new IllegalStateException("Invalid MatchResult");
+        return group(0);
     }
 
     @Override

@@ -71,4 +71,14 @@ public class ReTreeTest {
         assert tree.root.getMinInput() == 4;
     }
 
+    @Test
+    public void testEmpty() {
+        try {
+            new ReTree();
+            assert false;
+        } catch (Exception e) {
+            assert e instanceof IllegalArgumentException;
+        }
+    }
+
 }
