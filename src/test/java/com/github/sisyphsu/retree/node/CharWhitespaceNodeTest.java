@@ -20,6 +20,10 @@ public class CharWhitespaceNodeTest {
         node2 = new CharWhitespaceNode(true, false);
         assert !node1.alike(node2);
 
+        node1 = new CharWhitespaceNode(true, true);
+        node2 = new CharWhitespaceNode(true, false);
+        assert !node1.alike(node2);
+
         assert !node1.alike(new CharSingleNode(0));
     }
 

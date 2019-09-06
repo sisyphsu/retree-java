@@ -27,9 +27,11 @@ public final class CharWhitespaceNode extends CharNode {
 
     @Override
     public boolean alike(Node node) {
-        return node instanceof CharWhitespaceNode
-                && horizontal == ((CharWhitespaceNode) node).horizontal
-                && matched == ((CharWhitespaceNode) node).matched;
+        if (node instanceof CharWhitespaceNode) {
+            return horizontal == ((CharWhitespaceNode) node).horizontal
+                    && matched == ((CharWhitespaceNode) node).matched;
+        }
+        return false;
     }
 
 }

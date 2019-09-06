@@ -169,6 +169,13 @@ public class PatternTest {
         assertSyntaxError("[\\U]");
     }
 
+    @Test
+    public void testOther() {
+        assert !match("(\\d*){2,10}\\w", "eeeeee");
+        assert !match("(\\d*)*\\w", "ee");
+        assert !match("\\d*?[abc]{2}", "1c");
+    }
+
     public boolean match(String re, String input) {
         return new Matcher(new ReTree(re), input).matches() != null;
     }

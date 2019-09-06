@@ -92,7 +92,7 @@ public class ReTreeTest {
 
         matcher.reset("abc123456");
 
-        assert res[0].contentEquals(matcher.matches().re());
+        assert res[0].contentEquals(Objects.requireNonNull(matcher.matches()).re());
     }
 
 }
