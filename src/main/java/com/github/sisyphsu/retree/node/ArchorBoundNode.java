@@ -10,11 +10,8 @@ import com.github.sisyphsu.retree.MatchContext;
  */
 public final class ArchorBoundNode extends Node {
 
-    private static final int LEFT = 0x1;  // 01
-    private static final int RIGHT = 0x2; // 10
-
-    public static int NONE = 0x0;  // 00
-    public static int BOTH = 0x3;  // 11
+    public static int NON_WORD = 0x0;
+    public static int WORD = 0x3;
 
     private final int type;
 
@@ -29,18 +26,21 @@ public final class ArchorBoundNode extends Node {
         }
 
         // execute matching
-        boolean left = false;
-        boolean right = false;
+        boolean leftIsWord = false;
+        boolean rightIsWord = false;
         if (offset > cxt.getFrom()) {
-            left = isWord(Character.codePointBefore(input, offset));
+            leftIsWord = isWord(Character.codePointBefore(input, offset));
         }
         if (offset < cxt.getTo()) {
-            right = isWord(Character.codePointAt(input, offset));
+            rightIsWord = isWord(Character.codePointAt(input, offset));
         }
 
-        int curType = (left ^ right) ? (right ? LEFT : RIGHT) : NONE;
-        if ((curType & type) <= 0) {
-            return FAIL;
+        if (type == WORD && leftIsWord == rightIsWord) {
+            return FAIL; // must be bound of word
+        }
+
+        if (type == NON_WORD && leftIsWord != rightIsWord) {
+            return FAIL; // must not be bound of word
         }
 
         // switch to next

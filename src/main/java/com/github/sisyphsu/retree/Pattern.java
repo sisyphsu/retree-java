@@ -337,10 +337,10 @@ final class Pattern {
                 ret = backReferenceEscape(ch - '0');
                 return -1;
             case 'b':
-                ret = new ArchorBoundNode(ArchorBoundNode.BOTH);
+                ret = new ArchorBoundNode(ArchorBoundNode.WORD);
                 return -1;
             case 'B':
-                ret = new ArchorBoundNode(ArchorBoundNode.NONE);
+                ret = new ArchorBoundNode(ArchorBoundNode.NON_WORD);
                 return -1;
             case 'd':
                 ret = new CharTypeNode(Util.DIGIT, true);
@@ -483,7 +483,7 @@ final class Pattern {
         if (peek() == '-') {
             int endRange = ptnChars[cursor + 1];
             if (endRange == '[') {
-                return ch < 256 ? bits.add(ch) : new CharSingleNode(ch);
+                throw error("Character range is out of order");
             }
             if (endRange != ']') {
                 next();
@@ -523,11 +523,7 @@ final class Pattern {
             case '0':
                 return parseOctalEscape();
             case 'b':
-                if (create) ret = new ArchorBoundNode(ArchorBoundNode.BOTH);
-                return -1;
-            case 'B':
-                if (create) ret = new ArchorBoundNode(ArchorBoundNode.NONE);
-                return -1;
+                return 8;
             case 'd':
                 if (create) ret = new CharTypeNode(Util.DIGIT, true);
                 return -1;

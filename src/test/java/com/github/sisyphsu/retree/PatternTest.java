@@ -14,26 +14,12 @@ public class PatternTest {
     public void testCompile() {
         Pattern.compile("");
 
-        try {
-            Pattern.compile("(abc");
-            assert false;
-        } catch (Exception e) {
-            assert e instanceof PatternSyntaxException;
-        }
+        assertSyntaxError("(abc");
+        assertSyntaxError("(abc))");
+        assertSyntaxError("(abc)???");
 
-        try {
-            Pattern.compile("(abc))");
-            assert false;
-        } catch (Exception e) {
-            assert e instanceof PatternSyntaxException;
-        }
-
-        try {
-            Pattern.compile("(abc)???");
-            assert false;
-        } catch (Exception e) {
-            assert e instanceof PatternSyntaxException;
-        }
+        assertSyntaxError("[a-[a-z]");
+        assertSyntaxError("[z-a");
     }
 
     @Test
@@ -136,9 +122,11 @@ public class PatternTest {
         assertSyntaxError("\\k?");
         assertSyntaxError("\\k<name>");
 
-        assert match("\\a", String.valueOf((char) 007));
-        assert match("\\e", String.valueOf((char) 033));
+        assert match("\\a", String.valueOf((char) 7));
+        assert match("\\e", String.valueOf((char) 27));
         assert match("\\f\\n\\r\\t", "\f\n\r\t");
+
+        assert find("\\w\\B", "ab");
     }
 
     @Test
@@ -161,12 +149,15 @@ public class PatternTest {
         assert match("[\\x{100}]", "Ā");
         assert match("[\\c0]", String.valueOf((char) 112));
 
-        assert match("[\\a]", String.valueOf((char) 007));
-        assert match("[\\e]", String.valueOf((char) 033));
+        assert match("[\\a]", String.valueOf((char) 7));
+        assert match("[\\e]", String.valueOf((char) 27));
         assert match("[\\f]", "\f");
         assert match("[\\n]", "\n");
         assert match("[\\r]", "\r");
         assert match("[\\t]", "\t");
+
+        assert find("[\\b-z]", "a");
+        assert find("[\\B-C]", "B");
 
         assertSyntaxError("[\\l]");
         assertSyntaxError("[\\o]");
@@ -176,12 +167,6 @@ public class PatternTest {
         assertSyntaxError("[\\N]");
         assertSyntaxError("[\\P]");
         assertSyntaxError("[\\U]");
-    }
-
-    @Test
-    public void testBound() {
-        // TODO
-//        assert find("\\w\\B", "abc");
     }
 
     public boolean match(String re, String input) {
