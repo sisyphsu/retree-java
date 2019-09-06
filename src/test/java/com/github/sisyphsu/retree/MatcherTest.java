@@ -73,7 +73,7 @@ public class MatcherTest {
 
     @Test
     public void testMultiFind() {
-        String[] res = {"(\\w+@\\w+\\.[a-z]+(\\.[a-z]+)?)", "(\\w+)@"};
+        String[] res = {"^(\\w+@\\w+\\.[a-z]+(\\.[a-z]+)?)", "^(\\w+)@"};
         String input = "sisyphsu@gmail.com";
 
         Matcher matcher = new Matcher(new ReTree(res), input);
@@ -92,6 +92,13 @@ public class MatcherTest {
                     break;
             }
         }
+    }
+
+    @Test
+    public void testMore() {
+        assert new Matcher(new ReTree("^\\d+$"), "s119").find() == null;
+
+        assert new Matcher(new ReTree("^\\d{4}"), "119").find() == null;
     }
 
 }

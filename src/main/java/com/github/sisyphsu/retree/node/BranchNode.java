@@ -16,9 +16,6 @@ public final class BranchNode extends Node {
     private final List<Node> branches = new ArrayList<>(2);
 
     public BranchNode(Node conn, Node first, Node second) {
-        if (conn == null) {
-            throw new NullPointerException("branchConn cant be null");
-        }
         this.setNext(conn);
         this.add(first);
         this.add(second);

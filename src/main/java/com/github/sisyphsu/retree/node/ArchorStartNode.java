@@ -12,10 +12,6 @@ public final class ArchorStartNode extends Node {
 
     @Override
     public int match(MatchContext cxt, CharSequence input, int offset) {
-        if (cxt.getTo() - offset < minInput) {
-            return FAIL;
-        }
-
         if (offset != cxt.getFrom()) {
             return FAIL;
         }

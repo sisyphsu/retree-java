@@ -81,4 +81,18 @@ public class ReTreeTest {
         }
     }
 
+    @Test
+    public void testUnion() {
+        String[] res = {"abc\\d{5,}", "abc\\w{10,}"};
+        ReTree tree = new ReTree(ReTree.LONGEST_SELECTOR, res);
+
+        Matcher matcher = new Matcher(tree, "abc123");
+
+        assert matcher.matches() == null;
+
+        matcher.reset("abc123456");
+
+        assert res[0].contentEquals(matcher.matches().re());
+    }
+
 }

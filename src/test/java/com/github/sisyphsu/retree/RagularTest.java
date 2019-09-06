@@ -599,11 +599,26 @@ public class RagularTest {
         assert matches("(\\d{2}|\\d){4,}\\d", "012341");
         assert matches("(\\d{2}|\\d){10,}\\d", "012345678912");
         assert !matches("(\\d{2}|\\d)++\\d", "123123121231");
+
+        assert matches("abc$", "abc\r\n");
+        assert matches("abc$", "abc\n");
+        assert matches("abc$", "abc\r");
+        assert matches("abc$", "abc\u0085");
+        assert !matches("abc$", "abc\u0088");
+        assert !matches("abc$", "abc\n\n");
+        assert !matches("abc$", "abc\r\r");
+        assert !matches("abc\\z", "abc\r\n");
     }
 
     @Test
     public void testSpec() {
-        assert matches(".++", "abc");//matches:  'abc' at 0-3 'abc'
+        assert matches("abc$", "abc\n");
+    }
+
+    @Test
+    public void testRef() {
+        assert matches("(\\d*)abc\\1", "abc");
+        assert !matches("(\\d+)abc\\1", "123abc12");
     }
 
     private boolean matches(String ptn, String input) {

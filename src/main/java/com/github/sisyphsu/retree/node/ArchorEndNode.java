@@ -45,7 +45,7 @@ public final class ArchorEndNode extends Node {
             if (input.charAt(offset) != '\n')
                 return FAIL;
             cxt.setActivedNode(next);
-            return CONTINE;
+            return SUCCESS;
         }
 
         char ch = input.charAt(offset);
@@ -53,7 +53,7 @@ public final class ArchorEndNode extends Node {
             return FAIL;
         }
         cxt.setActivedNode(next);
-        return CONTINE;
+        return SUCCESS;
     }
 
     @Override
