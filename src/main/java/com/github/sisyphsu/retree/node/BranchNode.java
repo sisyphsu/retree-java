@@ -15,8 +15,8 @@ public final class BranchNode extends Node {
 
     private final List<Node> branches = new ArrayList<>(2);
 
-    public BranchNode(Node conn, Node first, Node second) {
-        this.setNext(conn);
+    public BranchNode(Node next, Node first, Node second) {
+        this.setNext(next);
         this.add(first);
         this.add(second);
     }
@@ -46,11 +46,7 @@ public final class BranchNode extends Node {
         int branchIdx = Math.max(cxt.getTempVar(), 0);
         cxt.setTempVar(-1);
 
-        // fast fail
         int rest = cxt.getTo() - offset;
-        if (rest < next.minInput) {
-            return FAIL;
-        }
 
         // pick the next branch
         Node node = null;
@@ -87,7 +83,12 @@ public final class BranchNode extends Node {
                 return false;
             }
             for (int i = 0; i < branches.size(); i++) {
-                if (!branches.get(i).alike(((BranchNode) node).branches.get(i))) {
+                Node node1 = branches.get(i);
+                Node node2 = ((BranchNode) node).branches.get(i);
+                if (node1 == null && node2 == null) {
+                    continue;
+                }
+                if (node1 == null || node2 == null || !node1.alike(node2)) {
                     return false;
                 }
             }
