@@ -318,7 +318,6 @@ final class Pattern {
             case 'N':
             case 'O':
             case 'P':
-            case 'Q':
             case 'T':
             case 'U':
             case 'X':
@@ -432,6 +431,9 @@ final class Pattern {
             refNum = newRefNum;
             read();
         }
+        if (groupCount - 1 < refNum) {
+            return new CharSingleNode(refNum);
+        }
         return new CharRefNode(refNum);
     }
 
@@ -471,8 +473,8 @@ final class Pattern {
     private CharNode clazzRange(CharSetNode bits) {
         int ch = peek();
         if (ch == '\\') {
-            boolean isrange = ptnChars[cursor + 2] == '-';
-            if (clazzEscape(true, isrange) == -1) {
+            ch = clazzEscape(true, ptnChars[cursor + 2] == '-');
+            if (ch == -1) {
                 return (CharNode) ret;
             }
         } else {
@@ -516,7 +518,6 @@ final class Pattern {
             case 'L':
             case 'N':
             case 'P':
-            case 'Q':
             case 'U':
                 break;
             case '0':
@@ -605,11 +606,6 @@ final class Pattern {
                     head = tail = new LoopNode(head, tail, 1, 1, POSSESSIVE, localCount += 3);
                     break;
                 case '<':
-                    ch = read();
-                    if (!Util.isLower(ch) && !Util.isUpper(ch)) {
-                        throw error("Invalid named group, need lower or upper letter");
-                    }
-                    this.unread();
                     String name = this.groupname();
                     if (namedGroups.containsKey(name)) {
                         throw error("Named capturing group <" + name + "> is already defined");
