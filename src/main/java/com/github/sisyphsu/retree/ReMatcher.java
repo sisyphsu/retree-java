@@ -20,9 +20,9 @@ public final class ReMatcher {
 
     final ReTree tree;
 
-    private int from;
-    private int to;
-    private CharSequence input;
+    int from;
+    int to;
+    CharSequence input;
 
     private int last;
     private int donePos;
@@ -56,6 +56,13 @@ public final class ReMatcher {
         this.to = input.length();
         this.input = input;
         this.last = 0;
+        for (ReContext context : this.contexts) {
+            if (context != null) {
+                context.from = this.from;
+                context.to = this.to;
+                context.input = this.input;
+            }
+        }
         return this;
     }
 
@@ -110,7 +117,7 @@ public final class ReMatcher {
     public boolean search(final int from) {
         this.donePos = 0;
         this.matchPos = 1;
-        this.contexts[0].reset(tree.root, this.input, this.from, this.to, from);
+        this.contexts[0].reset(tree.root, from);
 
         // execute retree search in multiple MatchContext
         for (int off = from; off <= to; off++) {

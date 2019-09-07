@@ -27,6 +27,9 @@ public final class ReContext implements Result {
 
     protected ReContext(ReMatcher matcher, ReTree tree) {
         this.matcher = matcher;
+        this.input = matcher.input;
+        this.from = matcher.from;
+        this.to = matcher.to;
         this.localVars = new int[tree.localVarCount];
         this.groupVars = new int[tree.groupVarCount * 2];
         this.crossVars = new int[tree.crossVarCount];
@@ -50,13 +53,10 @@ public final class ReContext implements Result {
      * @param node   new node that is actived
      * @param cursor new cursor after reset
      */
-    public void reset(Node node, CharSequence input, int from, int to, int cursor) {
+    public void reset(Node node, int cursor) {
         Arrays.fill(this.localVars, -1);
         Arrays.fill(this.crossVars, -1);
 
-        this.input = input;
-        this.from = from;
-        this.to = to;
         this.node = node;
         this.cursor = cursor;
         this.stackDeep = 0;
