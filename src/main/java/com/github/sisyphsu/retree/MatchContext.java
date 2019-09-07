@@ -71,26 +71,23 @@ public final class MatchContext implements MatchResult {
      * @return new MatchContext instance
      */
     public MatchContext split() {
-        MatchContext result;
-        if (matcher.contextPool.isEmpty()) {
-            result = new MatchContext(this);
-        } else {
-            result = matcher.contextPool.remove(matcher.contextPool.size() - 1);
+        MatchContext result = matcher.allocContext();
+        // insure stack is enough
+        if (result.stack.length < this.stack.length) {
+            result.stack = new Point[this.stack.length];
         }
         // copy context's data
-        result.from = from;
-        result.to = to;
-        result.input = input;
-        result.cursor = cursor;
-        result.activedNode = activedNode;
-        result.stackDeep = stackDeep;
-        result.stack = new Point[stack.length];
-        System.arraycopy(stack, 0, result.stack, 0, stackDeep);
-        System.arraycopy(localVars, 0, result.localVars, 0, localVars.length);
-        System.arraycopy(groupVars, 0, result.groupVars, 0, groupVars.length);
-        System.arraycopy(crossVars, 0, result.crossVars, 0, crossVars.length);
+        result.from = this.from;
+        result.to = this.to;
+        result.input = this.input;
+        result.cursor = this.cursor;
+        result.activedNode = this.activedNode;
+        result.stackDeep = this.stackDeep;
+        System.arraycopy(this.stack, 0, result.stack, 0, this.stackDeep);
+        System.arraycopy(this.localVars, 0, result.localVars, 0, this.localVars.length);
+        System.arraycopy(this.groupVars, 0, result.groupVars, 0, this.groupVars.length);
+        System.arraycopy(this.crossVars, 0, result.crossVars, 0, this.crossVars.length);
 
-        matcher.contexts.add(result);
         return result;
     }
 

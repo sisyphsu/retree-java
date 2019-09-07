@@ -2,7 +2,7 @@ package com.github.sisyphsu.retree;
 
 import com.github.sisyphsu.retree.node.Node;
 
-import java.util.ArrayList;
+import java.util.AbstractList;
 import java.util.List;
 
 /**
@@ -21,15 +21,15 @@ public final class Matcher {
     private static final int MATCH_SPLIT = 2;
 
     final ReTree tree;
-    final List<MatchContext> contexts = new ArrayList<>(2);
-    final List<MatchContext> contextPool = new ArrayList<>(2);
-    final List<MatchContext> results = new ArrayList<>(1);
 
     private int from;
     private int to;
     private CharSequence input;
 
     private int last;
+    private int donePos;
+    private int matchPos;
+    private MatchContext[] contexts;
 
     /**
      * Initialize Matcher by the specified regular expression tree and input.
@@ -42,7 +42,10 @@ public final class Matcher {
         this.from = 0;
         this.to = input.length();
         this.input = input;
-        this.contextPool.add(new MatchContext(this, tree));
+        this.donePos = 0;
+        this.matchPos = 0;
+        this.contexts = new MatchContext[2];
+        this.contexts[0] = new MatchContext(this, tree);
     }
 
     /**
@@ -65,9 +68,9 @@ public final class Matcher {
      */
     public MatchResult matches() {
         if (search(0)) {
-            for (MatchContext result : results) {
-                if (result.end() == to) {
-                    return result;
+            for (int i = 0; i < donePos; i++) {
+                if (contexts[i].end() == to) {
+                    return contexts[i];
                 }
             }
         }
@@ -87,10 +90,10 @@ public final class Matcher {
             if (!search(from)) {
                 continue;
             }
-            if (results.size() == 1) {
-                result = results.get(0);
+            if (donePos == 1) {
+                result = contexts[0];
             } else {
-                result = tree.selector.select(results);
+                result = tree.selector.select(this.result);
             }
             break;
         }
@@ -107,40 +110,36 @@ public final class Matcher {
      * @return Success or not
      */
     public boolean search(final int from) {
-        if (results.size() > 0) {
-            contextPool.addAll(results);
-            results.clear();
-        }
-
-        MatchContext cxt = contextPool.remove(contextPool.size() - 1);
-        cxt.reset(tree.root, this.input, this.from, this.to, from);
-        contexts.add(cxt);
+        this.donePos = 0;
+        this.matchPos = 1;
+        this.contexts[0].reset(tree.root, this.input, this.from, this.to, from);
 
         // execute retree search in multiple MatchContext
         for (int off = from; off <= to; off++) {
-            for (int i = 0; i < contexts.size(); i++) {
-                cxt = contexts.get(i);
-                switch (doMatch(cxt, off)) {
+            for (int i = donePos; i < matchPos; i++) {
+                MatchContext context = contexts[i];
+                switch (doMatch(context, off)) {
                     case MATCH_FAIL:
-                        this.contexts.remove(i);
-                        this.contextPool.add(cxt);
+                        this.matchPos--;
+                        this.contexts[i] = this.contexts[matchPos];
+                        this.contexts[matchPos] = context; // put context into cache
                         i--;
                         break;
 
                     case MATCH_DONE:
-                        this.contexts.remove(i);
-                        this.results.add(cxt);
-                        i--;
+                        this.contexts[i] = this.contexts[donePos];
+                        this.contexts[donePos] = context; // put context into done
+                        this.donePos++;
                         break;
 
                     case MATCH_SPLIT:
-                        i--;
+                        i--; // retry
                         break;
                 }
             }
         }
 
-        return results.size() > 0;
+        return donePos > 0;
     }
 
     /**
@@ -194,12 +193,45 @@ public final class Matcher {
     }
 
     /**
+     * Allocate an new MatchContext, if has old cached contexts, use it directly
+     *
+     * @return New allocated MatchContext
+     */
+    protected MatchContext allocContext() {
+        if (this.matchPos >= this.contexts.length) {
+            MatchContext[] cxts = new MatchContext[this.contexts.length * 2];
+            System.arraycopy(this.contexts, 0, cxts, 0, this.contexts.length);
+            this.contexts = cxts;
+        }
+        int offset = this.matchPos++;
+        if (this.contexts[offset] == null) {
+            this.contexts[offset] = new MatchContext(this, tree);
+        }
+        return this.contexts[offset];
+    }
+
+    /**
      * Fetch all MatchResult of the previous match operation.
      *
      * @return All MatchResult
      */
     public List<? extends MatchResult> getResults() {
-        return results;
+        return result;
     }
+
+    private final List<MatchResult> result = new AbstractList<MatchResult>() {
+        @Override
+        public MatchResult get(int index) {
+            if (index >= donePos) {
+                throw new ArrayIndexOutOfBoundsException(String.format("index(%s) > size(%s)", index, donePos));
+            }
+            return contexts[index];
+        }
+
+        @Override
+        public int size() {
+            return donePos;
+        }
+    };
 
 }
