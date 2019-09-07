@@ -15,11 +15,11 @@ public final class AnchorEndNode extends Node {
     }
 
     @Override
-    public int match(ReMatchContext cxt, CharSequence input, int offset) {
-        int rest = cxt.getTo() - offset;
+    public int match(ReContext cxt, CharSequence input, int offset) {
+        int rest = cxt.to - offset;
 
         if (rest == 0) {
-            cxt.setActivedNode(next);
+            cxt.activedNode = next;
             return CONTINE;
         }
 
@@ -39,10 +39,10 @@ public final class AnchorEndNode extends Node {
         }
 
         // if previous char is '\r', so this char must be '\n'
-        if (offset > cxt.getFrom() && input.charAt(offset - 1) == '\r') {
+        if (offset > cxt.from && input.charAt(offset - 1) == '\r') {
             if (input.charAt(offset) != '\n')
                 return FAIL;
-            cxt.setActivedNode(next);
+            cxt.activedNode = next;
             return SUCCESS;
         }
 
@@ -50,7 +50,7 @@ public final class AnchorEndNode extends Node {
         if (ch != '\n' && ch != '\r' && ch != '\u0085' && (ch | 1) != '\u2029') {
             return FAIL;
         }
-        cxt.setActivedNode(next);
+        cxt.activedNode = next;
         return SUCCESS;
     }
 

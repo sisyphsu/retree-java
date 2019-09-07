@@ -40,11 +40,11 @@ public final class BranchNode extends Node {
     }
 
     @Override
-    public int match(ReMatchContext cxt, CharSequence input, int offset) {
+    public int match(ReContext cxt, CharSequence input, int offset) {
         int branchIdx = Math.max(cxt.getTempVar(), 0);
         cxt.setTempVar(-1);
 
-        int rest = cxt.getTo() - offset;
+        int rest = cxt.to - offset;
 
         // pick the next branch
         Node node = null;
@@ -63,13 +63,13 @@ public final class BranchNode extends Node {
             cxt.addBackPoint(this, offset, branchIdx + 1);
         }
 
-        cxt.setActivedNode(node == null ? next : node);
+        cxt.activedNode = node == null ? next : node;
 
         return CONTINE;
     }
 
     @Override
-    public boolean onBack(ReMatchContext cxt, long data) {
+    public boolean onBack(ReContext cxt, long data) {
         cxt.setTempVar((int) data);
         return true;
     }

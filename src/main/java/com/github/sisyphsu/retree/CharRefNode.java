@@ -19,7 +19,7 @@ public final class CharRefNode extends Node {
     }
 
     @Override
-    public int match(ReMatchContext cxt, CharSequence input, int offset) {
+    public int match(ReContext cxt, CharSequence input, int offset) {
         final int groupStart = cxt.getGroupOffset(refStartOffset);
         final int groupEnd = cxt.getGroupOffset(refEndOffset);
         final int groupLen = groupEnd - groupStart;
@@ -30,7 +30,7 @@ public final class CharRefNode extends Node {
         // continue if the group referenced is empty
         if (groupLen == 0) {
             cxt.setTempVar(-1);
-            cxt.setActivedNode(next);
+            cxt.activedNode = next;
             return CONTINE;
         }
 
@@ -41,7 +41,7 @@ public final class CharRefNode extends Node {
         }
 
         // fast fail
-        if (cxt.getTo() - startOff < groupLen) {
+        if (cxt.to - startOff < groupLen) {
             cxt.setTempVar(-1);
             return FAIL;
         }
@@ -51,7 +51,7 @@ public final class CharRefNode extends Node {
         // matched
         if (refOffset >= groupEnd) {
             cxt.setTempVar(-1);
-            cxt.setActivedNode(next);
+            cxt.activedNode = next;
             return CONTINE;
         }
 

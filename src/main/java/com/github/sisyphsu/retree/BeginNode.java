@@ -13,13 +13,13 @@ public final class BeginNode extends Node {
     }
 
     @Override
-    public int match(ReMatchContext cxt, CharSequence input, int offset) {
-        if (cxt.getTo() - offset < minInput) {
+    public int match(ReContext cxt, CharSequence input, int offset) {
+        if (cxt.to - offset < minInput) {
             return FAIL;
         }
 
         cxt.setGroupOffset(0, offset);
-        cxt.setActivedNode(next);
+        cxt.activedNode = next;
         return CONTINE;
     }
 

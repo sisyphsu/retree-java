@@ -18,14 +18,14 @@ public final class AnchorBoundNode extends Node {
     }
 
     @Override
-    public int match(ReMatchContext cxt, CharSequence input, int offset) {
+    public int match(ReContext cxt, CharSequence input, int offset) {
         // execute matching
         boolean leftIsWord = false;
         boolean rightIsWord = false;
-        if (offset > cxt.getFrom()) {
+        if (offset > cxt.from) {
             leftIsWord = isWord(Character.codePointBefore(input, offset));
         }
-        if (offset < cxt.getTo()) {
+        if (offset < cxt.to) {
             rightIsWord = isWord(Character.codePointAt(input, offset));
         }
 
@@ -38,7 +38,7 @@ public final class AnchorBoundNode extends Node {
         }
 
         // switch to next
-        cxt.setActivedNode(next);
+        cxt.activedNode = next;
         return CONTINE;
     }
 

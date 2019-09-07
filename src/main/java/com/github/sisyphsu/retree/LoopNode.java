@@ -55,7 +55,7 @@ public final class LoopNode extends Node {
     }
 
     @Override
-    public int match(ReMatchContext cxt, CharSequence input, int offset) {
+    public int match(ReContext cxt, CharSequence input, int offset) {
         int times = cxt.getLoopVar(timesVar);
         int prevOffset = cxt.getLoopVar(offsetVar);
 
@@ -73,12 +73,12 @@ public final class LoopNode extends Node {
         if (type == Util.POSSESSIVE) {
             int stackDeep = cxt.getLoopVar(deepVar);
             if (times > 0 && stackDeep >= 0) {
-                cxt.setStackDeep(stackDeep);
+                cxt.stackDeep = stackDeep;
             }
-            cxt.setLoopVar(deepVar, cxt.getStackDeep()); // backup deep
+            cxt.setLoopVar(deepVar, cxt.stackDeep); // backup deep
         }
 
-        int rest = cxt.getTo() - offset;
+        int rest = cxt.to - offset;
 
         if (times < minTimes) {
             if (times > 0 && offset <= prevOffset) {
@@ -143,7 +143,7 @@ public final class LoopNode extends Node {
     }
 
     @Override
-    public boolean onBack(ReMatchContext cxt, long data) {
+    public boolean onBack(ReContext cxt, long data) {
         cxt.setLoopVar(deepVar, -1);
         if (data == RESET) {
             cxt.setLoopVar(timesVar, -1);
@@ -178,18 +178,18 @@ public final class LoopNode extends Node {
         return false;
     }
 
-    private int goBody(ReMatchContext cxt, int times, int offset) {
+    private int goBody(ReContext cxt, int times, int offset) {
         cxt.setLoopVar(timesVar, times + 1);
         cxt.setLoopVar(offsetVar, offset);
-        cxt.setActivedNode(body);
+        cxt.activedNode = body;
         return CONTINE;
     }
 
-    private int goNext(ReMatchContext cxt) {
+    private int goNext(ReContext cxt) {
         cxt.setLoopVar(timesVar, -1);
         cxt.setLoopVar(offsetVar, -1);
         cxt.setLoopVar(deepVar, -1);
-        cxt.setActivedNode(next);
+        cxt.activedNode = next;
         return CONTINE;
     }
 

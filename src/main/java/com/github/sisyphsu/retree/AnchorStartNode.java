@@ -9,12 +9,12 @@ package com.github.sisyphsu.retree;
 public final class AnchorStartNode extends Node {
 
     @Override
-    public int match(ReMatchContext cxt, CharSequence input, int offset) {
-        if (offset != cxt.getFrom()) {
+    public int match(ReContext cxt, CharSequence input, int offset) {
+        if (offset != cxt.from) {
             return FAIL;
         }
 
-        cxt.setActivedNode(next);
+        cxt.activedNode = next;
         return CONTINE;
     }
 

@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
  * @author sulin
  * @since 2019-09-06 14:21:36
  */
-public class ReMatchContextTest {
+public class ReContextTest {
 
     @Test
     public void testError() {
@@ -16,7 +16,7 @@ public class ReMatchContextTest {
         ReTree tree = new ReTree(ReTree.SHORTEST_SELECTOR, res);
         ReMatcher matcher = new ReMatcher(tree, "abc");
 
-        Result result = new ReMatchContext(matcher, tree);
+        Result result = new ReContext(matcher, tree);
 
         try {
             result.re();

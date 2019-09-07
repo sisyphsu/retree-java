@@ -31,13 +31,13 @@ public final class MixNode extends Node {
     }
 
     @Override
-    public int match(ReMatchContext cxt, CharSequence input, int offset) {
+    public int match(ReContext cxt, CharSequence input, int offset) {
         int off = cxt.getCrossVar(index);
         if (off >= 0) {
-            cxt.setActivedNode(nexts[off]);
+            cxt.activedNode = nexts[off];
             return CONTINE;
         }
-        int rest = cxt.getTo() - offset;
+        int rest = cxt.to - offset;
 
         // fast-fail
         if (rest < this.minInput) {

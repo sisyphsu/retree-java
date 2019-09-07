@@ -8,24 +8,24 @@ import java.util.Arrays;
  * @author sulin
  * @since 2019-09-03 15:06:49
  */
-public final class ReMatchContext implements Result {
+public final class ReContext implements Result {
 
     private final ReMatcher matcher;
     private final int[] localVars;
     private final int[] groupVars;
     private final int[] crossVars;
 
-    private int from;
-    private int to;
-    private CharSequence input;
+    int from;
+    int to;
+    CharSequence input;
 
-    private int stackDeep;
-    private Point[] stack;
+    int stackDeep;
+    Point[] stack;
 
     int cursor;
     Node activedNode;
 
-    protected ReMatchContext(ReMatcher matcher, ReTree tree) {
+    protected ReContext(ReMatcher matcher, ReTree tree) {
         this.matcher = matcher;
         this.localVars = new int[tree.localVarCount + 1];
         this.groupVars = new int[tree.groupVarCount * 2];
@@ -35,7 +35,7 @@ public final class ReMatchContext implements Result {
     }
 
     @SuppressWarnings("CopyConstructorMissesField")
-    protected ReMatchContext(ReMatchContext cxt) {
+    protected ReContext(ReContext cxt) {
         this.matcher = cxt.matcher;
         this.localVars = new int[cxt.localVars.length];
         this.groupVars = new int[cxt.groupVars.length];
@@ -67,8 +67,8 @@ public final class ReMatchContext implements Result {
      *
      * @return new MatchContext instance
      */
-    public ReMatchContext split() {
-        ReMatchContext result = matcher.allocContext();
+    public ReContext split() {
+        ReContext result = matcher.allocContext();
         // insure stack is enough
         if (result.stack.length < stack.length) {
             result.stack = new Point[stack.length];
@@ -86,18 +86,6 @@ public final class ReMatchContext implements Result {
         System.arraycopy(this.crossVars, 0, result.crossVars, 0, this.crossVars.length);
 
         return result;
-    }
-
-    public void setActivedNode(Node activedNode) {
-        this.activedNode = activedNode;
-    }
-
-    public int getStackDeep() {
-        return this.stackDeep;
-    }
-
-    public void setStackDeep(int deep) {
-        this.stackDeep = deep;
     }
 
     public Point popStack() {
@@ -145,18 +133,6 @@ public final class ReMatchContext implements Result {
         this.groupVars[index] = start;
     }
 
-    public int getFrom() {
-        return from;
-    }
-
-    public int getTo() {
-        return to;
-    }
-
-    public CharSequence getInput() {
-        return input;
-    }
-
     @Override
     public String re() {
         if (activedNode instanceof EndNode) {
@@ -199,7 +175,7 @@ public final class ReMatchContext implements Result {
     @Override
     public String group(int groupIndex) {
         if (activedNode instanceof EndNode) {
-            return getInput().subSequence(start(groupIndex), end(groupIndex)).toString();
+            return input.subSequence(start(groupIndex), end(groupIndex)).toString();
         }
         throw new IllegalStateException("Invalid MatchResult");
     }

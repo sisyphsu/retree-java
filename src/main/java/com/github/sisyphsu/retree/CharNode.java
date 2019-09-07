@@ -24,12 +24,12 @@ public abstract class CharNode extends Node {
     }
 
     @Override
-    public int match(ReMatchContext cxt, CharSequence input, int offset) {
+    public int match(ReContext cxt, CharSequence input, int offset) {
         if (matched != isMatch(input.charAt(offset))) {
             return FAIL;
         }
         // switch to next
-        cxt.setActivedNode(next);
+        cxt.activedNode = next;
         return SUCCESS;
     }
 

@@ -36,7 +36,7 @@ public abstract class Node {
      * @param offset Match position
      * @return result code
      */
-    public abstract int match(ReMatchContext cxt, CharSequence input, int offset);
+    public abstract int match(ReContext cxt, CharSequence input, int offset);
 
     /**
      * The callback of backtracking, this node may need to do some data recovering.
@@ -45,7 +45,7 @@ public abstract class Node {
      * @param data The data attached on back-point.
      * @return false means this node didn't want to retry matching.
      */
-    public boolean onBack(ReMatchContext cxt, long data) {
+    public boolean onBack(ReContext cxt, long data) {
         return true;
     }
 

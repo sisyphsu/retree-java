@@ -27,7 +27,7 @@ public final class ReMatcher {
     private int last;
     private int donePos;
     private int matchPos;
-    private ReMatchContext[] contexts;
+    private ReContext[] contexts;
 
     /**
      * Initialize Matcher by the specified regular expression tree and input.
@@ -42,8 +42,8 @@ public final class ReMatcher {
         this.input = input;
         this.donePos = 0;
         this.matchPos = 0;
-        this.contexts = new ReMatchContext[2];
-        this.contexts[0] = new ReMatchContext(this, tree);
+        this.contexts = new ReContext[2];
+        this.contexts[0] = new ReContext(this, tree);
     }
 
     /**
@@ -115,7 +115,7 @@ public final class ReMatcher {
         // execute retree search in multiple MatchContext
         for (int off = from; off <= to; off++) {
             for (int i = donePos; i < matchPos; i++) {
-                ReMatchContext context = contexts[i];
+                ReContext context = contexts[i];
                 switch (doMatch(context, off)) {
                     case MATCH_FAIL:
                         this.matchPos--;
@@ -148,10 +148,10 @@ public final class ReMatcher {
      * @param offset The final offset, which means the end.
      * @return result code
      */
-    private int doMatch(ReMatchContext cxt, int offset) {
+    private int doMatch(ReContext cxt, int offset) {
         int status = this.tryMatch(cxt, offset);
         while (status == MATCH_FAIL) {
-            ReMatchContext.Point point = cxt.popStack();
+            ReContext.Point point = cxt.popStack();
             if (point == null) {
                 break;
             }
@@ -172,7 +172,7 @@ public final class ReMatcher {
      * @param offset The final offset, which means the end.
      * @return result code
      */
-    private int tryMatch(ReMatchContext cxt, int offset) {
+    private int tryMatch(ReContext cxt, int offset) {
         Node node;
         while (cxt.cursor <= offset) {
             node = cxt.activedNode;
@@ -195,15 +195,15 @@ public final class ReMatcher {
      *
      * @return New allocated MatchContext
      */
-    protected ReMatchContext allocContext() {
+    protected ReContext allocContext() {
         if (this.matchPos >= this.contexts.length) {
-            ReMatchContext[] cxts = new ReMatchContext[this.contexts.length * 2];
+            ReContext[] cxts = new ReContext[this.contexts.length * 2];
             System.arraycopy(this.contexts, 0, cxts, 0, this.contexts.length);
             this.contexts = cxts;
         }
         int offset = this.matchPos++;
         if (this.contexts[offset] == null) {
-            this.contexts[offset] = new ReMatchContext(this, tree);
+            this.contexts[offset] = new ReContext(this, tree);
         }
         return this.contexts[offset];
     }

@@ -36,7 +36,7 @@ public class BaseBenchmark {
 
     @Benchmark
     public void newMatchContext() {
-        new ReMatchContext(MATCHER, TREE);
+        new ReContext(MATCHER, TREE);
     }
 
 }
