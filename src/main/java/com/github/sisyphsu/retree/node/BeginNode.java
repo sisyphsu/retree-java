@@ -20,7 +20,7 @@ public final class BeginNode extends Node {
             return FAIL;
         }
 
-        cxt.setGroupStart(0, offset);
+        cxt.setGroupOffset(0, offset);
         cxt.setActivedNode(next);
         return CONTINE;
     }

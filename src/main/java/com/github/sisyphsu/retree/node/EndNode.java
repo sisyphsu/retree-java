@@ -30,7 +30,7 @@ public final class EndNode extends Node {
 
     @Override
     public int match(MatchContext cxt, CharSequence input, int offset) {
-        cxt.setGroupEnd(0, offset);
+        cxt.setGroupOffset(1, offset);
         return DONE;
     }
 

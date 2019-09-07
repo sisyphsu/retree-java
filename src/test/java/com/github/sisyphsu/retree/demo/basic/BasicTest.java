@@ -46,10 +46,10 @@ public class BasicTest {
 
         for (java.util.regex.Matcher matcher : MATCHERS) {
             matcher.reset(TEXT);
-//            matcher.matches();
-            while (matcher.find()) {
-                results.add(matcher.group(1));
-            }
+            matcher.matches();
+//            while (matcher.find()) {
+//                results.add(matcher.group(1));
+//            }
         }
 
         return results;
@@ -58,33 +58,33 @@ public class BasicTest {
     final List<String> parseByReTree() {
         List<String> results = new ArrayList<>();
 
-        MatchResult result;
         MATCHER.reset(TEXT);
-//        MATCHER.matches();
-        while ((result = MATCHER.find()) != null) {
-            results.add(result.group(1).toString());
-        }
+        MATCHER.matches();
+//        MatchResult result;
+//        while ((result = MATCHER.find()) != null) {
+//            results.add(result.group(1).toString());
+//        }
 
         return results;
     }
 
     @Test
     public void test() {
-        List<String> regResult = parseByRegex();
-        assert regResult.size() == 5;
-        assert regResult.contains("Sisyphsu");
-        assert regResult.contains("sisyphsu@gmail.com");
-        assert regResult.contains("Sulin");
-        assert regResult.contains("sulin@xxx.com");
-        assert regResult.contains("2019-09-07");
-
-        List<String> retResult = parseByReTree();
-        assert retResult.size() == 5;
-        assert retResult.contains("Sisyphsu");
-        assert retResult.contains("sisyphsu@gmail.com");
-        assert retResult.contains("Sulin");
-        assert retResult.contains("sulin@xxx.com");
-        assert retResult.contains("2019-09-07");
+//        List<String> regResult = parseByRegex();
+//        assert regResult.size() == 5;
+//        assert regResult.contains("Sisyphsu");
+//        assert regResult.contains("sisyphsu@gmail.com");
+//        assert regResult.contains("Sulin");
+//        assert regResult.contains("sulin@xxx.com");
+//        assert regResult.contains("2019-09-07");
+//
+//        List<String> retResult = parseByReTree();
+//        assert retResult.size() == 5;
+//        assert retResult.contains("Sisyphsu");
+//        assert retResult.contains("sisyphsu@gmail.com");
+//        assert retResult.contains("Sulin");
+//        assert retResult.contains("sulin@xxx.com");
+//        assert retResult.contains("2019-09-07");
     }
 
     @Benchmark

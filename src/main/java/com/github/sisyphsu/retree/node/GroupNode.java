@@ -10,27 +10,29 @@ import com.github.sisyphsu.retree.MatchContext;
  */
 public final class GroupNode extends Node {
 
-    private final int groupIndex;
+    private final int groupStartIndex;
+    private final int groupEndIndex;
     private final Node tailNode;
 
+    private final int groupIndex;
     private final String groupName;
 
     public GroupNode(int groupIndex, String groupName) {
         this.groupIndex = groupIndex;
+        this.groupStartIndex = groupIndex * 2;
+        this.groupEndIndex = groupIndex * 2 + 1;
         this.groupName = groupName;
         this.tailNode = new Tail();
     }
 
     @Override
     public int match(MatchContext cxt, CharSequence input, int offset) {
-        long startOff = cxt.getGroupStart(groupIndex);
-        long endOff = cxt.getGroupEnd(groupIndex);
-
-        cxt.addBackPoint(this, offset, (startOff << 32) | endOff);
-
-        // record group's start position
         if (groupIndex > 0) {
-            cxt.setGroupStart(groupIndex, offset);
+            long startOff = cxt.getGroupOffset(groupStartIndex);
+            long endOff = cxt.getGroupOffset(groupEndIndex);
+
+            cxt.addBackPoint(this, offset, (startOff << 32) | endOff);
+            cxt.setGroupOffset(groupStartIndex, offset);
         }
 
         cxt.setActivedNode(next);
@@ -41,8 +43,8 @@ public final class GroupNode extends Node {
     public boolean onBack(MatchContext cxt, long data) {
         // restore the old start and end position.
         if (groupIndex > 0) {
-            cxt.setGroupStart(groupIndex, (int) (data >>> 32));
-            cxt.setGroupEnd(groupIndex, (int) (data));
+            cxt.setGroupOffset(groupStartIndex, (int) (data >>> 32));
+            cxt.setGroupOffset(groupEndIndex, (int) (data));
         }
 
         return false;
@@ -66,7 +68,7 @@ public final class GroupNode extends Node {
         public int match(MatchContext cxt, CharSequence input, int offset) {
             // mark the end postion of this group
             if (groupIndex > 0) {
-                cxt.setGroupEnd(groupIndex, offset);
+                cxt.setGroupOffset(groupEndIndex, offset);
             }
 
             cxt.setActivedNode(next);

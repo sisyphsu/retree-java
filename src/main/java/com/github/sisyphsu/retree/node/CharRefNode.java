@@ -11,15 +11,19 @@ import com.github.sisyphsu.retree.MatchContext;
 public final class CharRefNode extends Node {
 
     private final int refGroupIndex;
+    private final int refStartOffset;
+    private final int refEndOffset;
 
     public CharRefNode(int refIndex) {
         this.refGroupIndex = refIndex;
+        this.refStartOffset = refIndex * 2;
+        this.refEndOffset = refIndex * 2 + 1;
     }
 
     @Override
     public int match(MatchContext cxt, CharSequence input, int offset) {
-        final int groupStart = cxt.getGroupStart(refGroupIndex);
-        final int groupEnd = cxt.getGroupEnd(refGroupIndex);
+        final int groupStart = cxt.getGroupOffset(refStartOffset);
+        final int groupEnd = cxt.getGroupOffset(refEndOffset);
         final int groupLen = groupEnd - groupStart;
         // fail if the group referenced is invalid
         if (groupStart < 0 || groupLen < 0) {

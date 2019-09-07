@@ -42,6 +42,7 @@ public final class Matcher {
         this.from = 0;
         this.to = input.length();
         this.input = input;
+        this.contextPool.add(new MatchContext(this, tree));
     }
 
     /**
@@ -105,27 +106,20 @@ public final class Matcher {
      * @param from The beginning position for searching operation.
      * @return Success or not
      */
-    private boolean search(final int from) {
+    public boolean search(final int from) {
         if (results.size() > 0) {
             contextPool.addAll(results);
             results.clear();
         }
 
-        if (contexts.isEmpty()) {
-            MatchContext rootCxt;
-            if (contextPool.isEmpty()) {
-                rootCxt = new MatchContext(this, tree);
-            } else {
-                rootCxt = contextPool.remove(contextPool.size() - 1);
-            }
-            rootCxt.reset(tree.root, this.input, this.from, this.to, from);
-            contexts.add(rootCxt);
-        }
+        MatchContext cxt = contextPool.remove(contextPool.size() - 1);
+        cxt.reset(tree.root, this.input, this.from, this.to, from);
+        contexts.add(cxt);
 
         // execute retree search in multiple MatchContext
         for (int off = from; off <= to; off++) {
             for (int i = 0; i < contexts.size(); i++) {
-                MatchContext cxt = contexts.get(i);
+                cxt = contexts.get(i);
                 switch (doMatch(cxt, off)) {
                     case MATCH_FAIL:
                         this.contexts.remove(i);

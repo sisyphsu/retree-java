@@ -55,7 +55,6 @@ public final class MatchContext implements MatchResult {
     public void reset(Node node, CharSequence input, int from, int to, int cursor) {
         Arrays.fill(this.localVars, -1);
         Arrays.fill(this.crossVars, -1);
-        Arrays.fill(this.groupVars, -1);
 
         this.input = input;
         this.from = from;
@@ -151,20 +150,12 @@ public final class MatchContext implements MatchResult {
         this.crossVars[index] = val;
     }
 
-    public int getGroupStart(int groupIndex) {
-        return this.groupVars[groupIndex * 2];
+    public int getGroupOffset(int index) {
+        return this.groupVars[index];
     }
 
-    public int getGroupEnd(int groupIndex) {
-        return this.groupVars[groupIndex * 2 + 1];
-    }
-
-    public void setGroupStart(int groupIndex, int start) {
-        this.groupVars[groupIndex * 2] = start;
-    }
-
-    public void setGroupEnd(int groupIndex, int end) {
-        this.groupVars[groupIndex * 2 + 1] = end;
+    public void setGroupOffset(int index, int start) {
+        this.groupVars[index] = start;
     }
 
     public int getFrom() {
@@ -193,9 +184,9 @@ public final class MatchContext implements MatchResult {
     }
 
     @Override
-    public int start(int group) {
+    public int start(int groupIndex) {
         if (activedNode instanceof EndNode) {
-            return this.getGroupStart(group);
+            return this.getGroupOffset(groupIndex * 2);
         }
         throw new IllegalStateException("Invalid MatchResult");
     }
@@ -206,9 +197,9 @@ public final class MatchContext implements MatchResult {
     }
 
     @Override
-    public int end(int group) {
+    public int end(int groupIndex) {
         if (activedNode instanceof EndNode) {
-            return this.getGroupEnd(group);
+            return this.getGroupOffset(groupIndex * 2 + 1);
         }
         throw new IllegalStateException("Invalid MatchResult");
     }
@@ -219,9 +210,9 @@ public final class MatchContext implements MatchResult {
     }
 
     @Override
-    public String group(int group) {
+    public String group(int groupIndex) {
         if (activedNode instanceof EndNode) {
-            return getInput().subSequence(start(group), end(group)).toString();
+            return getInput().subSequence(start(groupIndex), end(groupIndex)).toString();
         }
         throw new IllegalStateException("Invalid MatchResult");
     }
