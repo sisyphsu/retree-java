@@ -29,7 +29,7 @@ public abstract class CharNode extends Node {
             return FAIL;
         }
         // switch to next
-        cxt.activedNode = next;
+        cxt.node = next;
         return SUCCESS;
     }
 

@@ -34,7 +34,7 @@ public final class MixNode extends Node {
     public int match(ReContext cxt, CharSequence input, int offset) {
         int off = cxt.crossVars[index];
         if (off >= 0) {
-            cxt.activedNode = nexts[off];
+            cxt.node = nexts[off];
             return CONTINE;
         }
         int rest = cxt.to - offset;

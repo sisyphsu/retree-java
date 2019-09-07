@@ -63,7 +63,7 @@ public final class BranchNode extends Node {
             cxt.addBackPoint(this, offset, branchIdx + 1);
         }
 
-        cxt.activedNode = node == null ? next : node;
+        cxt.node = node == null ? next : node;
 
         return CONTINE;
     }

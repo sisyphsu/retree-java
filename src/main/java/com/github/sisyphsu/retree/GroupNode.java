@@ -33,7 +33,7 @@ public final class GroupNode extends Node {
             cxt.groupVars[groupStartIndex] = offset;
         }
 
-        cxt.activedNode = next;
+        cxt.node = next;
         return CONTINE;
     }
 
@@ -69,7 +69,7 @@ public final class GroupNode extends Node {
                 cxt.groupVars[groupEndIndex] = offset;
             }
 
-            cxt.activedNode = next;
+            cxt.node = next;
             return CONTINE;
         }
 

@@ -30,7 +30,7 @@ public final class CharRefNode extends Node {
         // continue if the group referenced is empty
         if (groupLen == 0) {
             cxt.localVars[0] = -1;
-            cxt.activedNode = next;
+            cxt.node = next;
             return CONTINE;
         }
 
@@ -51,7 +51,7 @@ public final class CharRefNode extends Node {
         // matched
         if (refOffset >= groupEnd) {
             cxt.localVars[0] = -1;
-            cxt.activedNode = next;
+            cxt.node = next;
             return CONTINE;
         }
 

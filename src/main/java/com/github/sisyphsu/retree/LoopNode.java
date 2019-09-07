@@ -181,7 +181,7 @@ public final class LoopNode extends Node {
     private int goBody(ReContext cxt, int times, int offset) {
         cxt.localVars[timesVar] = times + 1;
         cxt.localVars[offsetVar] = offset;
-        cxt.activedNode = body;
+        cxt.node = body;
         return CONTINE;
     }
 
@@ -189,7 +189,7 @@ public final class LoopNode extends Node {
         cxt.localVars[timesVar] = -1;
         cxt.localVars[offsetVar] = -1;
         cxt.localVars[deepVar] = -1;
-        cxt.activedNode = next;
+        cxt.node = next;
         return CONTINE;
     }
 

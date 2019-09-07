@@ -14,7 +14,7 @@ public final class AnchorStartNode extends Node {
             return FAIL;
         }
 
-        cxt.activedNode = next;
+        cxt.node = next;
         return CONTINE;
     }
 

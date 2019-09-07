@@ -19,7 +19,7 @@ public final class AnchorEndNode extends Node {
         int rest = cxt.to - offset;
 
         if (rest == 0) {
-            cxt.activedNode = next;
+            cxt.node = next;
             return CONTINE;
         }
 
@@ -42,7 +42,7 @@ public final class AnchorEndNode extends Node {
         if (offset > cxt.from && input.charAt(offset - 1) == '\r') {
             if (input.charAt(offset) != '\n')
                 return FAIL;
-            cxt.activedNode = next;
+            cxt.node = next;
             return SUCCESS;
         }
 
@@ -50,7 +50,7 @@ public final class AnchorEndNode extends Node {
         if (ch != '\n' && ch != '\r' && ch != '\u0085' && (ch | 1) != '\u2029') {
             return FAIL;
         }
-        cxt.activedNode = next;
+        cxt.node = next;
         return SUCCESS;
     }
 

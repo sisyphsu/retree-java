@@ -19,7 +19,7 @@ public final class BeginNode extends Node {
         }
 
         cxt.groupVars[0] = offset;
-        cxt.activedNode = next;
+        cxt.node = next;
         return CONTINE;
     }
 

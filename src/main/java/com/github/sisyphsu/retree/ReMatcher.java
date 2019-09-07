@@ -158,7 +158,7 @@ public final class ReMatcher {
             if (!point.node.onBack(cxt, point.data)) {
                 continue; // this BackPoint is used for data restoring
             }
-            cxt.activedNode = point.node;
+            cxt.node = point.node;
             cxt.cursor = point.offset;
             status = this.tryMatch(cxt, offset);
         }
@@ -175,7 +175,7 @@ public final class ReMatcher {
     private int tryMatch(ReContext cxt, int offset) {
         Node node;
         while (cxt.cursor <= offset) {
-            node = cxt.activedNode;
+            node = cxt.node;
             switch (node.match(cxt, input, cxt.cursor)) {
                 case Node.FAIL:
                     return MATCH_FAIL;

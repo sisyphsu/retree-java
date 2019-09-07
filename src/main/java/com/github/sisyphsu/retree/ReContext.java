@@ -23,7 +23,7 @@ public final class ReContext implements Result {
     Point[] stack;
 
     int cursor;
-    Node activedNode;
+    Node node;
 
     protected ReContext(ReMatcher matcher, ReTree tree) {
         this.matcher = matcher;
@@ -57,7 +57,7 @@ public final class ReContext implements Result {
         this.input = input;
         this.from = from;
         this.to = to;
-        this.activedNode = node;
+        this.node = node;
         this.cursor = cursor;
         this.stackDeep = 0;
     }
@@ -78,7 +78,7 @@ public final class ReContext implements Result {
         result.to = this.to;
         result.input = this.input;
         result.cursor = this.cursor;
-        result.activedNode = this.activedNode;
+        result.node = this.node;
         result.stackDeep = this.stackDeep;
         System.arraycopy(this.stack, 0, result.stack, 0, this.stackDeep);
         System.arraycopy(this.localVars, 0, result.localVars, 0, this.localVars.length);
@@ -103,8 +103,8 @@ public final class ReContext implements Result {
 
     @Override
     public String re() {
-        if (activedNode instanceof EndNode) {
-            return ((EndNode) activedNode).getRe();
+        if (node instanceof EndNode) {
+            return ((EndNode) node).getRe();
         }
         throw new IllegalStateException("Invalid MatchResult");
     }
@@ -116,7 +116,7 @@ public final class ReContext implements Result {
 
     @Override
     public int start(int groupIndex) {
-        if (activedNode instanceof EndNode) {
+        if (node instanceof EndNode) {
             return this.groupVars[groupIndex * 2];
         }
         throw new IllegalStateException("Invalid MatchResult");
@@ -129,7 +129,7 @@ public final class ReContext implements Result {
 
     @Override
     public int end(int groupIndex) {
-        if (activedNode instanceof EndNode) {
+        if (node instanceof EndNode) {
             return this.groupVars[groupIndex * 2 + 1];
         }
         throw new IllegalStateException("Invalid MatchResult");
@@ -142,7 +142,7 @@ public final class ReContext implements Result {
 
     @Override
     public String group(int groupIndex) {
-        if (activedNode instanceof EndNode) {
+        if (node instanceof EndNode) {
             return input.subSequence(start(groupIndex), end(groupIndex)).toString();
         }
         throw new IllegalStateException("Invalid MatchResult");
@@ -150,8 +150,8 @@ public final class ReContext implements Result {
 
     @Override
     public CharSequence group(String groupName) {
-        if (activedNode instanceof EndNode) {
-            Integer groupIndex = ((EndNode) activedNode).getNameMap().get(groupName);
+        if (node instanceof EndNode) {
+            Integer groupIndex = ((EndNode) node).getNameMap().get(groupName);
             if (groupIndex == null) {
                 throw new IllegalArgumentException("groupName is invalid: " + groupName);
             }
@@ -162,8 +162,8 @@ public final class ReContext implements Result {
 
     @Override
     public int groupCount() {
-        if (activedNode instanceof EndNode) {
-            return ((EndNode) activedNode).getGroupCount() - 1;
+        if (node instanceof EndNode) {
+            return ((EndNode) node).getGroupCount() - 1;
         }
         throw new IllegalStateException("Invalid MatchResult");
     }
