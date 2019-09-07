@@ -76,7 +76,7 @@ public final class LoopNode extends Node {
         if (type == Util.POSSESSIVE) {
             int stackDeep = cxt.getLoopVar(deepVar);
             if (times > 0 && stackDeep >= 0) {
-                cxt.resetStack(stackDeep);
+                cxt.setStackDeep(stackDeep);
             }
             cxt.setLoopVar(deepVar, cxt.getStackDeep()); // backup deep
         }

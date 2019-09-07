@@ -3,9 +3,7 @@ package com.github.sisyphsu.retree;
 import com.github.sisyphsu.retree.node.EndNode;
 import com.github.sisyphsu.retree.node.Node;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 /**
  * The Context of Matcher and MultiMatcher
@@ -15,35 +13,38 @@ import java.util.List;
  */
 public final class MatchContext implements MatchResult {
 
-    private final List<Point> stack;
-
     private final Matcher matcher;
     private final int[] localVars;
     private final int[] groupVars;
     private final int[] crossVars;
 
-    private CharSequence input;
     private int from;
     private int to;
+    private CharSequence input;
+
+    private int stackDeep;
+    private Point[] stack;
 
     private int cursor;
     private Node activedNode;
 
     protected MatchContext(Matcher matcher, ReTree tree) {
         this.matcher = matcher;
-        this.stack = new ArrayList<>(4);
         this.localVars = new int[tree.localVarCount + 1];
         this.groupVars = new int[tree.groupVarCount * 2];
         this.crossVars = new int[tree.crossVarCount];
+        this.stackDeep = 0;
+        this.stack = new Point[4];
     }
 
     @SuppressWarnings("CopyConstructorMissesField")
     protected MatchContext(MatchContext cxt) {
         this.matcher = cxt.matcher;
-        this.stack = new ArrayList<>(Math.min(4, cxt.stack.size()));
         this.localVars = new int[cxt.localVars.length];
         this.groupVars = new int[cxt.groupVars.length];
         this.crossVars = new int[cxt.crossVars.length];
+        this.stackDeep = 0;
+        this.stack = new Point[Math.min(4, cxt.stackDeep)];
     }
 
     /**
@@ -61,7 +62,7 @@ public final class MatchContext implements MatchResult {
         this.to = to;
         this.activedNode = node;
         this.cursor = cursor;
-        this.stack.clear();
+        this.stackDeep = 0;
     }
 
     /**
@@ -82,8 +83,9 @@ public final class MatchContext implements MatchResult {
         result.input = input;
         result.cursor = cursor;
         result.activedNode = activedNode;
-        result.stack.clear();
-        result.stack.addAll(stack);
+        result.stackDeep = stackDeep;
+        result.stack = new Point[stack.length];
+        System.arraycopy(stack, 0, result.stack, 0, stackDeep);
         System.arraycopy(localVars, 0, result.localVars, 0, localVars.length);
         System.arraycopy(groupVars, 0, result.groupVars, 0, groupVars.length);
         System.arraycopy(crossVars, 0, result.crossVars, 0, crossVars.length);
@@ -109,21 +111,24 @@ public final class MatchContext implements MatchResult {
     }
 
     public int getStackDeep() {
-        return this.stack.size();
+        return this.stackDeep;
     }
 
-    public void resetStack(int deep) {
-        for (int size = stack.size(); size > deep; size = stack.size()) {
-            stack.remove(size - 1);
-        }
+    public void setStackDeep(int deep) {
+        this.stackDeep = deep;
     }
 
     public Point popStack() {
-        return stack.isEmpty() ? null : stack.remove(stack.size() - 1);
+        return stackDeep == 0 ? null : stack[--stackDeep];
     }
 
     public void addBackPoint(Node node, int offset, long data) {
-        this.stack.add(new Point(node, offset, data));
+        if (stackDeep >= this.stack.length) {
+            Point[] newStack = new Point[stackDeep * 2];
+            System.arraycopy(stack, 0, newStack, 0, stackDeep);
+            this.stack = newStack;
+        }
+        this.stack[stackDeep++] = new Point(node, offset, data);
     }
 
     public int getLoopVar(int index) {
