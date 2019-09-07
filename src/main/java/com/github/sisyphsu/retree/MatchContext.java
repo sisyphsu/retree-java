@@ -39,7 +39,6 @@ public final class MatchContext implements MatchResult {
 
     @SuppressWarnings("CopyConstructorMissesField")
     protected MatchContext(MatchContext cxt) {
-        System.out.println("--------");
         this.matcher = cxt.matcher;
         this.stack = new ArrayList<>(Math.min(4, cxt.stack.size()));
         this.localVars = new int[cxt.localVars.length];
