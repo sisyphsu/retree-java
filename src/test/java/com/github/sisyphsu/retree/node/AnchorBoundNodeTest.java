@@ -1,5 +1,7 @@
 package com.github.sisyphsu.retree.node;
 
+import com.github.sisyphsu.retree.AnchorBoundNode;
+import com.github.sisyphsu.retree.CharSingleNode;
 import org.junit.jupiter.api.Test;
 
 /**

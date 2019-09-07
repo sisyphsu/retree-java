@@ -1,7 +1,5 @@
 package com.github.sisyphsu.retree;
 
-import com.github.sisyphsu.retree.node.*;
-
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;

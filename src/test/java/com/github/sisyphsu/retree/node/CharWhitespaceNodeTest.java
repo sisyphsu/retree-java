@@ -1,5 +1,7 @@
 package com.github.sisyphsu.retree.node;
 
+import com.github.sisyphsu.retree.CharSingleNode;
+import com.github.sisyphsu.retree.CharWhitespaceNode;
 import org.junit.jupiter.api.Test;
 
 /**

@@ -1,6 +1,4 @@
-package com.github.sisyphsu.retree.node;
-
-import com.github.sisyphsu.retree.ReMatchContext;
+package com.github.sisyphsu.retree;
 
 import java.util.ArrayList;
 import java.util.List;

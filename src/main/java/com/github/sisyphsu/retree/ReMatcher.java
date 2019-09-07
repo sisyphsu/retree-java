@@ -1,7 +1,5 @@
 package com.github.sisyphsu.retree;
 
-import com.github.sisyphsu.retree.node.Node;
-
 import java.util.AbstractList;
 import java.util.List;
 

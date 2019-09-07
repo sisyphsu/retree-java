@@ -1,6 +1,4 @@
-package com.github.sisyphsu.retree.node;
-
-import com.github.sisyphsu.retree.Util;
+package com.github.sisyphsu.retree;
 
 /**
  * This node supports escape char, like '\d' '\w'

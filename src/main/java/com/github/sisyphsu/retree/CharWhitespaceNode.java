@@ -1,4 +1,4 @@
-package com.github.sisyphsu.retree.node;
+package com.github.sisyphsu.retree;
 
 /**
  * This node supports whitespace char like '\V', '\v', '\H', '\h'.

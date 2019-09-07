@@ -1,6 +1,4 @@
-package com.github.sisyphsu.retree.node;
-
-import com.github.sisyphsu.retree.ReMatchContext;
+package com.github.sisyphsu.retree;
 
 /**
  * This Node supports '\b' and '\B'.

@@ -1,7 +1,4 @@
-package com.github.sisyphsu.retree.node;
-
-import com.github.sisyphsu.retree.ReMatchContext;
-import com.github.sisyphsu.retree.Util;
+package com.github.sisyphsu.retree;
 
 /**
  * This node supports all loop match, like '+', '++', '{1,10}' etc.

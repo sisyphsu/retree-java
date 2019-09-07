@@ -1,5 +1,6 @@
 package com.github.sisyphsu.retree.node;
 
+import com.github.sisyphsu.retree.CharRangeNode;
 import org.junit.jupiter.api.Test;
 
 /**

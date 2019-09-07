@@ -1,6 +1,4 @@
-package com.github.sisyphsu.retree.node;
-
-import com.github.sisyphsu.retree.ReMatchContext;
+package com.github.sisyphsu.retree;
 
 /**
  * This node support backreference, like '(\d)(\w)\2' could match '1aa', the '\2' could refer to '\w'.

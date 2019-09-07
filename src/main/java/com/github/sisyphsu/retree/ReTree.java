@@ -1,9 +1,5 @@
 package com.github.sisyphsu.retree;
 
-import com.github.sisyphsu.retree.node.EndNode;
-import com.github.sisyphsu.retree.node.MixNode;
-import com.github.sisyphsu.retree.node.Node;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;

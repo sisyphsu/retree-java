@@ -1,4 +1,4 @@
-package com.github.sisyphsu.retree.node;
+package com.github.sisyphsu.retree;
 
 import java.util.Arrays;
 

@@ -1,5 +1,8 @@
 package com.github.sisyphsu.retree.node;
 
+import com.github.sisyphsu.retree.BranchNode;
+import com.github.sisyphsu.retree.CharSingleNode;
+import com.github.sisyphsu.retree.EndNode;
 import org.junit.jupiter.api.Test;
 
 /**
