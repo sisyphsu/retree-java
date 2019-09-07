@@ -49,17 +49,6 @@ public abstract class Node {
         return true;
     }
 
-    public final void setNext(Node next) {
-        this.next = next;
-    }
-
-    public final Node getNext() {
-        return next;
-    }
-
     public abstract boolean alike(Node node);
 
-    public final int getMinInput() {
-        return minInput;
-    }
 }

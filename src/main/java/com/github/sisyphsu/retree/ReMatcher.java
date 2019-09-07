@@ -83,7 +83,7 @@ public final class ReMatcher {
     public Result find() {
         Result result = null;
         int fromPos = Math.max(0, this.last);
-        int endPos = this.to - tree.root.getMinInput();
+        int endPos = this.to - tree.root.minInput;
         for (int from = fromPos; from <= endPos; from++) {
             if (!search(from)) {
                 continue;

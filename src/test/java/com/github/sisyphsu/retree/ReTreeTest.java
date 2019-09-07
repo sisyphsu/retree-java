@@ -68,7 +68,7 @@ public class ReTreeTest {
     public void testStudy() {
         String[] res = {"\\w{5,7}", "\\d{4,6}", "123\\w+"};
         ReTree tree = new ReTree(ReTree.LONGEST_SELECTOR, res);
-        assert tree.root.getMinInput() == 4;
+        assert tree.root.minInput == 4;
     }
 
     @Test

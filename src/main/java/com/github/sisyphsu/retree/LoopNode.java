@@ -32,7 +32,7 @@ public final class LoopNode extends Node {
         this.offsetVar = localOffset - 2;
         this.deepVar = localOffset - 1;
 
-        tail.setNext(this);
+        tail.next = this;
     }
 
     @Override

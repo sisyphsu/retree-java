@@ -188,7 +188,7 @@ final class Pattern {
             if (node == end) {
                 node = null;
             } else {
-                nodeTail.setNext(end);
+                nodeTail.next = end;
             }
 
             if (branch != null) {
@@ -200,7 +200,7 @@ final class Pattern {
             if (result == end) {
                 result = null;
             } else {
-                resultTail.setNext(end);
+                resultTail.next = end;
             }
             branch = new BranchNode(end, result, node);
         }
@@ -223,7 +223,7 @@ final class Pattern {
                     if (head == null) {
                         head = groupHead;
                     } else {
-                        tail.setNext(groupHead);
+                        tail.next = groupHead;
                     }
                     tail = ret;
                 }
@@ -278,14 +278,14 @@ final class Pattern {
             if (head == null) {
                 head = node;
             } else {
-                tail.setNext(node);
+                tail.next = node;
             }
             tail = node;
         }
         if (head == null) {
             return end;
         }
-        tail.setNext(end);
+        tail.next = end;
         ret = tail;
         return head;
     }
@@ -591,12 +591,12 @@ final class Pattern {
                 case ':':
                     head = this.createGroup(true, null);
                     tail = ret;
-                    head.setNext(parseExpress(tail));
+                    head.next = parseExpress(tail);
                     break;
                 case '>':
                     head = this.createGroup(true, null);
                     tail = ret;
-                    head.setNext(parseExpress(tail));
+                    head.next = parseExpress(tail);
                     head = tail = new LoopNode(head, tail, 1, 1, POSSESSIVE, localCount += 3);
                     break;
                 case '<':
@@ -607,7 +607,7 @@ final class Pattern {
                     head = this.createGroup(false, name);
                     tail = ret;
                     namedGroups.put(name, groupCount - 1);
-                    head.setNext(parseExpress(tail));
+                    head.next = parseExpress(tail);
                     break;
                 default:
                     throw error("Unknown group type");
@@ -615,7 +615,7 @@ final class Pattern {
         } else {
             head = this.createGroup(false, null);
             tail = ret;
-            head.setNext(parseExpress(tail));
+            head.next = parseExpress(tail);
         }
 
         if (')' != read()) {

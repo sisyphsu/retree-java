@@ -14,7 +14,7 @@ public final class BranchNode extends Node {
     private final List<Node> branches = new ArrayList<>(2);
 
     public BranchNode(Node next, Node first, Node second) {
-        this.setNext(next);
+        this.next = next;
         this.add(first);
         this.add(second);
     }

@@ -81,15 +81,15 @@ public final class ReTree {
             final Node curr = nodes.get(0);
             nodes.removeIf(node -> {
                 if (node == curr || node.alike(curr)) {
-                    if (node.getNext() != null) {
-                        nexts.add(node.getNext());
+                    if (node.next != null) {
+                        nexts.add(node.next);
                     }
                     return true;
                 }
                 return false;
             });
             if (nexts.size() > 0) {
-                curr.setNext(this.buildTree(nexts));
+                curr.next = this.buildTree(nexts);
             }
             branches.add(curr);
             nexts.clear();
@@ -113,7 +113,7 @@ public final class ReTree {
         if (node instanceof EndNode) {
             return (EndNode) node;
         }
-        return findEndNode(node.getNext());
+        return findEndNode(node.next);
     }
 
     @FunctionalInterface

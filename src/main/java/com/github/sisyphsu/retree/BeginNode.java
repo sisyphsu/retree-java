@@ -9,7 +9,7 @@ package com.github.sisyphsu.retree;
 public final class BeginNode extends Node {
 
     public BeginNode(Node next) {
-        setNext(next);
+        this.next = next;
     }
 
     @Override
