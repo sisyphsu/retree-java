@@ -2,6 +2,7 @@ package com.github.sisyphsu.retree.demo.basic;
 
 import com.github.sisyphsu.retree.ReMatcher;
 import com.github.sisyphsu.retree.ReTree;
+import com.github.sisyphsu.retree.Result;
 import org.junit.jupiter.api.Test;
 import org.openjdk.jmh.annotations.*;
 
@@ -13,10 +14,18 @@ import java.util.regex.Pattern;
 /**
  * Basic demo for Regex vs ReTree's usage and performace.
  * <p>
- * WTF?
+ * Single RE
  * Benchmark         Mode  Cnt      Score     Error  Units
- * BasicTest.regex   avgt    9   1943.832 ±  25.888  ns/op
- * BasicTest.retree  avgt    9  14644.188 ± 186.736  ns/op
+ * BasicTest.regex   avgt    9    710.717 ±  13.428  ns/op
+ * BasicTest.retree  avgt    9  11141.060 ± 171.212  ns/op
+ * <p>
+ * Multiple RE
+ * Benchmark         Mode  Cnt      Score     Error  Units
+ * BasicTest.regex   avgt    9   1918.083 ±  15.178  ns/op
+ * BasicTest.retree  avgt    9  10578.414 ± 328.728  ns/op
+ * <p>
+ * GOOD: retree's architecture is better, with multiple RE, it didn't has any performance loss.
+ * BAD: retree's algorithm implementation has big issue, which makes it slower.
  *
  * @author sulin
  * @since 2019-09-07 10:29:28
@@ -45,10 +54,10 @@ public class BasicTest {
 
         for (java.util.regex.Matcher matcher : MATCHERS) {
             matcher.reset(TEXT);
-            matcher.matches();
-//            while (matcher.find()) {
-//                results.add(matcher.group(1));
-//            }
+//            matcher.matches();
+            while (matcher.find()) {
+                results.add(matcher.group(1));
+            }
         }
 
         return results;
@@ -58,32 +67,32 @@ public class BasicTest {
         List<String> results = new ArrayList<>();
 
         MATCHER.reset(TEXT);
-        MATCHER.matches();
-//        MatchResult result;
-//        while ((result = MATCHER.find()) != null) {
-//            results.add(result.group(1).toString());
-//        }
+//        MATCHER.matches();
+        Result result;
+        while ((result = MATCHER.find()) != null) {
+            results.add(result.group(1).toString());
+        }
 
         return results;
     }
 
     @Test
     public void test() {
-//        List<String> regResult = parseByRegex();
-//        assert regResult.size() == 5;
-//        assert regResult.contains("Sisyphsu");
-//        assert regResult.contains("sisyphsu@gmail.com");
-//        assert regResult.contains("Sulin");
-//        assert regResult.contains("sulin@xxx.com");
-//        assert regResult.contains("2019-09-07");
-//
-//        List<String> retResult = parseByReTree();
-//        assert retResult.size() == 5;
-//        assert retResult.contains("Sisyphsu");
-//        assert retResult.contains("sisyphsu@gmail.com");
-//        assert retResult.contains("Sulin");
-//        assert retResult.contains("sulin@xxx.com");
-//        assert retResult.contains("2019-09-07");
+        List<String> regResult = parseByRegex();
+        assert regResult.size() == 5;
+        assert regResult.contains("Sisyphsu");
+        assert regResult.contains("sisyphsu@gmail.com");
+        assert regResult.contains("Sulin");
+        assert regResult.contains("sulin@xxx.com");
+        assert regResult.contains("2019-09-07");
+
+        List<String> retResult = parseByReTree();
+        assert retResult.size() == 5;
+        assert retResult.contains("Sisyphsu");
+        assert retResult.contains("sisyphsu@gmail.com");
+        assert retResult.contains("Sulin");
+        assert retResult.contains("sulin@xxx.com");
+        assert retResult.contains("2019-09-07");
     }
 
     @Benchmark

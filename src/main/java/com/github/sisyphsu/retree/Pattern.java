@@ -589,12 +589,12 @@ final class Pattern {
             ch = skipAndRead();
             switch (ch) {
                 case ':':
-                    head = this.createGroup(true, null);
+                    head = this.createGroup(true);
                     tail = ret;
                     head.next = parseExpress(tail);
                     break;
                 case '>':
-                    head = this.createGroup(true, null);
+                    head = this.createGroup(true);
                     tail = ret;
                     head.next = parseExpress(tail);
                     head = tail = new LoopNode(head, tail, 1, 1, POSSESSIVE, localCount += 3);
@@ -604,7 +604,7 @@ final class Pattern {
                     if (namedGroups.containsKey(name)) {
                         throw error("Named capturing group <" + name + "> is already defined");
                     }
-                    head = this.createGroup(false, name);
+                    head = this.createGroup(false);
                     tail = ret;
                     namedGroups.put(name, groupCount - 1);
                     head.next = parseExpress(tail);
@@ -613,7 +613,7 @@ final class Pattern {
                     throw error("Unknown group type");
             }
         } else {
-            head = this.createGroup(false, null);
+            head = this.createGroup(false);
             tail = ret;
             head.next = parseExpress(tail);
         }
@@ -650,9 +650,9 @@ final class Pattern {
     /**
      * create group
      */
-    private GroupNode createGroup(boolean anonymous, String groupName) {
+    private GroupNode createGroup(boolean anonymous) {
         int groupIndex = anonymous ? 0 : groupCount++;
-        GroupNode head = new GroupNode(groupIndex, groupName);
+        GroupNode head = new GroupNode(groupIndex);
         ret = head.getTailNode();
         return head;
     }

@@ -14,8 +14,8 @@ public class GroupNodeTest {
 
     @Test
     public void alike() {
-        GroupNode node1 = new GroupNode(1, null);
-        GroupNode node2 = new GroupNode(1, null);
+        GroupNode node1 = new GroupNode(1);
+        GroupNode node2 = new GroupNode(1);
         assert node1.alike(node2);
 
         assert !node1.alike(new CharSingleNode(1));

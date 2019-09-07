@@ -13,23 +13,22 @@ public final class GroupNode extends Node {
     private final Node tailNode;
 
     private final int groupIndex;
-    private final String groupName;
 
-    public GroupNode(int groupIndex, String groupName) {
+    public GroupNode(int groupIndex) {
         this.groupIndex = groupIndex;
         this.groupStartIndex = groupIndex * 2;
         this.groupEndIndex = groupIndex * 2 + 1;
-        this.groupName = groupName;
         this.tailNode = new Tail();
     }
 
     @Override
     public int match(ReContext cxt, CharSequence input, int offset) {
         if (groupIndex > 0) {
-            long startOff = cxt.groupVars[groupStartIndex];
-            long endOff = cxt.groupVars[groupEndIndex];
-
-            cxt.addBackPoint(this, offset, (startOff << 32) | endOff);
+            if (cxt.stackDeep == 0) {
+                long startOff = cxt.groupVars[groupStartIndex];
+                long endOff = cxt.groupVars[groupEndIndex];
+                cxt.addBackPoint(this, offset, (startOff << 32) | endOff);
+            }
             cxt.groupVars[groupStartIndex] = offset;
         }
 
