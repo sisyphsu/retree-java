@@ -1,6 +1,6 @@
 package com.github.sisyphsu.retree.node;
 
-import com.github.sisyphsu.retree.MatchContext;
+import com.github.sisyphsu.retree.ReMatchContext;
 import com.github.sisyphsu.retree.Util;
 
 /**
@@ -58,7 +58,7 @@ public final class LoopNode extends Node {
     }
 
     @Override
-    public int match(MatchContext cxt, CharSequence input, int offset) {
+    public int match(ReMatchContext cxt, CharSequence input, int offset) {
         int times = cxt.getLoopVar(timesVar);
         int prevOffset = cxt.getLoopVar(offsetVar);
 
@@ -146,7 +146,7 @@ public final class LoopNode extends Node {
     }
 
     @Override
-    public boolean onBack(MatchContext cxt, long data) {
+    public boolean onBack(ReMatchContext cxt, long data) {
         cxt.setLoopVar(deepVar, -1);
         if (data == RESET) {
             cxt.setLoopVar(timesVar, -1);
@@ -181,14 +181,14 @@ public final class LoopNode extends Node {
         return false;
     }
 
-    private int goBody(MatchContext cxt, int times, int offset) {
+    private int goBody(ReMatchContext cxt, int times, int offset) {
         cxt.setLoopVar(timesVar, times + 1);
         cxt.setLoopVar(offsetVar, offset);
         cxt.setActivedNode(body);
         return CONTINE;
     }
 
-    private int goNext(MatchContext cxt) {
+    private int goNext(ReMatchContext cxt) {
         cxt.setLoopVar(timesVar, -1);
         cxt.setLoopVar(offsetVar, -1);
         cxt.setLoopVar(deepVar, -1);

@@ -1,6 +1,6 @@
 package com.github.sisyphsu.retree.node;
 
-import com.github.sisyphsu.retree.MatchContext;
+import com.github.sisyphsu.retree.ReMatchContext;
 
 /**
  * This node supports '$' and '\Z'
@@ -17,7 +17,7 @@ public final class AnchorEndNode extends Node {
     }
 
     @Override
-    public int match(MatchContext cxt, CharSequence input, int offset) {
+    public int match(ReMatchContext cxt, CharSequence input, int offset) {
         int rest = cxt.getTo() - offset;
 
         if (rest == 0) {

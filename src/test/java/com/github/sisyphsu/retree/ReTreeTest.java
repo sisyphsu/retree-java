@@ -29,17 +29,17 @@ public class ReTreeTest {
         String[] res = {"\\w{5,7}", "\\d{4,6}", "123\\w+"};
         ReTree tree = new ReTree(ReTree.SHORTEST_SELECTOR, res);
 
-        MatchResult result;
+        Result result;
 
-        result = new Matcher(tree, "123456789").find();
+        result = new ReMatcher(tree, "123456789").find();
         assert result != null;
         assert Objects.equals(result.re(), res[1]);
 
-        result = new Matcher(tree, "1234a").find();
+        result = new ReMatcher(tree, "1234a").find();
         assert result != null;
         assert Objects.equals(result.re(), res[1]);
 
-        result = new Matcher(tree, "123abcdef").find();
+        result = new ReMatcher(tree, "123abcdef").find();
         assert result != null;
         assert Objects.equals(result.re(), res[0]);
     }
@@ -49,17 +49,17 @@ public class ReTreeTest {
         String[] res = {"\\w{5,7}", "\\d{4,6}", "123\\w+"};
         ReTree tree = new ReTree(ReTree.LONGEST_SELECTOR, res);
 
-        MatchResult result;
+        Result result;
 
-        result = new Matcher(tree, "12345678").find();
+        result = new ReMatcher(tree, "12345678").find();
         assert result != null;
         assert Objects.equals(result.re(), res[2]);
 
-        result = new Matcher(tree, "23456789").find();
+        result = new ReMatcher(tree, "23456789").find();
         assert result != null;
         assert Objects.equals(result.re(), res[0]);
 
-        result = new Matcher(tree, "123abcdef").find();
+        result = new ReMatcher(tree, "123abcdef").find();
         assert result != null;
         assert Objects.equals(result.re(), res[2]);
     }
@@ -86,7 +86,7 @@ public class ReTreeTest {
         String[] res = {"abc\\d{5,}", "abc\\w{10,}"};
         ReTree tree = new ReTree(ReTree.LONGEST_SELECTOR, res);
 
-        Matcher matcher = new Matcher(tree, "abc123");
+        ReMatcher matcher = new ReMatcher(tree, "abc123");
 
         assert matcher.matches() == null;
 

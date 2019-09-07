@@ -355,11 +355,11 @@ public class RagularTest {
         String regex = "\\b([A-Za-z\\s]+),\\s([A-Z]{2,2}):\\s([0-9]{3,3})\\b";
         String input = "This is the list: Baytown, TX: 281, Chapel Hill, NC: 284, Fort Myers, FL: 239";
 
-        Matcher matcher = new Matcher(new ReTree(regex), input);
+        ReMatcher matcher = new ReMatcher(new ReTree(regex), input);
 
         int matchCount = 0;
         List<String> list = new ArrayList<>();
-        for (MatchResult result = matcher.find(); result != null; result = matcher.find()) {
+        for (Result result = matcher.find(); result != null; result = matcher.find()) {
             matchCount++;
             System.out.printf("Match count: %s, Group Zero Text: '%s'%n", matchCount, result.group(0));
             for (int i = 1; i <= result.groupCount(); i++) {
@@ -386,10 +386,10 @@ public class RagularTest {
         String regex = "\\b(?<city>[A-Za-z\\s]+),\\s(?<state>[A-Z]{2,2}):\\s(?<areaCode>[0-9]{3,3})\\b";
 
 
-        Matcher matcher = new Matcher(new ReTree(regex), input);
+        ReMatcher matcher = new ReMatcher(new ReTree(regex), input);
 
         List<Map<String, String>> list = new ArrayList<>();
-        for (MatchResult result = matcher.find(); result != null; result = matcher.find()) {
+        for (Result result = matcher.find(); result != null; result = matcher.find()) {
             if (result.groupCount() == 3) {
                 Map<String, String> map = new HashMap<>();
                 map.put("city", result.group("city").toString());
@@ -622,11 +622,11 @@ public class RagularTest {
     }
 
     private boolean matches(String ptn, String input) {
-        return new Matcher(new ReTree(ptn), input).matches() != null;
+        return new ReMatcher(new ReTree(ptn), input).matches() != null;
     }
 
     private boolean find(String ptn, String input) {
-        return new Matcher(new ReTree(ptn), input).find() != null;
+        return new ReMatcher(new ReTree(ptn), input).find() != null;
     }
 
 }

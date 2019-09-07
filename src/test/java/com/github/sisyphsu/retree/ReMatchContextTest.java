@@ -8,15 +8,15 @@ import org.junit.jupiter.api.Test;
  * @author sulin
  * @since 2019-09-06 14:21:36
  */
-public class MatchContextTest {
+public class ReMatchContextTest {
 
     @Test
     public void testError() {
         String[] res = {"(?<key>.*)"};
         ReTree tree = new ReTree(ReTree.SHORTEST_SELECTOR, res);
-        Matcher matcher = new Matcher(tree, "abc");
+        ReMatcher matcher = new ReMatcher(tree, "abc");
 
-        MatchResult result = new MatchContext(matcher, tree);
+        Result result = new ReMatchContext(matcher, tree);
 
         try {
             result.re();

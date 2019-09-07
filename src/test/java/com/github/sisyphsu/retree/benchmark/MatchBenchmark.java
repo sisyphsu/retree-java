@@ -1,6 +1,6 @@
 package com.github.sisyphsu.retree.benchmark;
 
-import com.github.sisyphsu.retree.Matcher;
+import com.github.sisyphsu.retree.ReMatcher;
 import com.github.sisyphsu.retree.ReTree;
 import org.openjdk.jmh.annotations.*;
 
@@ -90,7 +90,7 @@ public class MatchBenchmark {
 
     private boolean retreeMatch(String ptn, String input) {
         ReTree tree = treeMap.computeIfAbsent(ptn, ReTree::new);
-        return new Matcher(tree, input).matches() != null;
+        return new ReMatcher(tree, input).matches() != null;
     }
 
     private boolean regexMatch(String ptn, String input) {

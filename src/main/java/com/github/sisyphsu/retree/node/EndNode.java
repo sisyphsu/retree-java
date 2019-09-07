@@ -1,6 +1,6 @@
 package com.github.sisyphsu.retree.node;
 
-import com.github.sisyphsu.retree.MatchContext;
+import com.github.sisyphsu.retree.ReMatchContext;
 
 import java.util.Map;
 
@@ -29,7 +29,7 @@ public final class EndNode extends Node {
     }
 
     @Override
-    public int match(MatchContext cxt, CharSequence input, int offset) {
+    public int match(ReMatchContext cxt, CharSequence input, int offset) {
         cxt.setGroupOffset(1, offset);
         return DONE;
     }

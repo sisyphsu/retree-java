@@ -1,6 +1,6 @@
 package com.github.sisyphsu.retree.node;
 
-import com.github.sisyphsu.retree.MatchContext;
+import com.github.sisyphsu.retree.ReMatchContext;
 
 /**
  * This node support backreference, like '(\d)(\w)\2' could match '1aa', the '\2' could refer to '\w'.
@@ -21,7 +21,7 @@ public final class CharRefNode extends Node {
     }
 
     @Override
-    public int match(MatchContext cxt, CharSequence input, int offset) {
+    public int match(ReMatchContext cxt, CharSequence input, int offset) {
         final int groupStart = cxt.getGroupOffset(refStartOffset);
         final int groupEnd = cxt.getGroupOffset(refEndOffset);
         final int groupLen = groupEnd - groupStart;

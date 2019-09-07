@@ -1,7 +1,7 @@
 package com.github.sisyphsu.retree;
 
 import com.github.sisyphsu.retree.node.EndNode;
-import com.github.sisyphsu.retree.node.UnionNode;
+import com.github.sisyphsu.retree.node.MixNode;
 import com.github.sisyphsu.retree.node.Node;
 
 import java.util.ArrayList;
@@ -20,8 +20,8 @@ import java.util.List;
 @SuppressWarnings("OptionalGetWithoutIsPresent")
 public final class ReTree {
 
-    public static final ResultSelector SHORTEST_SELECTOR = rs -> rs.stream().min(Comparator.comparingInt(MatchResult::end)).get();
-    public static final ResultSelector LONGEST_SELECTOR = rs -> rs.stream().max(Comparator.comparingInt(MatchResult::end)).get();
+    public static final ResultSelector SHORTEST_SELECTOR = rs -> rs.stream().min(Comparator.comparingInt(Result::end)).get();
+    public static final ResultSelector LONGEST_SELECTOR = rs -> rs.stream().max(Comparator.comparingInt(Result::end)).get();
 
     final int localVarCount;
     final int groupVarCount;
@@ -104,7 +104,7 @@ public final class ReTree {
         if (branches.size() == 1) {
             return branches.get(0);
         }
-        return new UnionNode(crossId++, branches.toArray(new Node[]{}));
+        return new MixNode(crossId++, branches.toArray(new Node[]{}));
     }
 
     /**
@@ -122,7 +122,7 @@ public final class ReTree {
 
     @FunctionalInterface
     public interface ResultSelector {
-        MatchResult select(List<? extends MatchResult> results);
+        Result select(List<? extends Result> results);
     }
 
 }

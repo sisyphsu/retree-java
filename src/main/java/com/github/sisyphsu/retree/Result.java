@@ -6,7 +6,7 @@ package com.github.sisyphsu.retree;
  * @author sulin
  * @since 2019-09-04 11:32:49
  */
-public interface MatchResult {
+public interface Result {
 
     /**
      * The original regular expression that produced this MatchResult.

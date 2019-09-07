@@ -1,6 +1,6 @@
 package com.github.sisyphsu.retree.node;
 
-import com.github.sisyphsu.retree.MatchContext;
+import com.github.sisyphsu.retree.ReMatchContext;
 
 /**
  * Normal beginning node, should be the first node of all node-chain.
@@ -15,7 +15,7 @@ public final class BeginNode extends Node {
     }
 
     @Override
-    public int match(MatchContext cxt, CharSequence input, int offset) {
+    public int match(ReMatchContext cxt, CharSequence input, int offset) {
         if (cxt.getTo() - offset < minInput) {
             return FAIL;
         }

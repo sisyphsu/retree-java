@@ -1,6 +1,6 @@
 package com.github.sisyphsu.retree.node;
 
-import com.github.sisyphsu.retree.MatchContext;
+import com.github.sisyphsu.retree.ReMatchContext;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +42,7 @@ public final class BranchNode extends Node {
     }
 
     @Override
-    public int match(MatchContext cxt, CharSequence input, int offset) {
+    public int match(ReMatchContext cxt, CharSequence input, int offset) {
         int branchIdx = Math.max(cxt.getTempVar(), 0);
         cxt.setTempVar(-1);
 
@@ -71,7 +71,7 @@ public final class BranchNode extends Node {
     }
 
     @Override
-    public boolean onBack(MatchContext cxt, long data) {
+    public boolean onBack(ReMatchContext cxt, long data) {
         cxt.setTempVar((int) data);
         return true;
     }

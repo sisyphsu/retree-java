@@ -177,11 +177,11 @@ public class PatternTest {
     }
 
     public boolean match(String re, String input) {
-        return new Matcher(new ReTree(re), input).matches() != null;
+        return new ReMatcher(new ReTree(re), input).matches() != null;
     }
 
     public boolean find(String re, String input) {
-        return new Matcher(new ReTree(re), input).find() != null;
+        return new ReMatcher(new ReTree(re), input).find() != null;
     }
 
     public void assertSyntaxError(String re) {

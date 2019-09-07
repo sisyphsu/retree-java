@@ -13,7 +13,7 @@ import java.util.List;
  * @author sulin
  * @since 2019-09-02 11:04:22
  */
-public final class Matcher {
+public final class ReMatcher {
 
     private static final int MATCH_FAIL = -1;
     private static final int MATCH_DONE = 1;
@@ -29,7 +29,7 @@ public final class Matcher {
     private int last;
     private int donePos;
     private int matchPos;
-    private MatchContext[] contexts;
+    private ReMatchContext[] contexts;
 
     /**
      * Initialize Matcher by the specified regular expression tree and input.
@@ -37,15 +37,15 @@ public final class Matcher {
      * @param tree  ReTree represents multiple regular expression.
      * @param input The default input, which could be changed by {{@link #reset(CharSequence)}}
      */
-    public Matcher(ReTree tree, CharSequence input) {
+    public ReMatcher(ReTree tree, CharSequence input) {
         this.tree = tree;
         this.from = 0;
         this.to = input.length();
         this.input = input;
         this.donePos = 0;
         this.matchPos = 0;
-        this.contexts = new MatchContext[2];
-        this.contexts[0] = new MatchContext(this, tree);
+        this.contexts = new ReMatchContext[2];
+        this.contexts[0] = new ReMatchContext(this, tree);
     }
 
     /**
@@ -53,7 +53,7 @@ public final class Matcher {
      *
      * @param input New input
      */
-    public Matcher reset(CharSequence input) {
+    public ReMatcher reset(CharSequence input) {
         this.from = 0;
         this.to = input.length();
         this.input = input;
@@ -66,7 +66,7 @@ public final class Matcher {
      *
      * @return MatchResult if success
      */
-    public MatchResult matches() {
+    public Result matches() {
         if (search(0)) {
             for (int i = 0; i < donePos; i++) {
                 if (contexts[i].end() == to) {
@@ -82,8 +82,8 @@ public final class Matcher {
      *
      * @return MatchResult if success
      */
-    public MatchResult find() {
-        MatchResult result = null;
+    public Result find() {
+        Result result = null;
         int fromPos = Math.max(0, this.last);
         int endPos = this.to - tree.root.getMinInput();
         for (int from = fromPos; from <= endPos; from++) {
@@ -117,7 +117,7 @@ public final class Matcher {
         // execute retree search in multiple MatchContext
         for (int off = from; off <= to; off++) {
             for (int i = donePos; i < matchPos; i++) {
-                MatchContext context = contexts[i];
+                ReMatchContext context = contexts[i];
                 switch (doMatch(context, off)) {
                     case MATCH_FAIL:
                         this.matchPos--;
@@ -150,18 +150,18 @@ public final class Matcher {
      * @param offset The final offset, which means the end.
      * @return result code
      */
-    private int doMatch(MatchContext cxt, int offset) {
+    private int doMatch(ReMatchContext cxt, int offset) {
         int status = this.tryMatch(cxt, offset);
         while (status == MATCH_FAIL) {
-            MatchContext.Point point = cxt.popStack();
+            ReMatchContext.Point point = cxt.popStack();
             if (point == null) {
                 break;
             }
             if (!point.node.onBack(cxt, point.data)) {
                 continue; // this BackPoint is used for data restoring
             }
-            cxt.setActivedNode(point.node);
-            cxt.setCursor(point.offset);
+            cxt.activedNode = point.node;
+            cxt.cursor = point.offset;
             status = this.tryMatch(cxt, offset);
         }
         return status;
@@ -174,11 +174,11 @@ public final class Matcher {
      * @param offset The final offset, which means the end.
      * @return result code
      */
-    private int tryMatch(MatchContext cxt, int offset) {
+    private int tryMatch(ReMatchContext cxt, int offset) {
         Node node;
-        while (cxt.getCursor() <= offset) {
-            node = cxt.getActivedNode();
-            switch (node.match(cxt, cxt.getInput(), cxt.getCursor())) {
+        while (cxt.cursor <= offset) {
+            node = cxt.activedNode;
+            switch (node.match(cxt, input, cxt.cursor)) {
                 case Node.FAIL:
                     return MATCH_FAIL;
                 case Node.DONE:
@@ -186,7 +186,7 @@ public final class Matcher {
                 case Node.SPLIT:
                     return MATCH_SPLIT;
                 case Node.SUCCESS:
-                    cxt.setCursor(cxt.getCursor() + 1);
+                    cxt.cursor++;
             }
         }
         return MATCH_MATCH;
@@ -197,15 +197,15 @@ public final class Matcher {
      *
      * @return New allocated MatchContext
      */
-    protected MatchContext allocContext() {
+    protected ReMatchContext allocContext() {
         if (this.matchPos >= this.contexts.length) {
-            MatchContext[] cxts = new MatchContext[this.contexts.length * 2];
+            ReMatchContext[] cxts = new ReMatchContext[this.contexts.length * 2];
             System.arraycopy(this.contexts, 0, cxts, 0, this.contexts.length);
             this.contexts = cxts;
         }
         int offset = this.matchPos++;
         if (this.contexts[offset] == null) {
-            this.contexts[offset] = new MatchContext(this, tree);
+            this.contexts[offset] = new ReMatchContext(this, tree);
         }
         return this.contexts[offset];
     }
@@ -215,13 +215,13 @@ public final class Matcher {
      *
      * @return All MatchResult
      */
-    public List<? extends MatchResult> getResults() {
+    public List<? extends Result> getResults() {
         return result;
     }
 
-    private final List<MatchResult> result = new AbstractList<MatchResult>() {
+    private final List<Result> result = new AbstractList<Result>() {
         @Override
-        public MatchResult get(int index) {
+        public Result get(int index) {
             if (index >= donePos) {
                 throw new ArrayIndexOutOfBoundsException(String.format("index(%s) > size(%s)", index, donePos));
             }

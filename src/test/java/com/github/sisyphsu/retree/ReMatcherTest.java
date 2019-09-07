@@ -10,34 +10,34 @@ import java.util.Objects;
  * @author sulin
  * @since 2019-09-03 20:24:39
  */
-public class MatcherTest {
+public class ReMatcherTest {
 
     @Test
     public void simple1() {
         ReTree tree = new ReTree("hello", "world");
-        assert new Matcher(tree, "world").matches() != null;
-        assert new Matcher(tree, "hello").matches() != null;
-        assert new Matcher(tree, "hell").matches() == null;
-        assert new Matcher(tree, "worldd").matches() == null;
+        assert new ReMatcher(tree, "world").matches() != null;
+        assert new ReMatcher(tree, "hello").matches() != null;
+        assert new ReMatcher(tree, "hell").matches() == null;
+        assert new ReMatcher(tree, "worldd").matches() == null;
     }
 
     @Test
     public void simple2() {
         ReTree tree = new ReTree("^\\d{4}年\\d{1,2}月\\d{1,2}日$", "\\w+@\\w+\\.[a-z]+(\\.[a-z]+)?");
 
-        assert new Matcher(tree, "2019年09月3日").matches() != null;
-        assert new Matcher(tree, "sisyphsu@gmail.com").matches() != null;
-        assert new Matcher(tree, "2019-09-03").matches() == null;
+        assert new ReMatcher(tree, "2019年09月3日").matches() != null;
+        assert new ReMatcher(tree, "sisyphsu@gmail.com").matches() != null;
+        assert new ReMatcher(tree, "2019-09-03").matches() == null;
     }
 
     @Test
     public void testReset() {
         String[] res = {"^\\d{4}年\\d{1,2}月\\d{1,2}日$", "\\w+@\\w+\\.[a-z]+(\\.[a-z]+)?"};
 
-        Matcher matcher = new Matcher(new ReTree(res), "");
+        ReMatcher matcher = new ReMatcher(new ReTree(res), "");
         assert matcher.matches() == null;
 
-        MatchResult result = matcher.reset("2019年09月3日").matches();
+        Result result = matcher.reset("2019年09月3日").matches();
         assert result != null;
         assert Objects.equals(result.re(), res[0]);
 
@@ -54,9 +54,9 @@ public class MatcherTest {
         String[] res = {"(\\d{4}-\\d{1,2}-\\d{1,2})", "<b>(?<name>.*)</b>", "(\\w+@\\w+\\.[a-z]+(\\.[a-z]+)?)"};
         String input = "Today is 2019-09-05, from <b>sulin</b> (sisyphsu@gmail.com).";
 
-        Matcher matcher = new Matcher(new ReTree(res), input);
+        ReMatcher matcher = new ReMatcher(new ReTree(res), input);
 
-        MatchResult result = matcher.find();
+        Result result = matcher.find();
         assert result != null;
         assert "2019-09-05".contentEquals(result.group());
 
@@ -76,12 +76,12 @@ public class MatcherTest {
         String[] res = {"^(\\w+@\\w+\\.[a-z]+(\\.[a-z]+)?)", "^(\\w+)@"};
         String input = "sisyphsu@gmail.com";
 
-        Matcher matcher = new Matcher(new ReTree(res), input);
+        ReMatcher matcher = new ReMatcher(new ReTree(res), input);
         matcher.find();
 
         assert matcher.getResults().size() == 2;
 
-        for (MatchResult result : matcher.getResults()) {
+        for (Result result : matcher.getResults()) {
             switch (result.re()) {
                 case "(\\w+@\\w+\\.[a-z]+(\\.[a-z]+)?)":
                     assert input.contentEquals(result.group());
@@ -96,9 +96,9 @@ public class MatcherTest {
 
     @Test
     public void testMore() {
-        assert new Matcher(new ReTree("^\\d+$"), "s119").find() == null;
+        assert new ReMatcher(new ReTree("^\\d+$"), "s119").find() == null;
 
-        assert new Matcher(new ReTree("^\\d{4}"), "119").find() == null;
+        assert new ReMatcher(new ReTree("^\\d{4}"), "119").find() == null;
     }
 
 }

@@ -1,6 +1,6 @@
 package com.github.sisyphsu.retree.node;
 
-import com.github.sisyphsu.retree.MatchContext;
+import com.github.sisyphsu.retree.ReMatchContext;
 
 /**
  * UnionNode is an special Node, which isn't created by Pattern, but ReTree.
@@ -9,12 +9,12 @@ import com.github.sisyphsu.retree.MatchContext;
  * @author sulin
  * @since 2019-08-29 11:55:31
  */
-public final class UnionNode extends Node {
+public final class MixNode extends Node {
 
     private final int index;
     private final Node[] nexts;
 
-    public UnionNode(int index, Node[] nexts) {
+    public MixNode(int index, Node[] nexts) {
         this.index = index;
         this.nexts = nexts;
     }
@@ -33,7 +33,7 @@ public final class UnionNode extends Node {
     }
 
     @Override
-    public int match(MatchContext cxt, CharSequence input, int offset) {
+    public int match(ReMatchContext cxt, CharSequence input, int offset) {
         int off = cxt.getCrossVar(index);
         if (off >= 0) {
             cxt.setActivedNode(nexts[off]);

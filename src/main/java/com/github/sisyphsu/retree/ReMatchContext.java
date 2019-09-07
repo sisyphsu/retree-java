@@ -11,9 +11,9 @@ import java.util.Arrays;
  * @author sulin
  * @since 2019-09-03 15:06:49
  */
-public final class MatchContext implements MatchResult {
+public final class ReMatchContext implements Result {
 
-    private final Matcher matcher;
+    private final ReMatcher matcher;
     private final int[] localVars;
     private final int[] groupVars;
     private final int[] crossVars;
@@ -25,10 +25,10 @@ public final class MatchContext implements MatchResult {
     private int stackDeep;
     private Point[] stack;
 
-    private int cursor;
-    private Node activedNode;
+    int cursor;
+    Node activedNode;
 
-    protected MatchContext(Matcher matcher, ReTree tree) {
+    protected ReMatchContext(ReMatcher matcher, ReTree tree) {
         this.matcher = matcher;
         this.localVars = new int[tree.localVarCount + 1];
         this.groupVars = new int[tree.groupVarCount * 2];
@@ -38,7 +38,7 @@ public final class MatchContext implements MatchResult {
     }
 
     @SuppressWarnings("CopyConstructorMissesField")
-    protected MatchContext(MatchContext cxt) {
+    protected ReMatchContext(ReMatchContext cxt) {
         this.matcher = cxt.matcher;
         this.localVars = new int[cxt.localVars.length];
         this.groupVars = new int[cxt.groupVars.length];
@@ -70,11 +70,11 @@ public final class MatchContext implements MatchResult {
      *
      * @return new MatchContext instance
      */
-    public MatchContext split() {
-        MatchContext result = matcher.allocContext();
+    public ReMatchContext split() {
+        ReMatchContext result = matcher.allocContext();
         // insure stack is enough
-        if (result.stack.length < this.stack.length) {
-            result.stack = new Point[this.stack.length];
+        if (result.stack.length < stack.length) {
+            result.stack = new Point[stack.length];
         }
         // copy context's data
         result.from = this.from;
@@ -89,18 +89,6 @@ public final class MatchContext implements MatchResult {
         System.arraycopy(this.crossVars, 0, result.crossVars, 0, this.crossVars.length);
 
         return result;
-    }
-
-    public int getCursor() {
-        return cursor;
-    }
-
-    public void setCursor(int cursor) {
-        this.cursor = cursor;
-    }
-
-    public Node getActivedNode() {
-        return activedNode;
     }
 
     public void setActivedNode(Node activedNode) {

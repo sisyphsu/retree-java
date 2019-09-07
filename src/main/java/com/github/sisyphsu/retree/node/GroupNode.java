@@ -1,6 +1,6 @@
 package com.github.sisyphsu.retree.node;
 
-import com.github.sisyphsu.retree.MatchContext;
+import com.github.sisyphsu.retree.ReMatchContext;
 
 /**
  * GroupHead represents the group's head
@@ -26,7 +26,7 @@ public final class GroupNode extends Node {
     }
 
     @Override
-    public int match(MatchContext cxt, CharSequence input, int offset) {
+    public int match(ReMatchContext cxt, CharSequence input, int offset) {
         if (groupIndex > 0) {
             long startOff = cxt.getGroupOffset(groupStartIndex);
             long endOff = cxt.getGroupOffset(groupEndIndex);
@@ -40,7 +40,7 @@ public final class GroupNode extends Node {
     }
 
     @Override
-    public boolean onBack(MatchContext cxt, long data) {
+    public boolean onBack(ReMatchContext cxt, long data) {
         // restore the old start and end position.
         if (groupIndex > 0) {
             cxt.setGroupOffset(groupStartIndex, (int) (data >>> 32));
@@ -65,7 +65,7 @@ public final class GroupNode extends Node {
     private class Tail extends Node {
 
         @Override
-        public int match(MatchContext cxt, CharSequence input, int offset) {
+        public int match(ReMatchContext cxt, CharSequence input, int offset) {
             // mark the end postion of this group
             if (groupIndex > 0) {
                 cxt.setGroupOffset(groupEndIndex, offset);

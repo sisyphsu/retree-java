@@ -1,7 +1,6 @@
 package com.github.sisyphsu.retree.demo.basic;
 
-import com.github.sisyphsu.retree.MatchResult;
-import com.github.sisyphsu.retree.Matcher;
+import com.github.sisyphsu.retree.ReMatcher;
 import com.github.sisyphsu.retree.ReTree;
 import org.junit.jupiter.api.Test;
 import org.openjdk.jmh.annotations.*;
@@ -32,7 +31,7 @@ public class BasicTest {
     public static final String TEXT = "You have new emails from @Sisyphsu <sisyphsu@gmail.com> & @Sulin <sulin@xxx.com> at 2019-09-07.";
     public static final String[] RES = {"\\W@(\\w+)", "<(\\w+@\\w+\\.[a-z]+(\\.[a-z]+)?)>", "(\\d{4}-\\d{2}-\\d{2})"};
 
-    public static final Matcher MATCHER = new Matcher(new ReTree(RES), TEXT);
+    public static final ReMatcher MATCHER = new ReMatcher(new ReTree(RES), TEXT);
     public static final java.util.regex.Matcher[] MATCHERS = new java.util.regex.Matcher[RES.length];
 
     static {
