@@ -11,9 +11,9 @@ import java.util.Arrays;
 public final class ReContext implements Result {
 
     private final ReMatcher matcher;
-    private final int[] localVars;
-    private final int[] groupVars;
-    private final int[] crossVars;
+    final int[] localVars;
+    final int[] groupVars;
+    final int[] crossVars;
 
     int from;
     int to;
@@ -27,7 +27,7 @@ public final class ReContext implements Result {
 
     protected ReContext(ReMatcher matcher, ReTree tree) {
         this.matcher = matcher;
-        this.localVars = new int[tree.localVarCount + 1];
+        this.localVars = new int[tree.localVarCount];
         this.groupVars = new int[tree.groupVarCount * 2];
         this.crossVars = new int[tree.crossVarCount];
         this.stackDeep = 0;
@@ -101,38 +101,6 @@ public final class ReContext implements Result {
         this.stack[stackDeep++] = new Point(node, offset, data);
     }
 
-    public int getLoopVar(int index) {
-        return this.localVars[index + 1];
-    }
-
-    public void setLoopVar(int index, int val) {
-        this.localVars[index + 1] = val;
-    }
-
-    public int getTempVar() {
-        return this.localVars[0];
-    }
-
-    public void setTempVar(int val) {
-        this.localVars[0] = val;
-    }
-
-    public int getCrossVar(int index) {
-        return this.crossVars[index];
-    }
-
-    public void setCrossVar(int index, int val) {
-        this.crossVars[index] = val;
-    }
-
-    public int getGroupOffset(int index) {
-        return this.groupVars[index];
-    }
-
-    public void setGroupOffset(int index, int start) {
-        this.groupVars[index] = start;
-    }
-
     @Override
     public String re() {
         if (activedNode instanceof EndNode) {
@@ -149,7 +117,7 @@ public final class ReContext implements Result {
     @Override
     public int start(int groupIndex) {
         if (activedNode instanceof EndNode) {
-            return this.getGroupOffset(groupIndex * 2);
+            return this.groupVars[groupIndex * 2];
         }
         throw new IllegalStateException("Invalid MatchResult");
     }
@@ -162,7 +130,7 @@ public final class ReContext implements Result {
     @Override
     public int end(int groupIndex) {
         if (activedNode instanceof EndNode) {
-            return this.getGroupOffset(groupIndex * 2 + 1);
+            return this.groupVars[groupIndex * 2 + 1];
         }
         throw new IllegalStateException("Invalid MatchResult");
     }

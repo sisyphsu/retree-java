@@ -28,7 +28,7 @@ public final class EndNode extends Node {
 
     @Override
     public int match(ReContext cxt, CharSequence input, int offset) {
-        cxt.setGroupOffset(1, offset);
+        cxt.groupVars[1] = offset;
         return DONE;
     }
 

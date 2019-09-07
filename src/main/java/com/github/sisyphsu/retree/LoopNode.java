@@ -56,8 +56,8 @@ public final class LoopNode extends Node {
 
     @Override
     public int match(ReContext cxt, CharSequence input, int offset) {
-        int times = cxt.getLoopVar(timesVar);
-        int prevOffset = cxt.getLoopVar(offsetVar);
+        int times = cxt.localVars[timesVar];
+        int prevOffset = cxt.localVars[offsetVar];
 
         boolean backtracking = false;
         if (times < 0) {
@@ -71,11 +71,11 @@ public final class LoopNode extends Node {
 
         // POSSESSIVE: clear all added back-point
         if (type == Util.POSSESSIVE) {
-            int stackDeep = cxt.getLoopVar(deepVar);
+            int stackDeep = cxt.localVars[deepVar];
             if (times > 0 && stackDeep >= 0) {
                 cxt.stackDeep = stackDeep;
             }
-            cxt.setLoopVar(deepVar, cxt.stackDeep); // backup deep
+            cxt.localVars[deepVar] = cxt.stackDeep; // backup deep
         }
 
         int rest = cxt.to - offset;
@@ -144,21 +144,21 @@ public final class LoopNode extends Node {
 
     @Override
     public boolean onBack(ReContext cxt, long data) {
-        cxt.setLoopVar(deepVar, -1);
+        cxt.localVars[deepVar] = -1;
         if (data == RESET) {
-            cxt.setLoopVar(timesVar, -1);
-            cxt.setLoopVar(offsetVar, -1);
+            cxt.localVars[timesVar] = -1;
+            cxt.localVars[offsetVar] = -1;
             return false;
         }
         int times = (int) (data >>> 32);
         int offset = (int) data;
         if (offset == Integer.MAX_VALUE) {
-            cxt.setLoopVar(timesVar, times);
-            cxt.setLoopVar(offsetVar, 0); // don't use the real offset, use 0 as default
+            cxt.localVars[timesVar] = times;
+            cxt.localVars[offsetVar] = 0; // don't use the real offset, use 0 as default
             return false;
         }
-        cxt.setLoopVar(timesVar, times | FLAG); // bind flags in times
-        cxt.setLoopVar(offsetVar, offset);
+        cxt.localVars[timesVar] = times | FLAG; // bind flags in times
+        cxt.localVars[offsetVar] = offset;
         return true;
     }
 
@@ -179,16 +179,16 @@ public final class LoopNode extends Node {
     }
 
     private int goBody(ReContext cxt, int times, int offset) {
-        cxt.setLoopVar(timesVar, times + 1);
-        cxt.setLoopVar(offsetVar, offset);
+        cxt.localVars[timesVar] = times + 1;
+        cxt.localVars[offsetVar] = offset;
         cxt.activedNode = body;
         return CONTINE;
     }
 
     private int goNext(ReContext cxt) {
-        cxt.setLoopVar(timesVar, -1);
-        cxt.setLoopVar(offsetVar, -1);
-        cxt.setLoopVar(deepVar, -1);
+        cxt.localVars[timesVar] = -1;
+        cxt.localVars[offsetVar] = -1;
+        cxt.localVars[deepVar] = -1;
         cxt.activedNode = next;
         return CONTINE;
     }

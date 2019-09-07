@@ -32,7 +32,7 @@ public final class MixNode extends Node {
 
     @Override
     public int match(ReContext cxt, CharSequence input, int offset) {
-        int off = cxt.getCrossVar(index);
+        int off = cxt.crossVars[index];
         if (off >= 0) {
             cxt.activedNode = nexts[off];
             return CONTINE;
@@ -51,10 +51,10 @@ public final class MixNode extends Node {
                 continue; // fast-fail
             }
             if (first) {
-                cxt.setCrossVar(index, i);
+                cxt.crossVars[index] = i;
                 first = false;
             } else {
-                cxt.split().setCrossVar(index, i);
+                cxt.split().crossVars[index] = i;
             }
         }
         return SPLIT;

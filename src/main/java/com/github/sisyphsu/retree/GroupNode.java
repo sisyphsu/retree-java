@@ -26,11 +26,11 @@ public final class GroupNode extends Node {
     @Override
     public int match(ReContext cxt, CharSequence input, int offset) {
         if (groupIndex > 0) {
-            long startOff = cxt.getGroupOffset(groupStartIndex);
-            long endOff = cxt.getGroupOffset(groupEndIndex);
+            long startOff = cxt.groupVars[groupStartIndex];
+            long endOff = cxt.groupVars[groupEndIndex];
 
             cxt.addBackPoint(this, offset, (startOff << 32) | endOff);
-            cxt.setGroupOffset(groupStartIndex, offset);
+            cxt.groupVars[groupStartIndex] = offset;
         }
 
         cxt.activedNode = next;
@@ -41,8 +41,8 @@ public final class GroupNode extends Node {
     public boolean onBack(ReContext cxt, long data) {
         // restore the old start and end position.
         if (groupIndex > 0) {
-            cxt.setGroupOffset(groupStartIndex, (int) (data >>> 32));
-            cxt.setGroupOffset(groupEndIndex, (int) (data));
+            cxt.groupVars[groupStartIndex] = (int) (data >>> 32);
+            cxt.groupVars[groupEndIndex] = (int) (data);
         }
 
         return false;
@@ -66,7 +66,7 @@ public final class GroupNode extends Node {
         public int match(ReContext cxt, CharSequence input, int offset) {
             // mark the end postion of this group
             if (groupIndex > 0) {
-                cxt.setGroupOffset(groupEndIndex, offset);
+                cxt.groupVars[groupEndIndex] = offset;
             }
 
             cxt.activedNode = next;

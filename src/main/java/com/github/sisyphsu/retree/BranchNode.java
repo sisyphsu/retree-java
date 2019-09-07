@@ -41,8 +41,8 @@ public final class BranchNode extends Node {
 
     @Override
     public int match(ReContext cxt, CharSequence input, int offset) {
-        int branchIdx = Math.max(cxt.getTempVar(), 0);
-        cxt.setTempVar(-1);
+        int branchIdx = Math.max(cxt.localVars[0], 0);
+        cxt.localVars[0] = -1;
 
         int rest = cxt.to - offset;
 
@@ -70,7 +70,7 @@ public final class BranchNode extends Node {
 
     @Override
     public boolean onBack(ReContext cxt, long data) {
-        cxt.setTempVar((int) data);
+        cxt.localVars[0] = (int) data;
         return true;
     }
 

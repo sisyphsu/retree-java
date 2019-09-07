@@ -42,7 +42,7 @@ final class Pattern {
     private Pattern(String re) {
         pattern = re;
         groupCount = 1;
-        localCount = 0;
+        localCount = 1;
         namedGroups = new HashMap<>(2);
 
         endNode = new EndNode(re, namedGroups);

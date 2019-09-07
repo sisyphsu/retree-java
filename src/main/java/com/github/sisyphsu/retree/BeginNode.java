@@ -18,7 +18,7 @@ public final class BeginNode extends Node {
             return FAIL;
         }
 
-        cxt.setGroupOffset(0, offset);
+        cxt.groupVars[0] = offset;
         cxt.activedNode = next;
         return CONTINE;
     }
