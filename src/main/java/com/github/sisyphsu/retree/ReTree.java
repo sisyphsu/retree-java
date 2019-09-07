@@ -122,7 +122,7 @@ public final class ReTree {
 
     @FunctionalInterface
     public interface ResultSelector {
-        MatchResult select(List<MatchResult> results);
+        MatchResult select(List<? extends MatchResult> results);
     }
 
 }

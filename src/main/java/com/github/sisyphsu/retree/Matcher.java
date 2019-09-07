@@ -21,9 +21,9 @@ public final class Matcher {
     private static final int MATCH_SPLIT = 2;
 
     final ReTree tree;
-    final List<MatchContext> contexts = new ArrayList<>(1);
-    final List<MatchContext> contextPool = new ArrayList<>(1);
-    final List<MatchResult> results = new ArrayList<>(1);
+    final List<MatchContext> contexts = new ArrayList<>(2);
+    final List<MatchContext> contextPool = new ArrayList<>(2);
+    final List<MatchContext> results = new ArrayList<>(1);
 
     private int from;
     private int to;
@@ -64,14 +64,11 @@ public final class Matcher {
      */
     public MatchResult matches() {
         if (search(0)) {
-            results.removeIf(r -> {
-                if (r.end() != to) {
-                    contextPool.add((MatchContext) r);
-                    return true;
+            for (MatchContext result : results) {
+                if (result.end() == to) {
+                    return result;
                 }
-                return false;
-            });
-            return this.selectResult();
+            }
         }
         return null;
     }
@@ -83,11 +80,18 @@ public final class Matcher {
      */
     public MatchResult find() {
         MatchResult result = null;
-        for (int from = Math.max(0, last); from <= to; from++) {
-            if (search(from)) {
-                result = this.selectResult();
-                break;
+        int fromPos = Math.max(0, this.last);
+        int endPos = this.to - tree.root.getMinInput();
+        for (int from = fromPos; from <= endPos; from++) {
+            if (!search(from)) {
+                continue;
             }
+            if (results.size() == 1) {
+                result = results.get(0);
+            } else {
+                result = tree.selector.select(results);
+            }
+            break;
         }
         if (result != null) {
             this.last = result.end(); // update the last cursor for next round matching.
@@ -102,16 +106,21 @@ public final class Matcher {
      * @return Success or not
      */
     private boolean search(final int from) {
-        results.clear();
-
-        MatchContext rootCxt;
-        if (contextPool.isEmpty()) {
-            rootCxt = new MatchContext(this, tree);
-        } else {
-            rootCxt = contextPool.remove(contextPool.size() - 1);
+        if (results.size() > 0) {
+            contextPool.addAll(results);
+            results.clear();
         }
-        rootCxt.reset(tree.root, this.input, this.from, this.to, from);
-        contexts.add(rootCxt);
+
+        if (contexts.isEmpty()) {
+            MatchContext rootCxt;
+            if (contextPool.isEmpty()) {
+                rootCxt = new MatchContext(this, tree);
+            } else {
+                rootCxt = contextPool.remove(contextPool.size() - 1);
+            }
+            rootCxt.reset(tree.root, this.input, this.from, this.to, from);
+            contexts.add(rootCxt);
+        }
 
         // execute retree search in multiple MatchContext
         for (int off = from; off <= to; off++) {
@@ -119,13 +128,13 @@ public final class Matcher {
                 MatchContext cxt = contexts.get(i);
                 switch (doMatch(cxt, off)) {
                     case MATCH_FAIL:
-                        this.contexts.remove(cxt);
+                        this.contexts.remove(i);
                         this.contextPool.add(cxt);
                         i--;
                         break;
 
                     case MATCH_DONE:
-                        this.contexts.remove(cxt);
+                        this.contexts.remove(i);
                         this.results.add(cxt);
                         i--;
                         break;
@@ -191,27 +200,11 @@ public final class Matcher {
     }
 
     /**
-     * Select an single MatchResult to be the final result.
-     *
-     * @return The final MatchResult.
-     */
-    MatchResult selectResult() {
-        if (results.isEmpty()) {
-            return null;
-        }
-        MatchResult result = results.get(0);
-        if (results.size() > 1) {
-            result = tree.selector.select(results);
-        }
-        return result;
-    }
-
-    /**
      * Fetch all MatchResult of the previous match operation.
      *
      * @return All MatchResult
      */
-    public List<MatchResult> getResults() {
+    public List<? extends MatchResult> getResults() {
         return results;
     }
 

@@ -31,7 +31,7 @@ public final class MatchContext implements MatchResult {
 
     protected MatchContext(Matcher matcher, ReTree tree) {
         this.matcher = matcher;
-        this.stack = new ArrayList<>(16);
+        this.stack = new ArrayList<>(4);
         this.localVars = new int[tree.localVarCount + 1];
         this.groupVars = new int[tree.groupVarCount * 2];
         this.crossVars = new int[tree.crossVarCount];
@@ -39,8 +39,9 @@ public final class MatchContext implements MatchResult {
 
     @SuppressWarnings("CopyConstructorMissesField")
     protected MatchContext(MatchContext cxt) {
+        System.out.println("--------");
         this.matcher = cxt.matcher;
-        this.stack = new ArrayList<>(Math.min(16, cxt.stack.size()));
+        this.stack = new ArrayList<>(Math.min(4, cxt.stack.size()));
         this.localVars = new int[cxt.localVars.length];
         this.groupVars = new int[cxt.groupVars.length];
         this.crossVars = new int[cxt.crossVars.length];
@@ -54,8 +55,8 @@ public final class MatchContext implements MatchResult {
      */
     public void reset(Node node, CharSequence input, int from, int to, int cursor) {
         Arrays.fill(this.localVars, -1);
-        Arrays.fill(this.groupVars, -1);
         Arrays.fill(this.crossVars, -1);
+        Arrays.fill(this.groupVars, -1);
 
         this.input = input;
         this.from = from;

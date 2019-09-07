@@ -46,8 +46,8 @@ import java.util.regex.Pattern;
  * # Cache the compiled regular expression~~~ We Win!!!
  * # ReTree is 40% faster than regex.
  * Benchmark              Mode  Cnt     Score     Error  Units
- * MatchBenchmark.regex   avgt    9  7983.925 ± 212.822  ns/op
- * MatchBenchmark.retree  avgt    9  5599.561 ±  70.205  ns/op
+ * MatchBenchmark.regex   avgt    9  7978.058 ± 253.454  ns/op
+ * MatchBenchmark.retree  avgt    9  5658.872 ± 120.930  ns/op
  *
  * @author sulin
  * @since 2019-09-04 10:11:05

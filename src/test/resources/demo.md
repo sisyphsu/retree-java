@@ -1,7 +1,3 @@
-This a test of all markdown possibilities:
-
-------------------------------------------
-
 ## Headings
 
 # h1 Heading 1
