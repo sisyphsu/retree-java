@@ -18,10 +18,10 @@ public final class ReMatcher {
     CharSequence input;
 
     private boolean hitEnd;
-    private int last;
     private int donePos;
     private int matchPos;
     private ReContext[] contexts;
+    private ReContext preResult;
     private final ReTree tree;
 
     /**
@@ -49,7 +49,6 @@ public final class ReMatcher {
         this.from = 0;
         this.to = input.length();
         this.input = input;
-        this.last = 0;
         for (ReContext cxt : this.contexts) {
             if (cxt == null) {
                 continue;
@@ -62,45 +61,44 @@ public final class ReMatcher {
     }
 
     /**
-     * Execute regular expression matching operation, and return the result.
+     * Execute regular expression matching operation
      *
-     * @return MatchResult if success
+     * @return success of not
      */
-    public Result matches() {
+    public boolean matches() {
         this.hitEnd = true;
-        if (search(0)) {
-            return contexts[0];
-        }
-        return null;
+        return search(0);
     }
 
     /**
-     * Execute once regular expression finding operation, and return the result.
+     * Execute once regular expression finding operation from the previous offset.
      *
-     * @return MatchResult if success
+     * @return success or not
      */
-    public Result find() {
-        return this.find(last > 0 ? last : 0);
+    public boolean find() {
+        ReContext oldResult = (ReContext) this.getResult();
+        if (oldResult == null) {
+            return this.find(0);
+        } else {
+            return this.find(oldResult.groupVars[1]);
+        }
     }
 
-    public Result find(int offset) {
+    /**
+     * Execute once regular expression finding operation from the specefic offset.
+     *
+     * @param offset The starting position
+     * @return success or not
+     */
+    public boolean find(int offset) {
         this.hitEnd = false;
-        ReContext result = null;
         int endPos = this.to - tree.root.minInput;
         for (int from = offset; from <= endPos; from++) {
             if (search(from)) {
-                if (donePos == 1) {
-                    result = contexts[0];
-                } else {
-                    result = (ReContext) tree.selector.select(this.result);
-                }
-                break;
+                return true;
             }
         }
-        if (result != null) {
-            this.last = Math.max(result.groupVars[1], last + 1);
-        }
-        return result;
+        return false;
     }
 
     /**
@@ -110,6 +108,7 @@ public final class ReMatcher {
      * @return Success or not
      */
     private boolean search(final int from) {
+        this.preResult = null;
         this.donePos = 0;
         this.matchPos = 1;
 
@@ -188,11 +187,27 @@ public final class ReMatcher {
     }
 
     /**
+     * Fetch the Result of previously matching operation.
+     *
+     * @return Result instance
+     */
+    public Result getResult() {
+        if (preResult == null && donePos > 0) {
+            if (donePos == 1) {
+                preResult = contexts[0];
+            } else {
+                preResult = (ReContext) tree.selector.select(result);
+            }
+        }
+        return preResult;
+    }
+
+    /**
      * Fetch all MatchResult of the previous match operation.
      *
      * @return All MatchResult
      */
-    public List<? extends Result> getResults() {
+    public List<? extends Result> getAllResult() {
         return result;
     }
 

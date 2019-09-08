@@ -2,7 +2,6 @@ package com.github.sisyphsu.retree.demo.basic;
 
 import com.github.sisyphsu.retree.ReMatcher;
 import com.github.sisyphsu.retree.ReTree;
-import com.github.sisyphsu.retree.Result;
 import org.junit.jupiter.api.Test;
 import org.openjdk.jmh.annotations.*;
 
@@ -68,9 +67,8 @@ public class BasicTest {
 
         MATCHER.reset(TEXT);
 //        MATCHER.matches();
-        Result result;
-        while ((result = MATCHER.find()) != null) {
-            results.add(result.group(1).toString());
+        while (MATCHER.find()) {
+            results.add(MATCHER.getResult().group(1).toString());
         }
 
         return results;

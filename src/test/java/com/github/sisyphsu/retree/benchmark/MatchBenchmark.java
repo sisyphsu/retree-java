@@ -90,7 +90,7 @@ public class MatchBenchmark {
 
     private boolean retreeMatch(String ptn, String input) {
         ReTree tree = treeMap.computeIfAbsent(ptn, ReTree::new);
-        return new ReMatcher(tree, input).matches() != null;
+        return new ReMatcher(tree, input).matches();
     }
 
     private boolean regexMatch(String ptn, String input) {

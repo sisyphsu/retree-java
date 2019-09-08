@@ -359,7 +359,8 @@ public class RagularTest {
 
         int matchCount = 0;
         List<String> list = new ArrayList<>();
-        for (Result result = matcher.find(); result != null; result = matcher.find()) {
+        while (matcher.find()) {
+            Result result = matcher.getResult();
             matchCount++;
             System.out.printf("Match count: %s, Group Zero Text: '%s'%n", matchCount, result.group(0));
             for (int i = 1; i <= result.groupCount(); i++) {
@@ -389,7 +390,9 @@ public class RagularTest {
         ReMatcher matcher = new ReMatcher(new ReTree(regex), input);
 
         List<Map<String, String>> list = new ArrayList<>();
-        for (Result result = matcher.find(); result != null; result = matcher.find()) {
+
+        while (matcher.find()) {
+            Result result = matcher.getResult();
             if (result.groupCount() == 3) {
                 Map<String, String> map = new HashMap<>();
                 map.put("city", result.group("city").toString());
@@ -622,11 +625,11 @@ public class RagularTest {
     }
 
     private boolean matches(String ptn, String input) {
-        return new ReMatcher(new ReTree(ptn), input).matches() != null;
+        return new ReMatcher(new ReTree(ptn), input).matches();
     }
 
     private boolean find(String ptn, String input) {
-        return new ReMatcher(new ReTree(ptn), input).find() != null;
+        return new ReMatcher(new ReTree(ptn), input).find();
     }
 
 }

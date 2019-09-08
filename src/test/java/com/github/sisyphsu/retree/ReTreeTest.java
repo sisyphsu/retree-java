@@ -29,19 +29,17 @@ public class ReTreeTest {
         String[] res = {"\\w{5,7}", "\\d{4,6}", "123\\w+"};
         ReTree tree = new ReTree(ReTree.SHORTEST_SELECTOR, res);
 
-        Result result;
+        ReMatcher matcher = new ReMatcher(tree, "123456789");
+        assert matcher.find();
+        assert Objects.equals(matcher.getResult().re(), res[1]);
 
-        result = new ReMatcher(tree, "123456789").find();
-        assert result != null;
-        assert Objects.equals(result.re(), res[1]);
+        matcher = new ReMatcher(tree, "1234a");
+        assert matcher.find();
+        assert Objects.equals(matcher.getResult().re(), res[1]);
 
-        result = new ReMatcher(tree, "1234a").find();
-        assert result != null;
-        assert Objects.equals(result.re(), res[1]);
-
-        result = new ReMatcher(tree, "123abcdef").find();
-        assert result != null;
-        assert Objects.equals(result.re(), res[0]);
+        matcher = new ReMatcher(tree, "123abcdef");
+        assert matcher.find();
+        assert Objects.equals(matcher.getResult().re(), res[0]);
     }
 
     @Test
@@ -49,19 +47,17 @@ public class ReTreeTest {
         String[] res = {"\\w{5,7}", "\\d{4,6}", "123\\w+"};
         ReTree tree = new ReTree(ReTree.LONGEST_SELECTOR, res);
 
-        Result result;
+        ReMatcher matcher = new ReMatcher(tree, "12345678");
+        assert matcher.find();
+        assert Objects.equals(matcher.getResult().re(), res[2]);
 
-        result = new ReMatcher(tree, "12345678").find();
-        assert result != null;
-        assert Objects.equals(result.re(), res[2]);
+        matcher = new ReMatcher(tree, "23456789");
+        assert matcher.find();
+        assert Objects.equals(matcher.getResult().re(), res[0]);
 
-        result = new ReMatcher(tree, "23456789").find();
-        assert result != null;
-        assert Objects.equals(result.re(), res[0]);
-
-        result = new ReMatcher(tree, "123abcdef").find();
-        assert result != null;
-        assert Objects.equals(result.re(), res[2]);
+        matcher = new ReMatcher(tree, "123abcdef");
+        assert matcher.find();
+        assert Objects.equals(matcher.getResult().re(), res[2]);
     }
 
     @Test
@@ -88,11 +84,12 @@ public class ReTreeTest {
 
         ReMatcher matcher = new ReMatcher(tree, "abc123");
 
-        assert matcher.matches() == null;
+        assert !matcher.matches();
 
         matcher.reset("abc123456");
+        assert matcher.matches();
 
-        assert res[0].contentEquals(Objects.requireNonNull(matcher.matches()).re());
+        assert res[0].contentEquals(matcher.getResult().re());
     }
 
 }

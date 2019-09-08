@@ -60,7 +60,8 @@ public class ReContextTest {
             assert e instanceof IllegalStateException;
         }
 
-        result = matcher.matches();
+        matcher.matches();
+        result = matcher.getResult();
         assert result != null;
         assert "abc".contentEquals(result.group(1));
         assert result.start() == 0;
