@@ -113,35 +113,18 @@ public final class ReMatcher {
         this.matchPos = 1;
         this.contexts[0].reset(tree.root, from);
 
-        // execute retree search in multiple MatchContext
-        for (int off = from; off <= to; off++) {
-            for (int i = donePos; i < matchPos; i++) {
-                ReContext context = contexts[i];
-                switch (doMatch(context, off)) {
-                    case Node.FAIL:
-                        this.matchPos--;
-                        if (i != matchPos) {
-                            this.contexts[i] = this.contexts[matchPos];
-                            this.contexts[matchPos] = context; // put context into cache
-                        }
-                        i--;
-                        break;
-
-                    case Node.DONE:
-                        if (i != donePos) {
-                            this.contexts[i] = this.contexts[donePos];
-                            this.contexts[donePos] = context; // put context into done
-                        }
-                        this.donePos++;
-                        break;
-
-                    case Node.SPLIT:
-                        i--; // retry
-                        break;
-                }
+        for (int i = donePos; i < matchPos; i++) {
+            ReContext cxt = contexts[i];
+            if (!doSearch(cxt)) {
+                continue;
             }
+            // move to done area
+            if (i != donePos) {
+                this.contexts[i] = this.contexts[donePos];
+                this.contexts[donePos] = cxt;
+            }
+            this.donePos++;
         }
-
         return donePos > 0;
     }
 
@@ -149,32 +132,33 @@ public final class ReMatcher {
      * Execute matching use the specified MatchContext, until fail or hit offset.
      * If fail, it would do backtracking
      *
-     * @param cxt    The context of matching operation.
-     * @param offset The final offset, which means the end.
+     * @param cxt The context of matching operation.
      * @return result code
      */
-    private int doMatch(ReContext cxt, int offset) {
+    private boolean doSearch(ReContext cxt) {
         int status = Node.CONTINE;
-        while (cxt.cursor <= offset && status == Node.CONTINE) {
-            status = cxt.node.match(cxt, input, cxt.cursor);
+        while (true) {
+            switch (status) {
+                case Node.CONTINE:
+                case Node.SPLIT:
+                    status = cxt.node.match(cxt, input, cxt.cursor);
+                    break;
+                case Node.FAIL:
+                    ReContext.Point point = cxt.popStack();
+                    if (point == null) {
+                        return false;
+                    }
+                    if (!point.node.onBack(cxt, point.data)) {
+                        continue;
+                    }
+                    cxt.node = point.node;
+                    cxt.cursor = point.offset;
+                    status = Node.CONTINE;
+                    break;
+                case Node.DONE:
+                    return true;
+            }
         }
-        while (status == Node.FAIL) {
-            ReContext.Point point = cxt.popStack();
-            if (point == null) {
-                break;
-            }
-            if (!point.node.onBack(cxt, point.data)) {
-                continue; // this BackPoint is used for data restoring
-            }
-            cxt.node = point.node;
-            cxt.cursor = point.offset;
-            // backtracking
-            status = Node.CONTINE;
-            while (cxt.cursor <= offset && status == Node.CONTINE) {
-                status = cxt.node.match(cxt, input, cxt.cursor);
-            }
-        }
-        return status;
     }
 
     /**
