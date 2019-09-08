@@ -32,11 +32,11 @@ import java.util.regex.Pattern;
 @OutputTimeUnit(TimeUnit.NANOSECONDS)
 public class ReBenchmark {
 
-    public static final String TEXT = "You have new emails from @Sisyphsu <sisyphsu@gmail.com> & @Sulin <sulin@xxx.com> at 2019-09-07.";
-    public static final String[] RES = {"\\W"};
+    public static final String TEXT = "abcdefghij";
+    public static final String[] RES = {"\\w"};
 
     public static final ReMatcher MATCHER = new ReMatcher(new ReTree(RES), TEXT);
-    public static final java.util.regex.Matcher[] MATCHERS = new java.util.regex.Matcher[RES.length];
+    public static final Matcher[] MATCHERS = new Matcher[RES.length];
 
     static {
         for (int i = 0; i < RES.length; i++) {
@@ -48,14 +48,24 @@ public class ReBenchmark {
         for (Matcher matcher : MATCHERS) {
             matcher.reset(TEXT);
             matcher.matches();
-//            while (matcher.find()) ;
+//            matcher.find(0);
+//            for (int i = 0; i < 1; i++) {
+//                matcher.find(i);
+//            }
+//            while (matcher.find()) {
+//            }
         }
     }
 
     final void parseByReTree() {
         MATCHER.reset(TEXT);
         MATCHER.matches();
-//        while (MATCHER.find() != null) ;
+//        MATCHER.find(0);
+//        while (MATCHER.find() != null) {
+//        }
+//        for (int i = 0; i < 1; i++) {
+//            MATCHER.find(i);
+//        }
     }
 
     @Benchmark

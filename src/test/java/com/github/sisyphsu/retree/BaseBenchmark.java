@@ -40,10 +40,4 @@ public class BaseBenchmark {
         new ReContext(MATCHER, TREE);
     }
 
-    @Benchmark
-    public void cxtReset() {
-        ReContext cxt = new ReContext(MATCHER, TREE);
-        cxt.reset(TREE.root, 1);
-    }
-
 }

@@ -33,6 +33,7 @@ public final class ReContext implements Result {
         this.crossVars = new int[tree.crossVarCount];
         this.stackDeep = 0;
         this.stack = new Point[4];
+        this.reset();
     }
 
     @SuppressWarnings("CopyConstructorMissesField")
@@ -47,18 +48,12 @@ public final class ReContext implements Result {
 
     /**
      * Reset context
-     *
-     * @param node   new node that is actived
-     * @param cursor new cursor after reset
      */
-    public void reset(Node node, int cursor) {
+    public void reset() {
         for (int i = 0; i < this.localVars.length; i++)
             this.localVars[i] = -1;
         for (int i = 0; i < this.crossVars.length; i++)
             this.crossVars[i] = -1;
-        
-        this.node = node;
-        this.cursor = cursor;
         this.stackDeep = 0;
     }
 
