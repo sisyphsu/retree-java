@@ -31,8 +31,8 @@ import java.util.regex.Pattern;
  */
 @Warmup(iterations = 2, time = 2)
 @BenchmarkMode(Mode.AverageTime)
-@Fork(3)
-@Measurement(iterations = 3, time = 5)
+@Fork(2)
+@Measurement(iterations = 3, time = 3)
 @OutputTimeUnit(TimeUnit.NANOSECONDS)
 public class BasicTest {
 
@@ -76,6 +76,7 @@ public class BasicTest {
 
     @Test
     public void test() {
+        parseByRegex();
         List<String> regResult = parseByRegex();
         assert regResult.size() == 5;
         assert regResult.contains("Sisyphsu");
@@ -84,6 +85,7 @@ public class BasicTest {
         assert regResult.contains("sulin@xxx.com");
         assert regResult.contains("2019-09-07");
 
+        parseByReTree();
         List<String> retResult = parseByReTree();
         assert retResult.size() == 5;
         assert retResult.contains("Sisyphsu");

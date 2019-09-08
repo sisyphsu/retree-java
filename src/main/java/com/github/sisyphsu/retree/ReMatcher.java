@@ -47,6 +47,9 @@ public final class ReMatcher {
      */
     public ReMatcher reset(CharSequence input) {
         this.from = 0;
+        this.donePos = 0;
+        this.matchPos = 0;
+        this.preResult = null;
         this.to = input.length();
         this.input = input;
         for (ReContext cxt : this.contexts) {
@@ -56,6 +59,7 @@ public final class ReMatcher {
             cxt.from = this.from;
             cxt.to = this.to;
             cxt.input = this.input;
+            cxt.reset();
         }
         return this;
     }
