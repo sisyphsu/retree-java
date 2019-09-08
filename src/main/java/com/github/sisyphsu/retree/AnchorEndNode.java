@@ -35,7 +35,8 @@ public final class AnchorEndNode extends Node {
         if (rest == 2) {
             if (input.charAt(offset) != '\r')
                 return FAIL;
-            return SUCCESS;
+            cxt.cursor++;
+            return CONTINE;
         }
 
         // if previous char is '\r', so this char must be '\n'
@@ -43,7 +44,8 @@ public final class AnchorEndNode extends Node {
             if (input.charAt(offset) != '\n')
                 return FAIL;
             cxt.node = next;
-            return SUCCESS;
+            cxt.cursor++;
+            return CONTINE;
         }
 
         char ch = input.charAt(offset);
@@ -51,7 +53,8 @@ public final class AnchorEndNode extends Node {
             return FAIL;
         }
         cxt.node = next;
-        return SUCCESS;
+        cxt.cursor++;
+        return CONTINE;
     }
 
     @Override

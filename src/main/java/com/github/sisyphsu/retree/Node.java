@@ -10,9 +10,8 @@ public abstract class Node {
 
     public static final int FAIL = -1;
     public static final int CONTINE = 0;
-    public static final int SUCCESS = 1;
+    public static final int SPLIT = 1;
     public static final int DONE = 2;
-    public static final int SPLIT = 3;
 
     protected Node next;
     protected int minInput = -1;

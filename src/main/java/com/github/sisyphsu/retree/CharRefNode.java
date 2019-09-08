@@ -62,7 +62,8 @@ public final class CharRefNode extends Node {
         }
 
         // success, but not finished
-        return SUCCESS;
+        cxt.cursor++;
+        return CONTINE;
     }
 
     @Override

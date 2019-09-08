@@ -13,10 +13,6 @@ import java.util.List;
  */
 public final class ReMatcher {
 
-    private static final int MATCH_MATCH = 0;
-
-    final ReTree tree;
-
     int from;
     int to;
     CharSequence input;
@@ -25,6 +21,7 @@ public final class ReMatcher {
     private int donePos;
     private int matchPos;
     private ReContext[] contexts;
+    private final ReTree tree;
 
     /**
      * Initialize Matcher by the specified regular expression tree and input.
@@ -157,7 +154,10 @@ public final class ReMatcher {
      * @return result code
      */
     private int doMatch(ReContext cxt, int offset) {
-        int status = this.tryMatch(cxt, offset);
+        int status = Node.CONTINE;
+        while (cxt.cursor <= offset && status == Node.CONTINE) {
+            status = cxt.node.match(cxt, input, cxt.cursor);
+        }
         while (status == Node.FAIL) {
             ReContext.Point point = cxt.popStack();
             if (point == null) {
@@ -168,34 +168,13 @@ public final class ReMatcher {
             }
             cxt.node = point.node;
             cxt.cursor = point.offset;
-            status = this.tryMatch(cxt, offset);
-        }
-        return status;
-    }
-
-    /**
-     * Try to execute once matching, return util failed or hit offset.
-     *
-     * @param cxt    The context of matching operation.
-     * @param offset The final offset, which means the end.
-     * @return result code
-     */
-    private int tryMatch(ReContext cxt, int offset) {
-        Node node;
-        while (cxt.cursor <= offset) {
-            node = cxt.node;
-            switch (node.match(cxt, input, cxt.cursor)) {
-                case Node.FAIL:
-                    return Node.FAIL;
-                case Node.DONE:
-                    return Node.DONE;
-                case Node.SPLIT:
-                    return Node.SPLIT;
-                case Node.SUCCESS:
-                    cxt.cursor++;
+            // backtracking
+            status = Node.CONTINE;
+            while (cxt.cursor <= offset && status == Node.CONTINE) {
+                status = cxt.node.match(cxt, input, cxt.cursor);
             }
         }
-        return MATCH_MATCH;
+        return status;
     }
 
     /**

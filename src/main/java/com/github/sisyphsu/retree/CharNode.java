@@ -30,7 +30,8 @@ public abstract class CharNode extends Node {
         }
         // switch to next
         cxt.node = next;
-        return SUCCESS;
+        cxt.cursor++;
+        return CONTINE;
     }
 
     public CharNode complement() {
