@@ -5,18 +5,19 @@ import org.openjdk.jmh.annotations.*;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Benchmark                      Mode  Cnt     Score    Error  Units
- * BaseBenchmark.newMatchContext  avgt    9    34.537 ±  0.132  ns/op
- * BaseBenchmark.newMatcher       avgt    9    13.996 ±  0.056  ns/op
- * BaseBenchmark.newTree          avgt    9  2333.791 ± 37.309  ns/op
+ * Benchmark                      Mode  Cnt     Score     Error  Units
+ * BaseBenchmark.cxtReset         avgt    3    38.837 ±   3.052  ns/op
+ * BaseBenchmark.newMatchContext  avgt    3    31.429 ±   3.820  ns/op
+ * BaseBenchmark.newMatcher       avgt    3    44.503 ±   1.168  ns/op
+ * BaseBenchmark.newTree          avgt    3  2349.035 ± 253.398  ns/op
  *
  * @author sulin
  * @since 2019-09-07 11:32:24
  */
 @Warmup(iterations = 2, time = 2)
 @BenchmarkMode(Mode.AverageTime)
-@Fork(3)
-@Measurement(iterations = 3, time = 5)
+@Fork(1)
+@Measurement(iterations = 3, time = 3)
 @OutputTimeUnit(TimeUnit.NANOSECONDS)
 public class BaseBenchmark {
 
@@ -37,6 +38,12 @@ public class BaseBenchmark {
     @Benchmark
     public void newMatchContext() {
         new ReContext(MATCHER, TREE);
+    }
+
+    @Benchmark
+    public void cxtReset() {
+        ReContext cxt = new ReContext(MATCHER, TREE);
+        cxt.reset(TREE.root, 1);
     }
 
 }

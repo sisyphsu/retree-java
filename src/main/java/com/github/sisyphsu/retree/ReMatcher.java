@@ -13,10 +13,7 @@ import java.util.List;
  */
 public final class ReMatcher {
 
-    private static final int MATCH_FAIL = -1;
-    private static final int MATCH_DONE = 1;
     private static final int MATCH_MATCH = 0;
-    private static final int MATCH_SPLIT = 2;
 
     final ReTree tree;
 
@@ -124,20 +121,24 @@ public final class ReMatcher {
             for (int i = donePos; i < matchPos; i++) {
                 ReContext context = contexts[i];
                 switch (doMatch(context, off)) {
-                    case MATCH_FAIL:
+                    case Node.FAIL:
                         this.matchPos--;
-                        this.contexts[i] = this.contexts[matchPos];
-                        this.contexts[matchPos] = context; // put context into cache
+                        if (i != matchPos) {
+                            this.contexts[i] = this.contexts[matchPos];
+                            this.contexts[matchPos] = context; // put context into cache
+                        }
                         i--;
                         break;
 
-                    case MATCH_DONE:
-                        this.contexts[i] = this.contexts[donePos];
-                        this.contexts[donePos] = context; // put context into done
+                    case Node.DONE:
+                        if (i != donePos) {
+                            this.contexts[i] = this.contexts[donePos];
+                            this.contexts[donePos] = context; // put context into done
+                        }
                         this.donePos++;
                         break;
 
-                    case MATCH_SPLIT:
+                    case Node.SPLIT:
                         i--; // retry
                         break;
                 }
@@ -157,7 +158,7 @@ public final class ReMatcher {
      */
     private int doMatch(ReContext cxt, int offset) {
         int status = this.tryMatch(cxt, offset);
-        while (status == MATCH_FAIL) {
+        while (status == Node.FAIL) {
             ReContext.Point point = cxt.popStack();
             if (point == null) {
                 break;
@@ -185,11 +186,11 @@ public final class ReMatcher {
             node = cxt.node;
             switch (node.match(cxt, input, cxt.cursor)) {
                 case Node.FAIL:
-                    return MATCH_FAIL;
+                    return Node.FAIL;
                 case Node.DONE:
-                    return MATCH_DONE;
+                    return Node.DONE;
                 case Node.SPLIT:
-                    return MATCH_SPLIT;
+                    return Node.SPLIT;
                 case Node.SUCCESS:
                     cxt.cursor++;
             }

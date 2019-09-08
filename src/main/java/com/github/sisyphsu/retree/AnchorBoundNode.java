@@ -8,8 +8,8 @@ package com.github.sisyphsu.retree;
  */
 public final class AnchorBoundNode extends Node {
 
-    public static int NON_WORD = 0x0;
-    public static int WORD = 0x3;
+    public static int NON_WORD = 0;
+    public static int WORD = 1;
 
     private final int type;
 

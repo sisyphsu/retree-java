@@ -1,7 +1,5 @@
 package com.github.sisyphsu.retree;
 
-import java.util.Arrays;
-
 /**
  * The Context of Matcher and MultiMatcher
  *
@@ -54,9 +52,11 @@ public final class ReContext implements Result {
      * @param cursor new cursor after reset
      */
     public void reset(Node node, int cursor) {
-        Arrays.fill(this.localVars, -1);
-        Arrays.fill(this.crossVars, -1);
-
+        for (int i = 0; i < this.localVars.length; i++)
+            this.localVars[i] = -1;
+        for (int i = 0; i < this.crossVars.length; i++)
+            this.crossVars[i] = -1;
+        
         this.node = node;
         this.cursor = cursor;
         this.stackDeep = 0;
