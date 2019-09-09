@@ -17,9 +17,6 @@ public final class ReContext implements Result {
     int to;
     CharSequence input;
 
-    int stackDeep;
-    Point[] stack;
-
     int cursor;
     Node node;
 
@@ -31,8 +28,6 @@ public final class ReContext implements Result {
         this.localVars = new int[tree.localVarCount];
         this.groupVars = new int[tree.groupVarCount * 2];
         this.crossVars = new int[tree.crossVarCount];
-        this.stackDeep = 0;
-        this.stack = new Point[4];
         this.reset();
     }
 
@@ -42,8 +37,6 @@ public final class ReContext implements Result {
         this.localVars = new int[cxt.localVars.length];
         this.groupVars = new int[cxt.groupVars.length];
         this.crossVars = new int[cxt.crossVars.length];
-        this.stackDeep = 0;
-        this.stack = new Point[Math.min(4, cxt.stackDeep)];
     }
 
     /**
@@ -54,7 +47,6 @@ public final class ReContext implements Result {
             this.localVars[i] = -1;
         for (int i = 0; i < this.crossVars.length; i++)
             this.crossVars[i] = -1;
-        this.stackDeep = 0;
     }
 
     /**
@@ -64,18 +56,12 @@ public final class ReContext implements Result {
      */
     public ReContext split() {
         ReContext result = matcher.allocContext();
-        // insure stack is enough
-        if (result.stack.length < stack.length) {
-            result.stack = new Point[stack.length];
-        }
         // copy context's data
         result.from = this.from;
         result.to = this.to;
         result.input = this.input;
         result.cursor = this.cursor;
         result.node = this.node;
-        result.stackDeep = this.stackDeep;
-        System.arraycopy(this.stack, 0, result.stack, 0, this.stackDeep);
         System.arraycopy(this.localVars, 0, result.localVars, 0, this.localVars.length);
         System.arraycopy(this.groupVars, 0, result.groupVars, 0, this.groupVars.length);
         System.arraycopy(this.crossVars, 0, result.crossVars, 0, this.crossVars.length);
@@ -83,17 +69,9 @@ public final class ReContext implements Result {
         return result;
     }
 
-    public Point popStack() {
-        return stackDeep == 0 ? null : stack[--stackDeep];
-    }
-
-    public void addBackPoint(Node node, int offset, long data) {
-        if (stackDeep >= this.stack.length) {
-            Point[] newStack = new Point[stackDeep * 2];
-            System.arraycopy(stack, 0, newStack, 0, stackDeep);
-            this.stack = newStack;
-        }
-        this.stack[stackDeep++] = new Point(node, offset, data);
+    public boolean match(Node node) {
+        this.node = node;
+        return node.match(this);
     }
 
     @Override
@@ -161,22 +139,6 @@ public final class ReContext implements Result {
             return ((EndNode) node).getGroupCount() - 1;
         }
         throw new IllegalStateException("Invalid MatchResult");
-    }
-
-    /**
-     * One point in backtracking stack.
-     */
-    protected static final class Point {
-
-        final Node node;
-        final int offset;
-        final long data;
-
-        public Point(Node node, int offset, long data) {
-            this.node = node;
-            this.offset = offset;
-            this.data = data;
-        }
     }
 
 }

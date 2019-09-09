@@ -24,14 +24,14 @@ public abstract class CharNode extends Node {
     }
 
     @Override
-    public int match(ReContext cxt) {
+    public boolean match(ReContext cxt) {
         if (matched != isMatch(cxt.input.charAt(cxt.cursor))) {
-            return FAIL;
+            return false;
         }
         // switch to next
-        cxt.node = next;
         cxt.cursor++;
-        return CONTINE;
+        cxt.node = next;
+        return next.match(cxt);
     }
 
     public CharNode complement() {

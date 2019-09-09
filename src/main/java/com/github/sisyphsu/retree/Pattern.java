@@ -42,7 +42,7 @@ final class Pattern {
     private Pattern(String re) {
         pattern = re;
         groupCount = 1;
-        localCount = 1;
+        localCount = 0;
         namedGroups = new HashMap<>(2);
 
         endNode = new EndNode(re, namedGroups);
@@ -202,7 +202,7 @@ final class Pattern {
             } else {
                 resultTail.next = end;
             }
-            branch = new BranchNode(end, result, node);
+            branch = new BranchNode(end, result, node, localCount++);
         }
 
         return branch == null ? result : branch;

@@ -117,13 +117,13 @@ public final class ReMatcher {
         this.matchPos = 1;
 
         ReContext cxt = this.contexts[0];
-        cxt.node = tree.root;
         cxt.cursor = from;
+        cxt.node = tree.root;
         cxt.reset();
 
         for (int i = 0; i < matchPos; i++) {
             cxt = contexts[i];
-            if (!doSearch(cxt)) {
+            if (!cxt.node.match(cxt)) {
                 continue;
             }
             if (hitEnd && cxt.groupVars[1] != cxt.to) {
@@ -137,39 +137,6 @@ public final class ReMatcher {
             this.donePos++;
         }
         return donePos > 0;
-    }
-
-    /**
-     * Execute matching use the specified MatchContext, until fail or hit offset.
-     * If fail, it would do backtracking
-     *
-     * @param cxt The context of matching operation.
-     * @return result code
-     */
-    private boolean doSearch(ReContext cxt) {
-        int status = Node.CONTINE;
-        while (true) {
-            switch (status) {
-                case Node.CONTINE:
-                case Node.SPLIT:
-                    status = cxt.node.match(cxt);
-                    break;
-                case Node.FAIL:
-                    ReContext.Point point = cxt.popStack();
-                    if (point == null) {
-                        return false;
-                    }
-                    if (!point.node.onBack(cxt, point.data)) {
-                        continue;
-                    }
-                    cxt.node = point.node;
-                    cxt.cursor = point.offset;
-                    status = Node.CONTINE;
-                    break;
-                case Node.DONE:
-                    return true;
-            }
-        }
     }
 
     /**

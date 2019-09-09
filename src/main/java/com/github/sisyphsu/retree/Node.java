@@ -8,13 +8,8 @@ package com.github.sisyphsu.retree;
  */
 public abstract class Node {
 
-    public static final int FAIL = -1;
-    public static final int CONTINE = 0;
-    public static final int SPLIT = 1;
-    public static final int DONE = 2;
-
-    protected Node next;
     protected int minInput = -1;
+    protected Node next;
 
     /**
      * Try to study this node's global status, used for performance optimization.
@@ -33,18 +28,7 @@ public abstract class Node {
      * @param cxt The context of matching operation.
      * @return result code
      */
-    public abstract int match(ReContext cxt);
-
-    /**
-     * The callback of backtracking, this node may need to do some data recovering.
-     *
-     * @param cxt  The context of matching operation.
-     * @param data The data attached on back-point.
-     * @return false means this node didn't want to retry matching.
-     */
-    public boolean onBack(ReContext cxt, long data) {
-        return true;
-    }
+    public abstract boolean match(ReContext cxt);
 
     public abstract boolean alike(Node node);
 

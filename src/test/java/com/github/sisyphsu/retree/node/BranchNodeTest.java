@@ -19,20 +19,20 @@ public class BranchNodeTest {
     public void alike() {
         BranchNode node1, node2;
 
-        node1 = new BranchNode(endNode, null, new CharSingleNode(1));
-        node2 = new BranchNode(endNode, null, new CharSingleNode(2));
+        node1 = new BranchNode(endNode, null, new CharSingleNode(1), 0);
+        node2 = new BranchNode(endNode, null, new CharSingleNode(2), 0);
         assert !node1.alike(node2);
 
-        node1 = new BranchNode(endNode, new CharSingleNode(2), new CharSingleNode(1));
-        node2 = new BranchNode(endNode, null, new CharSingleNode(1));
+        node1 = new BranchNode(endNode, new CharSingleNode(2), new CharSingleNode(1), 0);
+        node2 = new BranchNode(endNode, null, new CharSingleNode(1), 0);
         assert !node1.alike(node2);
 
-        node1 = new BranchNode(endNode, null, new CharSingleNode(1));
-        node2 = new BranchNode(endNode, new CharSingleNode(2), new CharSingleNode(1));
+        node1 = new BranchNode(endNode, null, new CharSingleNode(1), 0);
+        node2 = new BranchNode(endNode, new CharSingleNode(2), new CharSingleNode(1), 0);
         assert !node1.alike(node2);
 
-        node1 = new BranchNode(endNode, null, new CharSingleNode(1));
-        node2 = new BranchNode(endNode, null, new CharSingleNode(1));
+        node1 = new BranchNode(endNode, null, new CharSingleNode(1), 0);
+        node2 = new BranchNode(endNode, null, new CharSingleNode(1), 0);
         assert node1.alike(node2);
 
         node2.add(new CharSingleNode(1));

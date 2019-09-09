@@ -22,28 +22,21 @@ public final class GroupNode extends Node {
     }
 
     @Override
-    public int match(ReContext cxt) {
+    public boolean match(ReContext cxt) {
+        int oldStartPos = cxt.groupVars[groupStartIndex];
+        int oldEndPos = cxt.groupVars[groupEndIndex];
+
         if (groupIndex > 0) {
-            if (cxt.stackDeep == 0) {
-                long startOff = cxt.groupVars[groupStartIndex];
-                long endOff = cxt.groupVars[groupEndIndex];
-                cxt.addBackPoint(this, cxt.cursor, (startOff << 32) | endOff);
-            }
             cxt.groupVars[groupStartIndex] = cxt.cursor;
         }
-
         cxt.node = next;
-        return CONTINE;
-    }
-
-    @Override
-    public boolean onBack(ReContext cxt, long data) {
-        // restore the old start and end position.
-        if (groupIndex > 0) {
-            cxt.groupVars[groupStartIndex] = (int) (data >>> 32);
-            cxt.groupVars[groupEndIndex] = (int) (data);
+        if (next.match(cxt)) {
+            return true;
         }
-
+        if (groupIndex > 0) {
+            cxt.groupVars[groupStartIndex] = oldStartPos;
+            cxt.groupVars[groupEndIndex] = oldEndPos;
+        }
         return false;
     }
 
@@ -62,14 +55,12 @@ public final class GroupNode extends Node {
     private class Tail extends Node {
 
         @Override
-        public int match(ReContext cxt) {
-            // mark the end postion of this group
+        public boolean match(ReContext cxt) {
             if (groupIndex > 0) {
-                cxt.groupVars[groupEndIndex] = cxt.cursor;
+                cxt.groupVars[groupEndIndex] = cxt.cursor; // mark the end postion of this group
             }
-
             cxt.node = next;
-            return CONTINE;
+            return next.match(cxt);
         }
 
         @Override

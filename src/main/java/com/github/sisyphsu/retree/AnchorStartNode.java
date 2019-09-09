@@ -9,13 +9,12 @@ package com.github.sisyphsu.retree;
 public final class AnchorStartNode extends Node {
 
     @Override
-    public int match(ReContext cxt) {
+    public boolean match(ReContext cxt) {
         if (cxt.cursor != cxt.from) {
-            return FAIL;
+            return false;
         }
-
         cxt.node = next;
-        return CONTINE;
+        return next.match(cxt);
     }
 
     @Override

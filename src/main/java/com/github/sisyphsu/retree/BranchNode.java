@@ -11,10 +11,12 @@ import java.util.List;
  */
 public final class BranchNode extends Node {
 
+    private final int pos;
     private final List<Node> branches = new ArrayList<>(2);
 
-    public BranchNode(Node next, Node first, Node second) {
+    public BranchNode(Node next, Node first, Node second, int pos) {
         this.next = next;
+        this.pos = pos;
         this.add(first);
         this.add(second);
     }
@@ -40,38 +42,23 @@ public final class BranchNode extends Node {
     }
 
     @Override
-    public int match(ReContext cxt) {
-        int branchIdx = Math.max(cxt.localVars[0], 0);
-        cxt.localVars[0] = -1;
-
+    public boolean match(ReContext cxt) {
         int rest = cxt.to - cxt.cursor;
-
         // pick the next branch
-        Node node = null;
+        int cursor = cxt.cursor;
+        int branchIdx = 0;
+        Node node;
         for (; branchIdx < branches.size(); branchIdx++) {
             node = branches.get(branchIdx);
-            if (node == null || node.minInput <= rest) {
-                break;
+            if (node == null) {
+                node = next;
             }
+            if (node.minInput <= rest && node.match(cxt)) {
+                return true;
+            }
+            cxt.cursor = cursor; // recover the old cursor for backtracking
         }
-
-        if (branchIdx >= branches.size()) {
-            return FAIL;
-        }
-
-        if (branchIdx < branches.size() - 1) {
-            cxt.addBackPoint(this, cxt.cursor, branchIdx + 1);
-        }
-
-        cxt.node = node == null ? next : node;
-
-        return CONTINE;
-    }
-
-    @Override
-    public boolean onBack(ReContext cxt, long data) {
-        cxt.localVars[0] = (int) data;
-        return true;
+        return false;
     }
 
     @Override
