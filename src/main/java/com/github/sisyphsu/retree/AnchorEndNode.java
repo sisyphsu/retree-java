@@ -15,46 +15,53 @@ public final class AnchorEndNode extends Node {
     }
 
     @Override
-    public int match(ReContext cxt) {
+    public boolean match(ReContext cxt) {
         int rest = cxt.to - cxt.cursor;
 
         if (rest == 0) {
             cxt.node = next;
-            return CONTINE;
+            return next.match(cxt);
         }
 
         if (this.absolute) {
-            return FAIL;
+            return false;
         }
 
         if (rest > 2) {
-            return FAIL;
+            return false;
         }
 
         // if has 2 chars remained, must be '\r\n'
         if (rest == 2) {
-            if (cxt.input.charAt(cxt.cursor) != '\r')
-                return FAIL;
+            if (cxt.input.charAt(cxt.cursor) != '\r') {
+                return false;
+            }
             cxt.cursor++;
-            return CONTINE;
+            if (cxt.input.charAt(cxt.cursor) != '\n') {
+                return false;
+            }
+            cxt.cursor++;
+            cxt.node = next;
+            return next.match(cxt);
         }
 
         // if previous char is '\r', so this char must be '\n'
         if (cxt.cursor > cxt.from && cxt.input.charAt(cxt.cursor - 1) == '\r') {
-            if (cxt.input.charAt(cxt.cursor) != '\n')
-                return FAIL;
-            cxt.node = next;
+            if (cxt.input.charAt(cxt.cursor) != '\n') {
+                return false;
+            }
             cxt.cursor++;
-            return CONTINE;
+            cxt.node = next;
+            return next.match(cxt);
         }
 
         char ch = cxt.input.charAt(cxt.cursor);
         if (ch != '\n' && ch != '\r' && ch != '\u0085' && (ch | 1) != '\u2029') {
-            return FAIL;
+            return false;
         }
-        cxt.node = next;
         cxt.cursor++;
-        return CONTINE;
+        cxt.node = next;
+        return next.match(cxt);
     }
 
     @Override

@@ -31,33 +31,28 @@ public final class MixNode extends Node {
     }
 
     @Override
-    public int match(ReContext cxt) {
-        int off = cxt.crossVars[index];
-        if (off >= 0) {
-            cxt.node = nexts[off];
-            return CONTINE;
-        }
-        int rest = cxt.to - cxt.cursor;
-
-        // fast-fail
-        if (rest < this.minInput) {
-            return FAIL;
-        }
-
-        // need split the context into multi-context.
-        boolean first = true;
-        for (int i = 0; i < nexts.length; i++) {
-            if (rest < nexts[i].minInput) {
-                continue; // fast-fail
+    public boolean match(ReContext cxt) {
+        if (cxt.crossVars[index] < 0) {
+            int rest = cxt.to - cxt.cursor;
+            if (rest < this.minInput) {
+                return false; // fast-fail
             }
-            if (first) {
-                cxt.crossVars[index] = i;
-                first = false;
-            } else {
-                cxt.split().crossVars[index] = i;
+            // need split the context into multi-context.
+            boolean first = true;
+            for (int i = 0; i < nexts.length; i++) {
+                if (rest < nexts[i].minInput) {
+                    continue; // fast-fail
+                }
+                if (first) {
+                    cxt.crossVars[index] = i;
+                    first = false;
+                } else {
+                    cxt.split().crossVars[index] = i;
+                }
             }
         }
-        return SPLIT;
+        cxt.node = nexts[cxt.crossVars[index]];
+        return cxt.node.match(cxt);
     }
 
     @Override

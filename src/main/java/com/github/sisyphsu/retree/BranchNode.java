@@ -40,7 +40,7 @@ public final class BranchNode extends Node {
     }
 
     @Override
-    public int match(ReContext cxt) {
+    public boolean match(ReContext cxt) {
         int branchIdx = Math.max(cxt.localVars[0], 0);
         cxt.localVars[0] = -1;
 
@@ -56,7 +56,7 @@ public final class BranchNode extends Node {
         }
 
         if (branchIdx >= branches.size()) {
-            return FAIL;
+            return false;
         }
 
         if (branchIdx < branches.size() - 1) {
@@ -64,8 +64,7 @@ public final class BranchNode extends Node {
         }
 
         cxt.node = node == null ? next : node;
-
-        return CONTINE;
+        return cxt.node.match(cxt);
     }
 
     @Override

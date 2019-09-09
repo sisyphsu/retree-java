@@ -147,27 +147,21 @@ public final class ReMatcher {
      * @return result code
      */
     private boolean doSearch(ReContext cxt) {
-        int status = Node.CONTINE;
         while (true) {
-            switch (status) {
-                case Node.CONTINE:
-                case Node.SPLIT:
-                    status = cxt.node.match(cxt);
-                    break;
-                case Node.FAIL:
-                    ReContext.Point point = cxt.popStack();
-                    if (point == null) {
-                        return false;
-                    }
-                    if (!point.node.onBack(cxt, point.data)) {
-                        continue;
-                    }
-                    cxt.node = point.node;
-                    cxt.cursor = point.offset;
-                    status = Node.CONTINE;
-                    break;
-                case Node.DONE:
-                    return true;
+            if (cxt.node.match(cxt)) {
+                return true;
+            }
+            while (true) {
+                ReContext.Point point = cxt.popStack();
+                if (point == null) {
+                    return false;
+                }
+                if (!point.node.onBack(cxt, point.data)) {
+                    continue;
+                }
+                cxt.node = point.node;
+                cxt.cursor = point.offset;
+                break;
             }
         }
     }

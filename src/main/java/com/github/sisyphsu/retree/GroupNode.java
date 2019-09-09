@@ -22,7 +22,7 @@ public final class GroupNode extends Node {
     }
 
     @Override
-    public int match(ReContext cxt) {
+    public boolean match(ReContext cxt) {
         if (groupIndex > 0) {
             if (cxt.stackDeep == 0) {
                 long startOff = cxt.groupVars[groupStartIndex];
@@ -33,7 +33,7 @@ public final class GroupNode extends Node {
         }
 
         cxt.node = next;
-        return CONTINE;
+        return next.match(cxt);
     }
 
     @Override
@@ -62,14 +62,13 @@ public final class GroupNode extends Node {
     private class Tail extends Node {
 
         @Override
-        public int match(ReContext cxt) {
+        public boolean match(ReContext cxt) {
             // mark the end postion of this group
             if (groupIndex > 0) {
                 cxt.groupVars[groupEndIndex] = cxt.cursor;
             }
-
             cxt.node = next;
-            return CONTINE;
+            return next.match(cxt);
         }
 
         @Override

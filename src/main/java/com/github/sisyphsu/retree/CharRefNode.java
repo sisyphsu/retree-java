@@ -19,51 +19,31 @@ public final class CharRefNode extends Node {
     }
 
     @Override
-    public int match(ReContext cxt) {
+    public boolean match(ReContext cxt) {
         final int groupStart = cxt.groupVars[refStartOffset];
         final int groupEnd = cxt.groupVars[refEndOffset];
         final int groupLen = groupEnd - groupStart;
         // fail if the group referenced is invalid
         if (groupStart < 0 || groupLen < 0) {
-            return FAIL;
+            return false;
         }
         // continue if the group referenced is empty
         if (groupLen == 0) {
-            cxt.localVars[0] = -1;
             cxt.node = next;
-            return CONTINE;
+            return next.match(cxt);
         }
-
-        int startOff = cxt.localVars[0];
-        if (startOff < 0) {
-            startOff = cxt.cursor;
-            cxt.localVars[0] = startOff;
-        }
-
         // fast fail
-        if (cxt.to - startOff < groupLen) {
-            cxt.localVars[0] = -1;
-            return FAIL;
+        if (cxt.to - cxt.cursor < groupLen) {
+            return false;
         }
-
-        int refOffset = groupStart + (cxt.cursor - startOff);
-
-        // matched
-        if (refOffset >= groupEnd) {
-            cxt.localVars[0] = -1;
-            cxt.node = next;
-            return CONTINE;
+        // do match
+        for (int i = 0; i < groupLen; i++) {
+            if (cxt.input.charAt(groupStart + i) != cxt.input.charAt(cxt.cursor++)) {
+                return false;
+            }
         }
-
-        // failed
-        if (cxt.input.charAt(refOffset) != cxt.input.charAt(cxt.cursor)) {
-            cxt.localVars[0] = -1;
-            return FAIL;
-        }
-
-        // success, but not finished
-        cxt.cursor++;
-        return CONTINE;
+        cxt.node = next;
+        return next.match(cxt);
     }
 
     @Override

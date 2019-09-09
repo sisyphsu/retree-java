@@ -18,7 +18,7 @@ public final class AnchorBoundNode extends Node {
     }
 
     @Override
-    public int match(ReContext cxt) {
+    public boolean match(ReContext cxt) {
         // execute matching
         boolean leftIsWord = false;
         boolean rightIsWord = false;
@@ -30,16 +30,16 @@ public final class AnchorBoundNode extends Node {
         }
 
         if (type == WORD && leftIsWord == rightIsWord) {
-            return FAIL; // must be bound of word
+            return false; // must be bound of word
         }
 
         if (type == NON_WORD && leftIsWord != rightIsWord) {
-            return FAIL; // must not be bound of word
+            return false; // must not be bound of word
         }
 
         // switch to next
         cxt.node = next;
-        return CONTINE;
+        return next.match(cxt);
     }
 
     private boolean isWord(int ch) {

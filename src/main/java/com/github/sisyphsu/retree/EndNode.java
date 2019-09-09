@@ -27,9 +27,9 @@ public final class EndNode extends Node {
     }
 
     @Override
-    public int match(ReContext cxt) {
+    public boolean match(ReContext cxt) {
         cxt.groupVars[1] = cxt.cursor;
-        return DONE;
+        return true;
     }
 
     @Override
