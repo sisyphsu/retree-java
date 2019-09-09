@@ -32,7 +32,8 @@ import java.util.regex.Pattern;
 @OutputTimeUnit(TimeUnit.NANOSECONDS)
 public class ReBenchmark {
 
-    public static final String TEXT = "abcdefghij";
+    //    public static final String TEXT = "You have an new email from @Sisyphsu <sisyphsu@gmail.com> and @Sulin <sulin@xxx.com> at 2019-09-07.";
+    public static final String TEXT = "You.";
     public static final String[] RES = {"\\w"};
 
     public static final ReMatcher MATCHER = new ReMatcher(new ReTree(RES), TEXT);
@@ -44,31 +45,39 @@ public class ReBenchmark {
         }
     }
 
-    final void parseByRegex() {
+    final int parseByRegex() {
+        int count = 0;
         for (Matcher matcher : MATCHERS) {
-            matcher.reset(TEXT);
-            matcher.matches();
-//            matcher.find(0);
-//            for (int i = 0; i < 1; i++) {
-//                matcher.find(i);
-//            }
-//            while (matcher.find()) {
+//            matcher.reset(TEXT);
+//            matcher.matches();
+            while (matcher.find()) {
+                count++;
+            }
+//            for (int i = 0; i < TEXT.length(); i++) {
+//                if (matcher.find(i)) {
+//                    count++;
+//                }
 //            }
         }
+        return count;
     }
 
-    final void parseByReTree() {
-        MATCHER.reset(TEXT);
-        MATCHER.matches();
-//        MATCHER.find(0);
-//        while (MATCHER.find() != null) {
+    final int parseByReTree() {
+        int count = 0;
+//        MATCHER.reset(TEXT);
+//        MATCHER.matches();
+        while (MATCHER.find()) {
+            count++;
+        }
+//        for (int i = 0; i < TEXT.length(); i++) {
+//            if (MATCHER.find(i)) {
+//                count++;
+//            }
 //        }
-//        for (int i = 0; i < 1; i++) {
-//            MATCHER.find(i);
-//        }
+        return count;
     }
 
-    @Benchmark
+    //    @Benchmark
     public void regex() {
         this.parseByRegex();
     }
@@ -80,7 +89,6 @@ public class ReBenchmark {
 
     @Test
     public void test() {
-        this.parseByRegex();
-        this.parseByReTree();
+        assert this.parseByRegex() == this.parseByReTree();
     }
 }

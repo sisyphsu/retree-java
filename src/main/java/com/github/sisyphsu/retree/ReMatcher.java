@@ -152,16 +152,18 @@ public final class ReMatcher {
                 return true;
             }
             while (true) {
-                ReContext.Point point = cxt.popStack();
+                if (cxt.stackDeep == 0) {
+                    return false;
+                }
+                ReContext.Point point = cxt.stack[--cxt.stackDeep];
                 if (point == null) {
                     return false;
                 }
-                if (!point.node.onBack(cxt, point.data)) {
-                    continue;
+                if (point.node.onBack(cxt, point.data)) {
+                    cxt.node = point.node;
+                    cxt.cursor = point.offset;
+                    break;
                 }
-                cxt.node = point.node;
-                cxt.cursor = point.offset;
-                break;
             }
         }
     }

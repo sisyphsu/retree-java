@@ -83,10 +83,6 @@ public final class ReContext implements Result {
         return result;
     }
 
-    public Point popStack() {
-        return stackDeep == 0 ? null : stack[--stackDeep];
-    }
-
     public void addBackPoint(Node node, int offset, long data) {
         if (stackDeep >= this.stack.length) {
             Point[] newStack = new Point[stackDeep * 2];
