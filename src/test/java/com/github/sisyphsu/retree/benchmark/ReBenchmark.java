@@ -32,9 +32,8 @@ import java.util.regex.Pattern;
 @OutputTimeUnit(TimeUnit.NANOSECONDS)
 public class ReBenchmark {
 
-    //    public static final String TEXT = "You have an new email from @Sisyphsu <sisyphsu@gmail.com> and @Sulin <sulin@xxx.com> at 2019-09-07.";
-    public static final String TEXT = "You.";
-    public static final String[] RES = {"\\w"};
+    public static final String TEXT = "You have an new email from @Sisyphsu <sisyphsu@gmail.com> and @Sulin <sulin@xxx.com> at 2019-09-07.";
+    public static final String[] RES = {"(\\d{4}-\\d{2}-\\d{2})"};
 
     public static final ReMatcher MATCHER = new ReMatcher(new ReTree(RES), TEXT);
     public static final Matcher[] MATCHERS = new Matcher[RES.length];
@@ -77,7 +76,7 @@ public class ReBenchmark {
         return count;
     }
 
-    //    @Benchmark
+    @Benchmark
     public void regex() {
         this.parseByRegex();
     }
@@ -89,6 +88,8 @@ public class ReBenchmark {
 
     @Test
     public void test() {
+        System.out.println(this.parseByRegex());
+        System.out.println(this.parseByReTree());
         assert this.parseByRegex() == this.parseByReTree();
     }
 }

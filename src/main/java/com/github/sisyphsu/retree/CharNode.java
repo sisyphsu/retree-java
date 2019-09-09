@@ -45,6 +45,6 @@ public abstract class CharNode extends Node {
      * @param ch char code
      * @return matched or not
      */
-    protected abstract boolean isMatch(int ch);
+    abstract boolean isMatch(int ch);
 
 }
