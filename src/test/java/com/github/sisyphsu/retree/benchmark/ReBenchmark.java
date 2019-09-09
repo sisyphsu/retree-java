@@ -33,7 +33,7 @@ import java.util.regex.Pattern;
 public class ReBenchmark {
 
     public static final String TEXT = "You have an new email from @Sisyphsu <sisyphsu@gmail.com> and @Sulin <sulin@xxx.com> at 2019-09-07.";
-    public static final String[] RES = {"(\\d{4}-\\d{2}-\\d{2})"};
+    public static final String[] RES = {"\\w"};
 
     public static final ReMatcher MATCHER = new ReMatcher(new ReTree(RES), TEXT);
     public static final Matcher[] MATCHERS = new Matcher[RES.length];
@@ -47,32 +47,22 @@ public class ReBenchmark {
     final int parseByRegex() {
         int count = 0;
         for (Matcher matcher : MATCHERS) {
-//            matcher.reset(TEXT);
+            matcher.reset(TEXT);
 //            matcher.matches();
             while (matcher.find()) {
                 count++;
             }
-//            for (int i = 0; i < TEXT.length(); i++) {
-//                if (matcher.find(i)) {
-//                    count++;
-//                }
-//            }
         }
         return count;
     }
 
     final int parseByReTree() {
         int count = 0;
-//        MATCHER.reset(TEXT);
+        MATCHER.reset(TEXT);
 //        MATCHER.matches();
         while (MATCHER.find()) {
             count++;
         }
-//        for (int i = 0; i < TEXT.length(); i++) {
-//            if (MATCHER.find(i)) {
-//                count++;
-//            }
-//        }
         return count;
     }
 

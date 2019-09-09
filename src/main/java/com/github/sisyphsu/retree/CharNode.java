@@ -25,12 +25,11 @@ public abstract class CharNode extends Node {
 
     @Override
     public boolean match(ReContext cxt) {
-        if (cxt.to - cxt.cursor < minInput || matched != isMatch(cxt.input.charAt(cxt.cursor))) {
+        if (matched != isMatch(cxt.input.charAt(cxt.cursor))) {
             return false;
         }
         // switch to next
         cxt.cursor++;
-        cxt.node = next;
         return next.match(cxt);
     }
 

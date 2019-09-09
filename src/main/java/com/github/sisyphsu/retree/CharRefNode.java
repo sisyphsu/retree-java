@@ -29,7 +29,6 @@ public final class CharRefNode extends Node {
         }
         // continue if the group referenced is empty
         if (groupLen == 0) {
-            cxt.node = next;
             return next.match(cxt);
         }
         // fast fail
@@ -42,7 +41,6 @@ public final class CharRefNode extends Node {
                 return false;
             }
         }
-        cxt.node = next;
         return next.match(cxt);
     }
 

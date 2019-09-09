@@ -119,7 +119,7 @@ public final class ReMatcher {
         ReContext cxt = this.contexts[0];
         cxt.node = tree.root;
         cxt.cursor = from;
-        cxt.reset();
+//        cxt.reset();
 
         for (int i = 0; i < matchPos; i++) {
             cxt = contexts[i];

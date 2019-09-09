@@ -38,7 +38,6 @@ public final class AnchorBoundNode extends Node {
         }
 
         // switch to next
-        cxt.node = next;
         return next.match(cxt);
     }
 

@@ -13,8 +13,6 @@ public final class AnchorStartNode extends Node {
         if (cxt.cursor != cxt.from) {
             return false;
         }
-
-        cxt.node = next;
         return next.match(cxt);
     }
 

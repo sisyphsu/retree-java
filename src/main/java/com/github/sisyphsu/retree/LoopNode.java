@@ -263,7 +263,6 @@ public final class LoopNode extends Node {
     private boolean matchBody(ReContext cxt, int times, int offset) {
         cxt.localVars[timesVar] = times + 1;
         cxt.localVars[offsetVar] = offset;
-        cxt.node = body;
         return body.match(cxt);
     }
 
@@ -271,7 +270,6 @@ public final class LoopNode extends Node {
         cxt.localVars[timesVar] = -1;
         cxt.localVars[offsetVar] = -1;
         cxt.localVars[deepVar] = -1;
-        cxt.node = next;
         return next.match(cxt);
     }
 

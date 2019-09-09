@@ -19,7 +19,6 @@ public final class AnchorEndNode extends Node {
         int rest = cxt.to - cxt.cursor;
 
         if (rest == 0) {
-            cxt.node = next;
             return next.match(cxt);
         }
 
@@ -41,7 +40,6 @@ public final class AnchorEndNode extends Node {
                 return false;
             }
             cxt.cursor++;
-            cxt.node = next;
             return next.match(cxt);
         }
 
@@ -51,7 +49,7 @@ public final class AnchorEndNode extends Node {
                 return false;
             }
             cxt.cursor++;
-            cxt.node = next;
+
             return next.match(cxt);
         }
 
@@ -60,7 +58,6 @@ public final class AnchorEndNode extends Node {
             return false;
         }
         cxt.cursor++;
-        cxt.node = next;
         return next.match(cxt);
     }
 

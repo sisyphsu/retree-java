@@ -63,8 +63,10 @@ public final class BranchNode extends Node {
             cxt.addBackPoint(this, cxt.cursor, branchIdx + 1);
         }
 
-        cxt.node = node == null ? next : node;
-        return cxt.node.match(cxt);
+        if (node == null) {
+            node = next;
+        }
+        return node.match(cxt);
     }
 
     @Override

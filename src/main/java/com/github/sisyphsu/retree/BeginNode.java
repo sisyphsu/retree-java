@@ -17,9 +17,7 @@ public final class BeginNode extends Node {
         if (cxt.to - cxt.cursor < minInput) {
             return false;
         }
-
         cxt.groupVars[0] = cxt.cursor;
-        cxt.node = next;
         return next.match(cxt);
     }
 

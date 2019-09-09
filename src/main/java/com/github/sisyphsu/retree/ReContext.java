@@ -75,7 +75,6 @@ public final class ReContext implements Result {
         result.to = this.to;
         result.input = this.input;
         result.cursor = this.cursor;
-        result.node = this.node;
         result.stackDeep = this.stackDeep;
         System.arraycopy(this.stack, 0, result.stack, 0, this.stackDeep);
         System.arraycopy(this.localVars, 0, result.localVars, 0, this.localVars.length);

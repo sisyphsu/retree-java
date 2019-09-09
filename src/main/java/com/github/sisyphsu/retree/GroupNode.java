@@ -31,8 +31,6 @@ public final class GroupNode extends Node {
             }
             cxt.groupVars[groupStartIndex] = cxt.cursor;
         }
-
-        cxt.node = next;
         return next.match(cxt);
     }
 
@@ -43,7 +41,6 @@ public final class GroupNode extends Node {
             cxt.groupVars[groupStartIndex] = (int) (data >>> 32);
             cxt.groupVars[groupEndIndex] = (int) (data);
         }
-
         return false;
     }
 
@@ -63,11 +60,9 @@ public final class GroupNode extends Node {
 
         @Override
         public boolean match(ReContext cxt) {
-            // mark the end postion of this group
             if (groupIndex > 0) {
-                cxt.groupVars[groupEndIndex] = cxt.cursor;
+                cxt.groupVars[groupEndIndex] = cxt.cursor; // mark the end postion of this group
             }
-            cxt.node = next;
             return next.match(cxt);
         }
 

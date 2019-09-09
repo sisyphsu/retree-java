@@ -45,13 +45,15 @@ public final class MixNode extends Node {
                 }
                 if (first) {
                     cxt.crossVars[index] = i;
+                    cxt.node = nexts[i];
                     first = false;
                 } else {
-                    cxt.split().crossVars[index] = i;
+                    ReContext newCxt = cxt.split();
+                    newCxt.crossVars[index] = i;
+                    newCxt.node = nexts[i];
                 }
             }
         }
-        cxt.node = nexts[cxt.crossVars[index]];
         return cxt.node.match(cxt);
     }
 
