@@ -1,5 +1,7 @@
 package com.github.sisyphsu.retree;
 
+import java.util.Arrays;
+
 import static com.github.sisyphsu.retree.Util.*;
 
 /**
@@ -71,6 +73,7 @@ public final class LoopNode extends Node {
             }
         }
 
+        int backCount = 0;
         int oldCursor;
         switch (type) {
             case LAZY:
@@ -90,14 +93,16 @@ public final class LoopNode extends Node {
                 }
 
             case GREEDY:
-                cxt.backs.clear();
                 for (; times < maxTimes; times++) {
                     oldCursor = cxt.cursor;
                     if (!body.match(cxt)) {
                         cxt.cursor = oldCursor;
                         break;
                     }
-                    cxt.backs.add(cxt.cursor);
+                    if (cxt.backs.length <= backCount) {
+                        cxt.backs = Arrays.copyOf(cxt.backs, cxt.backs.length * 2);
+                    }
+                    cxt.backs[backCount++] = cxt.cursor;
                 }
                 break;
 
@@ -119,11 +124,11 @@ public final class LoopNode extends Node {
             if (result) {
                 break;
             }
-            if (cxt.backs.isEmpty()) {
+            if (backCount == 0) {
                 cxt.cursor = oldCursor;
                 break;
             }
-            cxt.cursor = cxt.backs.remove(cxt.backs.size() - 1); // backtracking
+            cxt.cursor = cxt.backs[--backCount]; // backtracking
         }
         return result;
     }

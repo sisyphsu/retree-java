@@ -1,8 +1,5 @@
 package com.github.sisyphsu.retree;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * The Context of Matcher and MultiMatcher
  *
@@ -15,7 +12,8 @@ public final class ReContext implements Result {
     final int[] localVars;
     final int[] groupVars;
     final int[] crossVars;
-    final List<Integer> backs = new ArrayList<>(2);
+
+    int[] backs = new int[4];
 
     int from;
     int to;
