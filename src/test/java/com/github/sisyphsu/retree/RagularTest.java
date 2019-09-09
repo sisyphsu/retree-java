@@ -615,7 +615,7 @@ public class RagularTest {
 
     @Test
     public void testSpec() {
-        assert !matches("([A-Za-z])[0-9]\\1", "a9b");
+        assert matches("(\\d{2}|\\d){3,}\\d", "012111");
     }
 
     @Test

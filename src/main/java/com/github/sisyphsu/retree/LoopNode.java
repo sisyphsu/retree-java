@@ -1,5 +1,7 @@
 package com.github.sisyphsu.retree;
 
+import static com.github.sisyphsu.retree.Util.*;
+
 /**
  * This node supports all loop match, like '+', '++', '{1,10}' etc.
  *
@@ -43,19 +45,94 @@ public final class LoopNode extends Node {
             next.study();
             this.minInput = next.minInput + body.minInput * minTimes;
             // detect the body is complex or not
-            Node next = this.next;
-            while (next != null && next != this) {
-                if (next instanceof BranchNode || next instanceof LoopNode) {
+            Node node = this.body;
+            while (true) {
+                if (node instanceof BranchNode || node instanceof LoopNode) {
                     complex = true;
                     break;
                 }
-                next = next.next;
+                if (node.next == this) {
+                    break;
+                }
+                node = node.next;
+            }
+            if (!complex) {
+                node.next = EMPTY;
             }
         }
     }
 
+    private boolean matchSimple(ReContext cxt) {
+        int times = 0;
+
+        for (; times < minTimes; times++) {
+            if (!body.match(cxt)) {
+                return false;
+            }
+        }
+
+        int oldCursor;
+        switch (type) {
+            case LAZY:
+                for (; ; times++) {
+                    oldCursor = cxt.cursor;
+                    if (next.match(cxt)) {
+                        return true;
+                    }
+                    cxt.cursor = oldCursor;
+                    if (times >= maxTimes) {
+                        return false;
+                    }
+                    if (!body.match(cxt)) {
+                        cxt.cursor = oldCursor;
+                        return false;
+                    }
+                }
+
+            case GREEDY:
+                cxt.backs.clear();
+                for (; times < maxTimes; times++) {
+                    oldCursor = cxt.cursor;
+                    if (!body.match(cxt)) {
+                        cxt.cursor = oldCursor;
+                        break;
+                    }
+                    cxt.backs.add(cxt.cursor);
+                }
+                break;
+
+            case POSSESSIVE:
+                for (; times < maxTimes; times++) {
+                    oldCursor = cxt.cursor;
+                    if (!body.match(cxt)) {
+                        cxt.cursor = oldCursor;
+                        break;
+                    }
+                }
+                break;
+        }
+
+        boolean result;
+        for (; ; ) {
+            oldCursor = cxt.cursor;
+            result = next.match(cxt);
+            if (result) {
+                break;
+            }
+            if (cxt.backs.isEmpty()) {
+                cxt.cursor = oldCursor;
+                break;
+            }
+            cxt.cursor = cxt.backs.remove(cxt.backs.size() - 1); // backtracking
+        }
+        return result;
+    }
+
     @Override
     public boolean match(ReContext cxt) {
+        if (!complex) {
+            return this.matchSimple(cxt);
+        }
         int times = cxt.localVars[timesVar];
         int prevOffset = cxt.localVars[offsetVar];
 
@@ -192,5 +269,17 @@ public final class LoopNode extends Node {
         cxt.node = next;
         return next.match(cxt);
     }
+
+    private static Node EMPTY = new Node() {
+        @Override
+        public boolean match(ReContext cxt) {
+            return true;
+        }
+
+        @Override
+        public boolean alike(Node node) {
+            return true;
+        }
+    };
 
 }

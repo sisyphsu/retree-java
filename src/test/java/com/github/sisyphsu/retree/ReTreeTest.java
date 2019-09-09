@@ -89,6 +89,7 @@ public class ReTreeTest {
         matcher.reset("abc123456");
         assert matcher.matches();
 
+        System.out.println(matcher.getResult());
         assert res[0].contentEquals(matcher.getResult().re());
     }
 
