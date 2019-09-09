@@ -30,12 +30,10 @@ public abstract class Node {
     /**
      * Execute once matching operation
      *
-     * @param cxt    The context of matching operation.
-     * @param input  The input charsequence.
-     * @param offset Match position
+     * @param cxt The context of matching operation.
      * @return result code
      */
-    public abstract int match(ReContext cxt, CharSequence input, int offset);
+    public abstract int match(ReContext cxt);
 
     /**
      * The callback of backtracking, this node may need to do some data recovering.

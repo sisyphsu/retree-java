@@ -40,11 +40,11 @@ public final class BranchNode extends Node {
     }
 
     @Override
-    public int match(ReContext cxt, CharSequence input, int offset) {
+    public int match(ReContext cxt) {
         int branchIdx = Math.max(cxt.localVars[0], 0);
         cxt.localVars[0] = -1;
 
-        int rest = cxt.to - offset;
+        int rest = cxt.to - cxt.cursor;
 
         // pick the next branch
         Node node = null;
@@ -60,7 +60,7 @@ public final class BranchNode extends Node {
         }
 
         if (branchIdx < branches.size() - 1) {
-            cxt.addBackPoint(this, offset, branchIdx + 1);
+            cxt.addBackPoint(this, cxt.cursor, branchIdx + 1);
         }
 
         cxt.node = node == null ? next : node;

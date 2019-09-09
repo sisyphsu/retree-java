@@ -55,13 +55,13 @@ public final class LoopNode extends Node {
     }
 
     @Override
-    public int match(ReContext cxt, CharSequence input, int offset) {
+    public int match(ReContext cxt) {
         int times = cxt.localVars[timesVar];
         int prevOffset = cxt.localVars[offsetVar];
 
         boolean backtracking = false;
         if (times < 0) {
-            cxt.addBackPoint(this, offset, RESET);
+            cxt.addBackPoint(this, cxt.cursor, RESET);
             times = 0;
             prevOffset = 0;
         } else {
@@ -78,17 +78,17 @@ public final class LoopNode extends Node {
             cxt.localVars[deepVar] = cxt.stackDeep; // backup deep
         }
 
-        int rest = cxt.to - offset;
+        int rest = cxt.to - cxt.cursor;
 
         if (times < minTimes) {
-            if (times > 0 && offset <= prevOffset) {
+            if (times > 0 && cxt.cursor <= prevOffset) {
                 return FAIL;
             }
             if (rest < next.minInput + body.minInput * (minTimes - times)) {
                 return FAIL; // fast-fail
             }
-            cxt.addBackPoint(this, offset, ((long) times << 32) | Integer.MAX_VALUE);
-            return goBody(cxt, times, offset);
+            cxt.addBackPoint(this, cxt.cursor, ((long) times << 32) | Integer.MAX_VALUE);
+            return goBody(cxt, times, cxt.cursor);
         }
 
         // fast-fail
@@ -99,33 +99,33 @@ public final class LoopNode extends Node {
         if (times >= maxTimes) {
             // if body is complex, need add back-point to recover loop status.
             if (complex) {
-                cxt.addBackPoint(this, offset, ((long) times << 32) | Integer.MAX_VALUE);
+                cxt.addBackPoint(this, cxt.cursor, ((long) times << 32) | Integer.MAX_VALUE);
             }
             return goNext(cxt);
         }
 
         if (backtracking) {
             if (type != Util.LAZY) {
-                cxt.addBackPoint(this, offset, ((long) times << 32) | Integer.MAX_VALUE);
+                cxt.addBackPoint(this, cxt.cursor, ((long) times << 32) | Integer.MAX_VALUE);
                 return goNext(cxt);
             }
-            if (times > 0 && offset <= prevOffset) {
+            if (times > 0 && cxt.cursor <= prevOffset) {
                 return FAIL; // treat empty match as failure
             }
             if (rest < body.minInput + next.minInput) {
                 return FAIL; // fast fail
             }
-            return goBody(cxt, times, offset);
+            return goBody(cxt, times, cxt.cursor);
         }
 
         // LAZY: go to next first
         if (type == Util.LAZY) {
-            cxt.addBackPoint(this, offset, ((long) times << 32) | prevOffset); // prevOffset is important
+            cxt.addBackPoint(this, cxt.cursor, ((long) times << 32) | prevOffset); // prevOffset is important
             return goNext(cxt);
         }
 
         // treat empty match as failure
-        if (times > 0 && offset <= prevOffset) {
+        if (times > 0 && cxt.cursor <= prevOffset) {
             return FAIL;
         }
 
@@ -138,8 +138,8 @@ public final class LoopNode extends Node {
             return goNext(cxt);
         }
 
-        cxt.addBackPoint(this, offset, ((long) times << 32) | offset);
-        return goBody(cxt, times, offset);
+        cxt.addBackPoint(this, cxt.cursor, ((long) times << 32) | cxt.cursor);
+        return goBody(cxt, times, cxt.cursor);
     }
 
     @Override

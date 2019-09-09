@@ -19,7 +19,7 @@ public final class CharRefNode extends Node {
     }
 
     @Override
-    public int match(ReContext cxt, CharSequence input, int offset) {
+    public int match(ReContext cxt) {
         final int groupStart = cxt.groupVars[refStartOffset];
         final int groupEnd = cxt.groupVars[refEndOffset];
         final int groupLen = groupEnd - groupStart;
@@ -36,7 +36,7 @@ public final class CharRefNode extends Node {
 
         int startOff = cxt.localVars[0];
         if (startOff < 0) {
-            startOff = offset;
+            startOff = cxt.cursor;
             cxt.localVars[0] = startOff;
         }
 
@@ -46,7 +46,7 @@ public final class CharRefNode extends Node {
             return FAIL;
         }
 
-        int refOffset = groupStart + (offset - startOff);
+        int refOffset = groupStart + (cxt.cursor - startOff);
 
         // matched
         if (refOffset >= groupEnd) {
@@ -56,7 +56,7 @@ public final class CharRefNode extends Node {
         }
 
         // failed
-        if (input.charAt(refOffset) != input.charAt(offset)) {
+        if (cxt.input.charAt(refOffset) != cxt.input.charAt(cxt.cursor)) {
             cxt.localVars[0] = -1;
             return FAIL;
         }
