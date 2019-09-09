@@ -21,6 +21,11 @@ import java.util.regex.Pattern;
  * Benchmark           Mode  Cnt     Score     Error  Units
  * ReBenchmark.regex   avgt    6   219.558 ±   9.406  ns/op
  * ReBenchmark.retree  avgt    6  7183.744 ± 283.702  ns/op
+ * <p>
+ * Reduce Node#match's arguments:
+ * Benchmark           Mode  Cnt   Score   Error  Units
+ * ReBenchmark.regex   avgt    3  13.348 ± 1.126  ns/op
+ * ReBenchmark.retree  avgt    3  24.737 ± 4.029  ns/op
  *
  * @author sulin
  * @since 2019-09-07 10:29:28

@@ -152,7 +152,7 @@ public final class ReMatcher {
             switch (status) {
                 case Node.CONTINE:
                 case Node.SPLIT:
-                    status = cxt.node.match(cxt, input, cxt.cursor);
+                    status = cxt.node.match(cxt);
                     break;
                 case Node.FAIL:
                     ReContext.Point point = cxt.popStack();

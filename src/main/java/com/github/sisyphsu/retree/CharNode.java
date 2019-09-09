@@ -24,8 +24,8 @@ public abstract class CharNode extends Node {
     }
 
     @Override
-    public int match(ReContext cxt, CharSequence input, int offset) {
-        if (matched != isMatch(input.charAt(offset))) {
+    public int match(ReContext cxt) {
+        if (matched != isMatch(cxt.input.charAt(cxt.cursor))) {
             return FAIL;
         }
         // switch to next

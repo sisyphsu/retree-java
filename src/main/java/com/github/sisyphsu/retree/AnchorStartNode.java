@@ -9,8 +9,8 @@ package com.github.sisyphsu.retree;
 public final class AnchorStartNode extends Node {
 
     @Override
-    public int match(ReContext cxt, CharSequence input, int offset) {
-        if (offset != cxt.from) {
+    public int match(ReContext cxt) {
+        if (cxt.cursor != cxt.from) {
             return FAIL;
         }
 

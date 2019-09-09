@@ -13,12 +13,12 @@ public final class BeginNode extends Node {
     }
 
     @Override
-    public int match(ReContext cxt, CharSequence input, int offset) {
-        if (cxt.to - offset < minInput) {
+    public int match(ReContext cxt) {
+        if (cxt.to - cxt.cursor < minInput) {
             return FAIL;
         }
 
-        cxt.groupVars[0] = offset;
+        cxt.groupVars[0] = cxt.cursor;
         cxt.node = next;
         return CONTINE;
     }
