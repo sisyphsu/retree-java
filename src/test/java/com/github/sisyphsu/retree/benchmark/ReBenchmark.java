@@ -21,6 +21,16 @@ import java.util.regex.Pattern;
  * Benchmark           Mode  Cnt     Score     Error  Units
  * ReBenchmark.regex   avgt    6   219.558 ±   9.406  ns/op
  * ReBenchmark.retree  avgt    6  7183.744 ± 283.702  ns/op
+ * <p>
+ * Keep using stack for 15% improvement of performance.
+ * Before：
+ * Benchmark           Mode  Cnt     Score    Error  Units
+ * ReBenchmark.regex   avgt    3   516.437 ± 18.356  ns/op
+ * ReBenchmark.retree  avgt    3  1267.261 ± 27.098  ns/op
+ * After：
+ * Benchmark           Mode  Cnt     Score    Error  Units
+ * ReBenchmark.regex   avgt    3   505.684 ± 35.526  ns/op
+ * ReBenchmark.retree  avgt    3  1109.869 ± 47.807  ns/op
  *
  * @author sulin
  * @since 2019-09-07 10:29:28
