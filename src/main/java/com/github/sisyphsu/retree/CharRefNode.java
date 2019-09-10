@@ -19,7 +19,7 @@ public final class CharRefNode extends Node {
     }
 
     @Override
-    public boolean match(ReContext cxt) {
+    public boolean match(ReContext cxt, CharSequence input, int cursor) {
         final int groupStart = cxt.groupVars[refStartOffset];
         final int groupEnd = cxt.groupVars[refEndOffset];
         final int groupLen = groupEnd - groupStart;
@@ -29,19 +29,19 @@ public final class CharRefNode extends Node {
         }
         // continue if the group referenced is empty
         if (groupLen == 0) {
-            return next.match(cxt);
+            return next.match(cxt, input, cursor);
         }
         // fast fail
-        if (cxt.to - cxt.cursor < groupLen) {
+        if (cxt.to - cursor < groupLen) {
             return false;
         }
         // do match
         for (int i = 0; i < groupLen; i++) {
-            if (cxt.input.charAt(groupStart + i) != cxt.input.charAt(cxt.cursor++)) {
+            if (input.charAt(groupStart + i) != input.charAt(cursor++)) {
                 return false;
             }
         }
-        return next.match(cxt);
+        return next.match(cxt, input, cursor + groupLen);
     }
 
     @Override

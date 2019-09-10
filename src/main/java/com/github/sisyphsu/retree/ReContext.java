@@ -22,7 +22,7 @@ public final class ReContext implements Result {
     int stackDeep;
     Point[] stack;
 
-    int cursor;
+    int last;
     Node node;
 
     protected ReContext(ReMatcher matcher, ReTree tree) {
@@ -74,7 +74,7 @@ public final class ReContext implements Result {
         result.from = this.from;
         result.to = this.to;
         result.input = this.input;
-        result.cursor = this.cursor;
+        result.last = this.last;
         result.stackDeep = this.stackDeep;
         System.arraycopy(this.stack, 0, result.stack, 0, this.stackDeep);
         System.arraycopy(this.localVars, 0, result.localVars, 0, this.localVars.length);

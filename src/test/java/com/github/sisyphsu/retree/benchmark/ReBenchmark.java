@@ -33,34 +33,26 @@ import java.util.regex.Pattern;
 public class ReBenchmark {
 
     public static final String TEXT = "You have an new email from @Sisyphsu <sisyphsu@gmail.com> and @Sulin <sulin@xxx.com> at 2019-09-07.";
-    public static final String[] RES = {"\\w"};
+    public static final String RE = "\\w";
 
-    public static final ReMatcher MATCHER = new ReMatcher(new ReTree(RES), TEXT);
-    public static final Matcher[] MATCHERS = new Matcher[RES.length];
-
-    static {
-        for (int i = 0; i < RES.length; i++) {
-            MATCHERS[i] = Pattern.compile(RES[i]).matcher(TEXT);
-        }
-    }
+    public static final Matcher matcher = Pattern.compile(RE).matcher(TEXT);
+    public static final ReMatcher reMatcher = new ReMatcher(new ReTree(RE), TEXT);
 
     final int parseByRegex() {
         int count = 0;
-        for (Matcher matcher : MATCHERS) {
-            matcher.reset(TEXT);
+        matcher.reset(TEXT);
 //            matcher.matches();
-            while (matcher.find()) {
-                count++;
-            }
+        while (matcher.find()) {
+            count++;
         }
         return count;
     }
 
     final int parseByReTree() {
         int count = 0;
-        MATCHER.reset(TEXT);
-//        MATCHER.matches();
-        while (MATCHER.find()) {
+        reMatcher.reset(TEXT);
+//        reMatcher.matches();
+        while (reMatcher.find()) {
             count++;
         }
         return count;

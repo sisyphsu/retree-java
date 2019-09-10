@@ -15,11 +15,11 @@ public final class AnchorEndNode extends Node {
     }
 
     @Override
-    public boolean match(ReContext cxt) {
-        int rest = cxt.to - cxt.cursor;
+    public boolean match(ReContext cxt, CharSequence input, int cursor) {
+        int rest = cxt.to - cursor;
 
         if (rest == 0) {
-            return next.match(cxt);
+            return next.match(cxt, input, cursor);
         }
 
         if (this.absolute) {
@@ -32,33 +32,26 @@ public final class AnchorEndNode extends Node {
 
         // if has 2 chars remained, must be '\r\n'
         if (rest == 2) {
-            if (cxt.input.charAt(cxt.cursor) != '\r') {
+            if (input.charAt(cursor) != '\r' || input.charAt(cursor + 1) != '\n') {
                 return false;
             }
-            cxt.cursor++;
-            if (cxt.input.charAt(cxt.cursor) != '\n') {
-                return false;
-            }
-            cxt.cursor++;
-            return next.match(cxt);
+            return next.match(cxt, input, cursor + 2);
         }
 
         // if previous char is '\r', so this char must be '\n'
-        if (cxt.cursor > cxt.from && cxt.input.charAt(cxt.cursor - 1) == '\r') {
-            if (cxt.input.charAt(cxt.cursor) != '\n') {
+        if (cursor > cxt.from && input.charAt(cursor - 1) == '\r') {
+            if (input.charAt(cursor) != '\n') {
                 return false;
             }
-            cxt.cursor++;
-
-            return next.match(cxt);
+            return next.match(cxt, input, cursor + 1);
         }
 
-        char ch = cxt.input.charAt(cxt.cursor);
+        char ch = input.charAt(cursor);
         if (ch != '\n' && ch != '\r' && ch != '\u0085' && (ch | 1) != '\u2029') {
             return false;
         }
-        cxt.cursor++;
-        return next.match(cxt);
+        
+        return next.match(cxt, input, cursor + 1);
     }
 
     @Override

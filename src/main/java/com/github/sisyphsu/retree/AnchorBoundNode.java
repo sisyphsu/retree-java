@@ -18,27 +18,24 @@ public final class AnchorBoundNode extends Node {
     }
 
     @Override
-    public boolean match(ReContext cxt) {
+    public boolean match(ReContext cxt, CharSequence input, int cursor) {
         // execute matching
         boolean leftIsWord = false;
         boolean rightIsWord = false;
-        if (cxt.cursor > cxt.from) {
-            leftIsWord = isWord(Character.codePointBefore(cxt.input, cxt.cursor));
+        if (cursor > cxt.from) {
+            leftIsWord = isWord(Character.codePointBefore(input, cursor));
         }
-        if (cxt.cursor < cxt.to) {
-            rightIsWord = isWord(Character.codePointAt(cxt.input, cxt.cursor));
+        if (cursor < cxt.to) {
+            rightIsWord = isWord(Character.codePointAt(input, cursor));
         }
-
         if (type == WORD && leftIsWord == rightIsWord) {
             return false; // must be bound of word
         }
-
         if (type == NON_WORD && leftIsWord != rightIsWord) {
             return false; // must not be bound of word
         }
-
         // switch to next
-        return next.match(cxt);
+        return next.match(cxt, input, cursor);
     }
 
     private boolean isWord(int ch) {

@@ -22,16 +22,16 @@ public final class GroupNode extends Node {
     }
 
     @Override
-    public boolean match(ReContext cxt) {
+    public boolean match(ReContext cxt, CharSequence input, int cursor) {
         if (groupIndex > 0) {
             if (cxt.stackDeep == 0) {
                 long startOff = cxt.groupVars[groupStartIndex];
                 long endOff = cxt.groupVars[groupEndIndex];
-                cxt.addBackPoint(this, cxt.cursor, (startOff << 32) | endOff);
+                cxt.addBackPoint(this, cursor, (startOff << 32) | endOff);
             }
-            cxt.groupVars[groupStartIndex] = cxt.cursor;
+            cxt.groupVars[groupStartIndex] = cursor;
         }
-        return next.match(cxt);
+        return next.match(cxt, input, cursor);
     }
 
     @Override
@@ -59,11 +59,11 @@ public final class GroupNode extends Node {
     private class Tail extends Node {
 
         @Override
-        public boolean match(ReContext cxt) {
+        public boolean match(ReContext cxt, CharSequence input, int cursor) {
             if (groupIndex > 0) {
-                cxt.groupVars[groupEndIndex] = cxt.cursor; // mark the end postion of this group
+                cxt.groupVars[groupEndIndex] = cursor; // mark the end postion of this group
             }
-            return next.match(cxt);
+            return next.match(cxt, input, cursor);
         }
 
         @Override

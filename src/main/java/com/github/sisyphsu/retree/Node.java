@@ -28,7 +28,7 @@ public abstract class Node {
      * @param cxt The context of matching operation.
      * @return result code
      */
-    public abstract boolean match(ReContext cxt);
+    public abstract boolean match(ReContext cxt, CharSequence input, int cursor);
 
     /**
      * The callback of backtracking, this node may need to do some data recovering.

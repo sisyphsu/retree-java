@@ -64,86 +64,75 @@ public final class LoopNode extends Node {
         }
     }
 
-    private boolean matchSimple(ReContext cxt) {
+    private boolean matchSimple(ReContext cxt, CharSequence input, int cursor) {
         int times = 0;
 
         for (; times < minTimes; times++) {
-            if (!body.match(cxt)) {
+            if (!body.match(cxt, input, cursor)) {
                 return false;
             }
+            cursor = cxt.last;
         }
 
         int backCount = 0;
-        int oldCursor;
         switch (type) {
             case LAZY:
                 for (; ; times++) {
-                    oldCursor = cxt.cursor;
-                    if (next.match(cxt)) {
+                    if (next.match(cxt, input, cursor)) {
                         return true;
                     }
-                    cxt.cursor = oldCursor;
                     if (times >= maxTimes) {
                         return false;
                     }
-                    if (!body.match(cxt)) {
-                        cxt.cursor = oldCursor;
+                    if (!body.match(cxt, input, cursor) || cursor == cxt.last) {
                         return false;
                     }
                 }
 
             case GREEDY:
                 for (; times < maxTimes; times++) {
-                    oldCursor = cxt.cursor;
-                    if (!body.match(cxt)) {
-                        cxt.cursor = oldCursor;
+                    if (!body.match(cxt, input, cursor) || cursor == cxt.last) {
                         break;
                     }
+                    cursor = cxt.last;
                     if (cxt.backs.length <= backCount) {
                         cxt.backs = Arrays.copyOf(cxt.backs, cxt.backs.length * 2);
                     }
-                    cxt.backs[backCount++] = cxt.cursor;
+                    cxt.backs[backCount++] = cursor;
                 }
                 break;
 
             case POSSESSIVE:
                 for (; times < maxTimes; times++) {
-                    oldCursor = cxt.cursor;
-                    if (!body.match(cxt)) {
-                        cxt.cursor = oldCursor;
+                    if (!body.match(cxt, input, cursor)) {
                         break;
                     }
+                    cursor = cxt.last;
                 }
                 break;
         }
 
         boolean result;
         for (; ; ) {
-            oldCursor = cxt.cursor;
-            result = next.match(cxt);
-            if (result) {
+            result = next.match(cxt, input, cursor);
+            if (result || backCount == 0)
                 break;
-            }
-            if (backCount == 0) {
-                cxt.cursor = oldCursor;
-                break;
-            }
-            cxt.cursor = cxt.backs[--backCount]; // backtracking
+            cursor = cxt.backs[--backCount]; // backtracking
         }
         return result;
     }
 
     @Override
-    public boolean match(ReContext cxt) {
+    public boolean match(ReContext cxt, CharSequence input, int cursor) {
         if (!complex) {
-            return this.matchSimple(cxt);
+            return this.matchSimple(cxt, input, cursor);
         }
         int times = cxt.localVars[timesVar];
         int prevOffset = cxt.localVars[offsetVar];
 
         boolean backtracking = false;
         if (times < 0) {
-            cxt.addBackPoint(this, cxt.cursor, RESET);
+            cxt.addBackPoint(this, cursor, RESET);
             times = 0;
             prevOffset = 0;
         } else {
@@ -160,17 +149,17 @@ public final class LoopNode extends Node {
             cxt.localVars[deepVar] = cxt.stackDeep; // backup deep
         }
 
-        int rest = cxt.to - cxt.cursor;
+        int rest = cxt.to - cursor;
 
         if (times < minTimes) {
-            if (times > 0 && cxt.cursor <= prevOffset) {
+            if (times > 0 && cursor <= prevOffset) {
                 return false;
             }
             if (rest < next.minInput + body.minInput * (minTimes - times)) {
                 return false; // fast-fail
             }
-            cxt.addBackPoint(this, cxt.cursor, ((long) times << 32) | Integer.MAX_VALUE);
-            return matchBody(cxt, times, cxt.cursor);
+            cxt.addBackPoint(this, cursor, ((long) times << 32) | Integer.MAX_VALUE);
+            return matchBody(cxt, times, input, cursor);
         }
 
         // fast-fail
@@ -181,47 +170,47 @@ public final class LoopNode extends Node {
         if (times >= maxTimes) {
             // if body is complex, need add back-point to recover loop status.
             if (complex) {
-                cxt.addBackPoint(this, cxt.cursor, ((long) times << 32) | Integer.MAX_VALUE);
+                cxt.addBackPoint(this, cursor, ((long) times << 32) | Integer.MAX_VALUE);
             }
-            return matchNext(cxt);
+            return matchNext(cxt, input, cursor);
         }
 
         if (backtracking) {
             if (type != Util.LAZY) {
-                cxt.addBackPoint(this, cxt.cursor, ((long) times << 32) | Integer.MAX_VALUE);
-                return matchNext(cxt);
+                cxt.addBackPoint(this, cursor, ((long) times << 32) | Integer.MAX_VALUE);
+                return matchNext(cxt, input, cursor);
             }
-            if (times > 0 && cxt.cursor <= prevOffset) {
+            if (times > 0 && cursor <= prevOffset) {
                 return false; // treat empty match as failure
             }
             if (rest < body.minInput + next.minInput) {
                 return false; // fast fail
             }
-            return matchBody(cxt, times, cxt.cursor);
+            return matchBody(cxt, times, input, cursor);
         }
 
         // LAZY: go to next first
         if (type == Util.LAZY) {
-            cxt.addBackPoint(this, cxt.cursor, ((long) times << 32) | prevOffset); // prevOffset is important
-            return matchNext(cxt);
+            cxt.addBackPoint(this, cursor, ((long) times << 32) | prevOffset); // prevOffset is important
+            return matchNext(cxt, input, cursor);
         }
 
         // treat empty match as failure
-        if (times > 0 && cxt.cursor <= prevOffset) {
+        if (times > 0 && cursor <= prevOffset) {
             return false;
         }
 
         // if rest isn't enough for body+next, goto next directly
         if (type != Util.POSSESSIVE && rest < body.minInput + next.minInput) {
-            return matchNext(cxt);
+            return matchNext(cxt, input, cursor);
         }
 
         if (type == Util.POSSESSIVE && rest < body.minInput) {
-            return matchNext(cxt);
+            return matchNext(cxt, input, cursor);
         }
 
-        cxt.addBackPoint(this, cxt.cursor, ((long) times << 32) | cxt.cursor);
-        return matchBody(cxt, times, cxt.cursor);
+        cxt.addBackPoint(this, cursor, ((long) times << 32) | cursor);
+        return matchBody(cxt, times, input, cursor);
     }
 
     @Override
@@ -260,22 +249,22 @@ public final class LoopNode extends Node {
         return false;
     }
 
-    private boolean matchBody(ReContext cxt, int times, int offset) {
+    private boolean matchBody(ReContext cxt, int times, CharSequence input, int cursor) {
         cxt.localVars[timesVar] = times + 1;
-        cxt.localVars[offsetVar] = offset;
-        return body.match(cxt);
+        cxt.localVars[offsetVar] = cursor;
+        return body.match(cxt, input, cursor);
     }
 
-    private boolean matchNext(ReContext cxt) {
+    private boolean matchNext(ReContext cxt, CharSequence input, int cursor) {
         cxt.localVars[timesVar] = -1;
         cxt.localVars[offsetVar] = -1;
         cxt.localVars[deepVar] = -1;
-        return next.match(cxt);
+        return next.match(cxt, input, cursor);
     }
 
     private static Node EMPTY = new Node() {
         @Override
-        public boolean match(ReContext cxt) {
+        public boolean match(ReContext cxt, CharSequence input, int cursor) {
             return true;
         }
 

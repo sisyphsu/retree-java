@@ -31,9 +31,9 @@ public final class MixNode extends Node {
     }
 
     @Override
-    public boolean match(ReContext cxt) {
+    public boolean match(ReContext cxt, CharSequence input, int cursor) {
         if (cxt.crossVars[index] < 0) {
-            int rest = cxt.to - cxt.cursor;
+            int rest = cxt.to - cursor;
             if (rest < this.minInput) {
                 return false; // fast-fail
             }
@@ -46,6 +46,7 @@ public final class MixNode extends Node {
                 if (first) {
                     cxt.crossVars[index] = i;
                     cxt.node = nexts[i];
+                    cxt.last = cursor;
                     first = false;
                 } else {
                     ReContext newCxt = cxt.split();
@@ -54,7 +55,7 @@ public final class MixNode extends Node {
                 }
             }
         }
-        return cxt.node.match(cxt);
+        return cxt.node.match(cxt, input, cursor);
     }
 
     @Override
