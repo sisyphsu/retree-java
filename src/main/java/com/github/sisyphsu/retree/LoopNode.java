@@ -1,9 +1,5 @@
 package com.github.sisyphsu.retree;
 
-import java.util.Arrays;
-
-import static com.github.sisyphsu.retree.Util.*;
-
 /**
  * This node supports all loop match, like '+', '++', '{1,10}' etc.
  *
@@ -58,75 +54,11 @@ public final class LoopNode extends Node {
                 }
                 node = node.next;
             }
-            if (!complex) {
-                node.next = EMPTY;
-            }
         }
-    }
-
-    private boolean matchSimple(ReContext cxt, CharSequence input, int cursor) {
-        int times = 0;
-
-        for (; times < minTimes; times++) {
-            if (!body.match(cxt, input, cursor)) {
-                return false;
-            }
-            cursor = cxt.last;
-        }
-
-        int backCount = 0;
-        switch (type) {
-            case LAZY:
-                for (; ; times++) {
-                    if (next.match(cxt, input, cursor)) {
-                        return true;
-                    }
-                    if (times >= maxTimes) {
-                        return false;
-                    }
-                    if (!body.match(cxt, input, cursor) || cursor == cxt.last) {
-                        return false;
-                    }
-                }
-
-            case GREEDY:
-                for (; times < maxTimes; times++) {
-                    if (!body.match(cxt, input, cursor) || cursor == cxt.last) {
-                        break;
-                    }
-                    cursor = cxt.last;
-                    if (cxt.backs.length <= backCount) {
-                        cxt.backs = Arrays.copyOf(cxt.backs, cxt.backs.length * 2);
-                    }
-                    cxt.backs[backCount++] = cursor;
-                }
-                break;
-
-            case POSSESSIVE:
-                for (; times < maxTimes; times++) {
-                    if (!body.match(cxt, input, cursor)) {
-                        break;
-                    }
-                    cursor = cxt.last;
-                }
-                break;
-        }
-
-        boolean result;
-        for (; ; ) {
-            result = next.match(cxt, input, cursor);
-            if (result || backCount == 0)
-                break;
-            cursor = cxt.backs[--backCount]; // backtracking
-        }
-        return result;
     }
 
     @Override
     public boolean match(ReContext cxt, CharSequence input, int cursor) {
-        if (!complex) {
-            return this.matchSimple(cxt, input, cursor);
-        }
         int times = cxt.localVars[timesVar];
         int prevOffset = cxt.localVars[offsetVar];
 
@@ -261,17 +193,5 @@ public final class LoopNode extends Node {
         cxt.localVars[deepVar] = -1;
         return next.match(cxt, input, cursor);
     }
-
-    private static Node EMPTY = new Node() {
-        @Override
-        public boolean match(ReContext cxt, CharSequence input, int cursor) {
-            return true;
-        }
-
-        @Override
-        public boolean alike(Node node) {
-            return true;
-        }
-    };
 
 }

@@ -46,12 +46,13 @@ public final class MixNode extends Node {
                 if (first) {
                     cxt.crossVars[index] = i;
                     cxt.node = nexts[i];
-                    cxt.last = cursor;
+                    cxt.cursor = cursor;
                     first = false;
                 } else {
                     ReContext newCxt = cxt.split();
                     newCxt.crossVars[index] = i;
                     newCxt.node = nexts[i];
+                    newCxt.cursor = cursor;
                 }
             }
         }

@@ -13,8 +13,6 @@ public final class ReContext implements Result {
     final int[] groupVars;
     final int[] crossVars;
 
-    int[] backs = new int[4];
-
     int from;
     int to;
     CharSequence input;
@@ -22,7 +20,7 @@ public final class ReContext implements Result {
     int stackDeep;
     Point[] stack;
 
-    int last;
+    int cursor;
     Node node;
 
     protected ReContext(ReMatcher matcher, ReTree tree) {
@@ -74,7 +72,6 @@ public final class ReContext implements Result {
         result.from = this.from;
         result.to = this.to;
         result.input = this.input;
-        result.last = this.last;
         result.stackDeep = this.stackDeep;
         System.arraycopy(this.stack, 0, result.stack, 0, this.stackDeep);
         System.arraycopy(this.localVars, 0, result.localVars, 0, this.localVars.length);

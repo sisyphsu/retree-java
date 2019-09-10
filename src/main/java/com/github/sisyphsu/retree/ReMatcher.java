@@ -118,8 +118,8 @@ public final class ReMatcher {
 
         ReContext cxt = this.contexts[0];
         cxt.node = tree.root;
-        cxt.last = from;
-//        cxt.reset();
+        cxt.cursor = from;
+        cxt.reset();
 
         for (int i = 0; i < matchPos; i++) {
             cxt = contexts[i];
@@ -148,7 +148,7 @@ public final class ReMatcher {
      */
     private boolean doSearch(ReContext cxt) {
         while (true) {
-            if (cxt.node.match(cxt, cxt.input, cxt.last)) {
+            if (cxt.node.match(cxt, cxt.input, cxt.cursor)) {
                 return true;
             }
             while (true) {
@@ -161,7 +161,7 @@ public final class ReMatcher {
                 }
                 if (point.node.onBack(cxt, point.data)) {
                     cxt.node = point.node;
-                    cxt.last = point.offset;
+                    cxt.cursor = point.offset;
                     break;
                 }
             }

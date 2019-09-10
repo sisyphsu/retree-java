@@ -615,7 +615,7 @@ public class RagularTest {
 
     @Test
     public void testSpec() {
-        assert matches("(\\d{2}|\\d){3,}\\d", "012111");
+        assert matches("a.+b", "axyb");//matches:  'axyb' at 0-4 'axyb'
     }
 
     @Test

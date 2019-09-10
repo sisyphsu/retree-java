@@ -41,7 +41,7 @@ public final class CharRefNode extends Node {
                 return false;
             }
         }
-        return next.match(cxt, input, cursor + groupLen);
+        return next.match(cxt, input, cursor);
     }
 
     @Override
