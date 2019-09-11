@@ -1,5 +1,6 @@
 package com.github.sisyphsu.retree;
 
+import java.util.Arrays;
 import java.util.regex.MatchResult;
 
 /**
@@ -37,6 +38,7 @@ public final class ReMatcher implements MatchResult {
         this.localVars = new int[tree.localVarCount];
         this.groupVars = new int[tree.groupVarCount * 2];
         this.reset(input);
+        Arrays.fill(this.localVars, -1);
     }
 
     /**
@@ -94,8 +96,8 @@ public final class ReMatcher implements MatchResult {
      * @return Success or not
      */
     private boolean search(int from) {
-        for (int i = 0; i < this.localVars.length; i++) {
-            this.localVars[i] = -1;
+        for (int i = 0; i < localVars.length; i++) {
+            localVars[i] = -1;
         }
         boolean success = tree.root.match(this, input, from);
         if (success && hitEnd && groupVars[1] != this.to) {

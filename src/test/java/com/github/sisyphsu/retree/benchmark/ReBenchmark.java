@@ -12,20 +12,14 @@ import java.util.regex.Pattern;
 /**
  * Basic demo for Regex vs ReTree's usage and performace.
  * <p>
- * Matches
- * Benchmark           Mode  Cnt   Score   Error  Units
- * ReBenchmark.regex   avgt    6  12.674 ± 2.923  ns/op
- * ReBenchmark.retree  avgt    6  66.145 ± 1.126  ns/op
- * <p>
- * Keep using stack for 15% improvement of performance.
- * Before：
- * Benchmark           Mode  Cnt     Score    Error  Units
- * ReBenchmark.regex   avgt    3   516.437 ± 18.356  ns/op
- * ReBenchmark.retree  avgt    3  1267.261 ± 27.098  ns/op
- * After：
- * Benchmark           Mode  Cnt     Score    Error  Units
- * ReBenchmark.regex   avgt    3   505.684 ± 35.526  ns/op
- * ReBenchmark.retree  avgt    3  1109.869 ± 47.807  ns/op
+ * fori-find benchmark:
+ * Benchmark           Mode  Cnt     Score     Error  Units
+ * ReBenchmark.regex   avgt    6  2995.554 ± 618.058  ns/op
+ * ReBenchmark.retree  avgt    6  2111.911 ±  49.672  ns/op
+ * simalar
+ * Benchmark           Mode  Cnt    Score    Error  Units
+ * ReBenchmark.regex   avgt    6  533.267 ± 30.468  ns/op
+ * ReBenchmark.retree  avgt    6  533.700 ± 14.632  ns/op
  *
  * @author sulin
  * @since 2019-09-07 10:29:28
@@ -47,14 +41,9 @@ public class ReBenchmark {
         int count = 0;
         matcher.reset(TEXT);
 //            matcher.matches();
-        for (int i = 0; i < TEXT.length(); i++) {
-            if (matcher.find(i)) {
-                count++;
-            }
+        while (matcher.find()) {
+            count++;
         }
-//        while (matcher.find()) {
-//            count++;
-//        }
         return count;
     }
 
@@ -62,14 +51,9 @@ public class ReBenchmark {
         int count = 0;
         reMatcher.reset(TEXT);
 //        reMatcher.matches();
-        for (int i = 0; i < TEXT.length(); i++) {
-            if (reMatcher.find(i)) {
-                count++;
-            }
+        while (reMatcher.find()) {
+            count++;
         }
-//        while (reMatcher.find()) {
-//            count++;
-//        }
         return count;
     }
 

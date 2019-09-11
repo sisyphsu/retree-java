@@ -70,9 +70,7 @@ public final class LoopNode extends Node {
 
         boolean result = this.doMatch(matcher, input, cursor);
 
-        if (times < 0) {
-            matcher.localVars[timesVar] = times;
-        }
+        matcher.localVars[timesVar] = times;
 
         return result;
     }
@@ -97,24 +95,19 @@ public final class LoopNode extends Node {
     }
 
     private boolean matchBody(ReMatcher matcher, CharSequence input, int cursor) {
-        int oldTimes = matcher.localVars[timesVar];
-        matcher.localVars[timesVar] = oldTimes + 1;
+        matcher.localVars[timesVar]++;
         matcher.localVars[offsetVar] = cursor;
-        boolean succ = body.match(matcher, input, cursor);
-        if (!succ) {
-            matcher.localVars[timesVar] = oldTimes;
-        }
-        return succ;
+        return body.match(matcher, input, cursor);
     }
 
     private boolean matchNext(ReMatcher matcher, CharSequence input, int cursor) {
-        int oldTimes = matcher.localVars[timesVar];
         if (type == POSSESSIVE) {
             if (matcher.localVars[stateVar] > 0) {
                 return false;
             }
             matcher.localVars[stateVar] = 1;
         }
+        int oldTimes = matcher.localVars[timesVar];
         matcher.localVars[timesVar] = -1; // clean current times for nested loop
         boolean succ = next.match(matcher, input, cursor);
         if (!succ) {
