@@ -19,9 +19,6 @@ public final class BeginNode extends Node {
             if (next.match(matcher, input, i)) {
                 return true;
             }
-            for (int j = 0; j < matcher.localVars.length; j++) {
-                matcher.localVars[j] = -1;
-            }
         }
         return false;
     }

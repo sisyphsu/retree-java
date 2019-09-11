@@ -10,8 +10,8 @@ import java.util.regex.MatchResult;
  */
 public final class ReMatcher implements MatchResult {
 
-    final int[] localVars;
     final int[] groupVars;
+    final int[] localVars;
 
     int from;
     int to;

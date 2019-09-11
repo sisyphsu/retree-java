@@ -61,19 +61,31 @@ public final class LoopNode extends Node {
 
     @Override
     public boolean match(ReMatcher matcher, CharSequence input, int cursor) {
-        int times = matcher.localVars[timesVar];
-        int offset = matcher.localVars[offsetVar];
+        final int times = matcher.localVars[timesVar];
 
-        if (times > 0 && cursor <= offset) {
-            return this.matchNext(matcher, input, cursor);
-        }
         if (times < 0) {
-            times = 0;
             matcher.localVars[timesVar] = 0;
             matcher.localVars[stateVar] = 0;
         }
+
+        boolean result = this.doMatch(matcher, input, cursor);
+
+        if (times < 0) {
+            matcher.localVars[timesVar] = times;
+        }
+
+        return result;
+    }
+
+    private boolean doMatch(ReMatcher matcher, CharSequence input, int cursor) {
+        final int times = matcher.localVars[timesVar];
+        final int offset = matcher.localVars[offsetVar];
+
         if (times < minTimes) {
             return this.matchBody(matcher, input, cursor);
+        }
+        if (times > 0 && cursor <= offset) {
+            return this.matchNext(matcher, input, cursor);
         }
         if (type == LAZY && this.matchNext(matcher, input, cursor)) {
             return true;
@@ -84,30 +96,29 @@ public final class LoopNode extends Node {
         return this.matchNext(matcher, input, cursor);
     }
 
-    private boolean matchBody(ReMatcher cxt, CharSequence input, int cursor) {
-        int oldTimes = cxt.localVars[timesVar];
-        cxt.localVars[timesVar] = oldTimes + 1;
-        cxt.localVars[offsetVar] = cursor;
-        boolean succ = body.match(cxt, input, cursor);
+    private boolean matchBody(ReMatcher matcher, CharSequence input, int cursor) {
+        int oldTimes = matcher.localVars[timesVar];
+        matcher.localVars[timesVar] = oldTimes + 1;
+        matcher.localVars[offsetVar] = cursor;
+        boolean succ = body.match(matcher, input, cursor);
         if (!succ) {
-            cxt.localVars[timesVar] = oldTimes;
+            matcher.localVars[timesVar] = oldTimes;
         }
         return succ;
     }
 
-    private boolean matchNext(ReMatcher cxt, CharSequence input, int cursor) {
-        int oldTimes = cxt.localVars[timesVar];
+    private boolean matchNext(ReMatcher matcher, CharSequence input, int cursor) {
+        int oldTimes = matcher.localVars[timesVar];
         if (type == POSSESSIVE) {
-            if (cxt.localVars[stateVar] > 0) {
-                cxt.localVars[timesVar] = -1;
+            if (matcher.localVars[stateVar] > 0) {
                 return false;
             }
-            cxt.localVars[stateVar] = 1;
+            matcher.localVars[stateVar] = 1;
         }
-        cxt.localVars[timesVar] = -1; // clean current times
-        boolean succ = next.match(cxt, input, cursor);
+        matcher.localVars[timesVar] = -1; // clean current times for nested loop
+        boolean succ = next.match(matcher, input, cursor);
         if (!succ) {
-            cxt.localVars[timesVar] = oldTimes;
+            matcher.localVars[timesVar] = oldTimes;
         }
         return succ;
     }
