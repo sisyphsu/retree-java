@@ -16,10 +16,15 @@ import java.util.regex.Pattern;
  * Benchmark           Mode  Cnt     Score     Error  Units
  * ReBenchmark.regex   avgt    6  2995.554 ± 618.058  ns/op
  * ReBenchmark.retree  avgt    6  2111.911 ±  49.672  ns/op
+ * <p>
  * simalar
  * Benchmark           Mode  Cnt    Score    Error  Units
  * ReBenchmark.regex   avgt    6  506.318 ± 92.549  ns/op
  * ReBenchmark.retree  avgt    6  528.263 ±  5.423  ns/op
+ * <p>
+ * Benchmark           Mode  Cnt    Score    Error  Units
+ * ReBenchmark.regex   avgt    6  823.449 ±  8.039  ns/op
+ * ReBenchmark.retree  avgt    6  877.393 ± 25.763  ns/op
  *
  * @author sulin
  * @since 2019-09-07 10:29:28

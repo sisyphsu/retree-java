@@ -54,7 +54,7 @@ public class CurlyNode extends Node {
         int times = 0;
 
         for (; times < minTimes; times++) {
-            if (!body.match(matcher, input, cursor)) {
+            if (matcher.to - cursor < body.minInput || !body.match(matcher, input, cursor)) {
                 return false;
             }
             cursor = matcher.last; // body should update last.
@@ -64,13 +64,13 @@ public class CurlyNode extends Node {
         switch (type) {
             case LAZY:
                 for (; ; times++) {
-                    if (next.match(matcher, input, cursor)) {
+                    if (matcher.to - cursor >= next.minInput && next.match(matcher, input, cursor)) {
                         return true;
                     }
                     if (times >= maxTimes) {
                         return false;
                     }
-                    if (!body.match(matcher, input, cursor)) {
+                    if (matcher.to - cursor < body.minInput || !body.match(matcher, input, cursor)) {
                         return false;
                     }
                     cursor = matcher.last; // body should update last.
@@ -78,7 +78,7 @@ public class CurlyNode extends Node {
 
             case GREEDY:
                 for (; times < maxTimes; times++) {
-                    if (!body.match(matcher, input, cursor)) {
+                    if (matcher.to - cursor < body.minInput || !body.match(matcher, input, cursor)) {
                         break;
                     }
                     if (matcher.backs.length <= backCount) {
@@ -92,7 +92,7 @@ public class CurlyNode extends Node {
 
             case POSSESSIVE:
                 for (; times < maxTimes; times++) {
-                    if (!body.match(matcher, input, cursor)) {
+                    if (matcher.to - cursor < body.minInput || !body.match(matcher, input, cursor)) {
                         break;
                     }
                     cursor = matcher.last; // body should update last.
@@ -102,7 +102,7 @@ public class CurlyNode extends Node {
 
         boolean result;
         for (; ; ) {
-            result = next.match(matcher, input, cursor);
+            result = (matcher.to - cursor >= next.minInput) && next.match(matcher, input, cursor);
             if (result || backCount == 0) {
                 break;
             }

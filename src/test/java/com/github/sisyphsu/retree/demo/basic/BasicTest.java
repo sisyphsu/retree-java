@@ -20,8 +20,8 @@ import java.util.regex.Pattern;
  * <p>
  * Multiple RE
  * Benchmark         Mode  Cnt     Score    Error  Units
- * BasicTest.regex   avgt    6  1966.178 ± 28.698  ns/op
- * BasicTest.retree  avgt    6  1925.066 ± 30.873  ns/op
+ * BasicTest.regex   avgt    6  1987.309 ± 19.346  ns/op
+ * BasicTest.retree  avgt    6  1847.143 ± 44.174  ns/op
  *
  * @author sulin
  * @since 2019-09-07 10:29:28
@@ -34,7 +34,6 @@ import java.util.regex.Pattern;
 public class BasicTest {
 
     public static final String TEXT = "You have new emails from @Sisyphsu <sisyphsu@gmail.com> & @Sulin <sulin@xxx.com> at 2019-09-07.";
-    //    public static final String[] RES = {"\\W@(\\w+)"};
     public static final String[] RES = {"\\W@(\\w+)", "<(\\w+@\\w+\\.[a-z]+(\\.[a-z]+)?)>", "(\\d{4}-\\d{2}-\\d{2})"};
 
     public static final ReMatcher MATCHER = new ReMatcher(new ReTree(RES), TEXT);
