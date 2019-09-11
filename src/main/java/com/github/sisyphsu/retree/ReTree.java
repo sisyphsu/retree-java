@@ -109,6 +109,8 @@ public final class ReTree {
                 body = body.next;
             }
         }
+        // TODO handle LoopNode in branch
+
         // reversion next
         optimizeLoop(node.next);
     }

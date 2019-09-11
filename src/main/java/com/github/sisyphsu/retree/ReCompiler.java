@@ -597,7 +597,7 @@ final class ReCompiler {
                     head = this.createGroup(true);
                     tail = ret;
                     head.next = parseExpress(tail);
-                    head = tail = new LoopNode(head, tail, 1, 1, POSSESSIVE, localCount += 3);
+                    head = tail = new LoopNode(head, tail, 1, 1, POSSESSIVE, localCount++);
                     break;
                 case '<':
                     String name = this.groupname();
@@ -667,35 +667,35 @@ final class ReCompiler {
                 ch = next();
                 if (ch == '?') {
                     next();
-                    return new LoopNode(head, tail, 0, 1, LAZY, localCount += 3);
+                    return new LoopNode(head, tail, 0, 1, LAZY, localCount++);
                 } else if (ch == '+') {
                     next();
-                    return new LoopNode(head, tail, 0, 1, POSSESSIVE, localCount += 3);
+                    return new LoopNode(head, tail, 0, 1, POSSESSIVE, localCount++);
                 }
                 // '?*' is invalid expression
-                return new LoopNode(head, tail, 0, 1, GREEDY, localCount += 3);
+                return new LoopNode(head, tail, 0, 1, GREEDY, localCount++);
             case '*':
                 ch = next();
                 if (ch == '?') {
                     next();
-                    return new LoopNode(head, tail, 0, Integer.MAX_VALUE, LAZY, localCount += 3);
+                    return new LoopNode(head, tail, 0, Integer.MAX_VALUE, LAZY, localCount++);
                 } else if (ch == '+') {
                     next();
-                    return new LoopNode(head, tail, 0, Integer.MAX_VALUE, POSSESSIVE, localCount += 3);
+                    return new LoopNode(head, tail, 0, Integer.MAX_VALUE, POSSESSIVE, localCount++);
                 }
                 // '**' is invalid expression
-                return new LoopNode(head, tail, 0, Integer.MAX_VALUE, GREEDY, localCount += 3);
+                return new LoopNode(head, tail, 0, Integer.MAX_VALUE, GREEDY, localCount++);
             case '+':
                 ch = next();
                 if (ch == '?') {
                     next();
-                    return new LoopNode(head, tail, 1, Integer.MAX_VALUE, LAZY, localCount += 3);
+                    return new LoopNode(head, tail, 1, Integer.MAX_VALUE, LAZY, localCount++);
                 } else if (ch == '+') {
                     next();
-                    return new LoopNode(head, tail, 1, Integer.MAX_VALUE, POSSESSIVE, localCount += 3);
+                    return new LoopNode(head, tail, 1, Integer.MAX_VALUE, POSSESSIVE, localCount++);
                 }
                 // '+*' is invalid expression
-                return new LoopNode(head, tail, 1, Integer.MAX_VALUE, GREEDY, localCount += 3);
+                return new LoopNode(head, tail, 1, Integer.MAX_VALUE, GREEDY, localCount++);
             case '{':
                 ch = ptnChars[cursor + 1];
                 if (Util.isDigit(ch)) {
@@ -724,12 +724,12 @@ final class ReCompiler {
                     ch = peek();
                     if (ch == '?') {
                         next();
-                        curly = new LoopNode(head, tail, cmin, cmax, LAZY, localCount += 3);
+                        curly = new LoopNode(head, tail, cmin, cmax, LAZY, localCount++);
                     } else if (ch == '+') {
                         next();
-                        curly = new LoopNode(head, tail, cmin, cmax, POSSESSIVE, localCount += 3);
+                        curly = new LoopNode(head, tail, cmin, cmax, POSSESSIVE, localCount++);
                     } else {
-                        curly = new LoopNode(head, tail, cmin, cmax, GREEDY, localCount += 3);
+                        curly = new LoopNode(head, tail, cmin, cmax, GREEDY, localCount++);
                     }
                     return curly;
                 } else {

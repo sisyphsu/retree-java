@@ -11,14 +11,14 @@ import static com.github.sisyphsu.retree.Util.POSSESSIVE;
  */
 public final class LoopNode extends Node {
 
+    private static final long BACK_FLAG = 1L << 61;
+
     final int type;
     final int minTimes;
     final int maxTimes;
     final Node body;
 
     private final int timesVar;
-    private final int offsetVar;
-    private final int stateVar;
 
     public LoopNode(Node head, Node tail, int cmin, int cmax, int type, int localOffset) {
         this.body = head;
@@ -26,9 +26,7 @@ public final class LoopNode extends Node {
         this.minTimes = cmin;
         this.maxTimes = cmax;
 
-        this.timesVar = localOffset - 3;
-        this.offsetVar = localOffset - 2;
-        this.stateVar = localOffset - 1;
+        this.timesVar = localOffset;
 
         tail.next = this;
     }
@@ -52,7 +50,7 @@ public final class LoopNode extends Node {
                 return false;
             if (maxTimes != ((LoopNode) node).maxTimes)
                 return false;
-            if (offsetVar != ((LoopNode) node).offsetVar)
+            if (timesVar != ((LoopNode) node).timesVar)
                 return false;
             return body.alike(((LoopNode) node).body);
         }
@@ -61,61 +59,77 @@ public final class LoopNode extends Node {
 
     @Override
     public boolean match(ReMatcher matcher, CharSequence input, int cursor) {
-        final int times = matcher.localVars[timesVar];
+        final long var = matcher.loopVars[timesVar];
 
-        if (times < 0) {
-            matcher.localVars[timesVar] = 0;
-            matcher.localVars[stateVar] = 0;
+        if (var < 0) {
+            matcher.loopVars[timesVar] = 0;
         }
 
         boolean result = this.doMatch(matcher, input, cursor);
 
-        if (times < 0) {
-            matcher.localVars[timesVar] = times;
+        if (var < 0) {
+            matcher.loopVars[timesVar] = -1;
         }
 
         return result;
     }
 
     private boolean doMatch(ReMatcher matcher, CharSequence input, int cursor) {
-        final int times = matcher.localVars[timesVar];
-        final int offset = matcher.localVars[offsetVar];
+        long var = matcher.loopVars[timesVar];
+        int times = (int) (var & 0x3FFFFFFF);
+        int offset = (int) ((var >>> 30) & 0x3FFFFFFF);
 
+        final int rest = matcher.to - cursor;
+        final boolean preEmpty = times > 0 && cursor == offset;
+
+        // minTimes frist
         if (times < minTimes) {
-            return this.matchBody(matcher, input, cursor);
-        }
-        if (times > 0 && cursor <= offset) {
-            return this.matchNext(matcher, input, cursor);
-        }
-        if (type == LAZY && this.matchNext(matcher, input, cursor)) {
-            return true;
-        }
-        if (times < maxTimes && this.matchBody(matcher, input, cursor)) {
-            return true;
-        }
-        return this.matchNext(matcher, input, cursor);
-    }
-
-    private boolean matchBody(ReMatcher matcher, CharSequence input, int cursor) {
-        matcher.localVars[timesVar]++;
-        matcher.localVars[offsetVar] = cursor;
-        return body.match(matcher, input, cursor);
-    }
-
-    private boolean matchNext(ReMatcher matcher, CharSequence input, int cursor) {
-        if (type == POSSESSIVE) {
-            if (matcher.localVars[stateVar] > 0) {
-                return false;
+            if (preEmpty || rest < body.minInput + next.minInput) {
+                return false; // fast fail or empty match
             }
-            matcher.localVars[stateVar] = 1;
+            matcher.loopVars[timesVar] = (times + 1L) | ((long) cursor << 30);
+            return body.match(matcher, input, cursor);
         }
-        int oldTimes = matcher.localVars[timesVar];
-        matcher.localVars[timesVar] = -1; // clean current times for nested loop
-        boolean succ = next.match(matcher, input, cursor);
-        if (!succ) {
-            matcher.localVars[timesVar] = oldTimes;
+
+        // lazy is special
+        if (type == LAZY) {
+            matcher.loopVars[timesVar] = -1; // clean for nested loop
+            if (next.match(matcher, input, cursor)) {
+                return true;
+            }
+            if (preEmpty || rest < body.minInput) {
+                return false; // fast fail or empty match
+            }
+            matcher.loopVars[timesVar] = (times + 1L) | ((long) cursor << 30);
+            return body.match(matcher, input, cursor);
         }
-        return succ;
+
+        // greedy body
+        if (!preEmpty && times < maxTimes && rest >= body.minInput) {
+            matcher.loopVars[timesVar] = (times + 1L) | ((long) cursor << 30);
+            if (body.match(matcher, input, cursor)) {
+                return true;
+            }
+        }
+
+        // if not possessive, goto next directly
+        if (type != POSSESSIVE) {
+            matcher.loopVars[timesVar] = -1; // clean for nested loop
+            return next.match(matcher, input, cursor);
+        }
+
+        // possessive can't backtracking twice
+        if ((matcher.loopVars[timesVar] & BACK_FLAG) != 0) {
+            return false;
+        }
+
+        matcher.loopVars[timesVar] = -1; // clean for nested loop
+        if (next.match(matcher, input, cursor)) {
+            return true;
+        }
+
+        matcher.loopVars[timesVar] = var | BACK_FLAG; // tell upper to fail directly
+        return false;
     }
 
 }
