@@ -19,8 +19,7 @@ public final class ReMatcher implements MatchResult {
 
     Node node;
 
-    int fromMin;
-    int fromMax;
+    int stop;
     int last;
     private boolean hitEnd;
     private final ReTree tree;
@@ -57,10 +56,9 @@ public final class ReMatcher implements MatchResult {
      * @return success of not
      */
     public boolean matches() {
-        this.fromMin = 0;
-        this.fromMax = 0;
+        this.stop = 0;
         this.hitEnd = true;
-        return search();
+        return search(0);
     }
 
     /**
@@ -83,10 +81,9 @@ public final class ReMatcher implements MatchResult {
      * @return success or not
      */
     public boolean find(int offset) {
-        this.fromMin = offset;
-        this.fromMax = this.to - tree.root.minInput;
+        this.stop = this.to - tree.root.minInput;
         this.hitEnd = false;
-        return search();
+        return search(offset);
     }
 
     /**
@@ -94,14 +91,11 @@ public final class ReMatcher implements MatchResult {
      *
      * @return Success or not
      */
-    private boolean search() {
+    private boolean search(int from) {
         for (int i = 0; i < this.localVars.length; i++) {
             this.localVars[i] = -1;
         }
-        boolean success = false;
-        for (int i = fromMin; i <= fromMax && !success; i++) {
-            success = tree.root.match(this, input, i);
-        }
+        boolean success = tree.root.match(this, input, from);
         if (success && hitEnd && groupVars[1] != this.to) {
             success = false;
         }

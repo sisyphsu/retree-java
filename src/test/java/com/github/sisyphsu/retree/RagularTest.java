@@ -613,7 +613,7 @@ public class RagularTest {
 
     @Test
     public void testSpec() {
-        assert find("a*+z", "abztstaz");
+        assert matches(".", "a"); //true
     }
 
     @Test

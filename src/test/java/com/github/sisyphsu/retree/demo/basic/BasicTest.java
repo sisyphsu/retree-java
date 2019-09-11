@@ -34,7 +34,8 @@ import java.util.regex.Pattern;
 public class BasicTest {
 
     public static final String TEXT = "You have new emails from @Sisyphsu <sisyphsu@gmail.com> & @Sulin <sulin@xxx.com> at 2019-09-07.";
-    public static final String[] RES = {"\\W@(\\w+)"};
+    //    public static final String[] RES = {"\\W@(\\w+)"};
+    public static final String[] RES = {"\\W@(\\w+)", "<(\\w+@\\w+\\.[a-z]+(\\.[a-z]+)?)>", "(\\d{4}-\\d{2}-\\d{2})"};
 
     public static final ReMatcher MATCHER = new ReMatcher(new ReTree(RES), TEXT);
     public static final java.util.regex.Matcher[] MATCHERS = new java.util.regex.Matcher[RES.length];

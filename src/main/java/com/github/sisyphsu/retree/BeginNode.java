@@ -14,11 +14,16 @@ public final class BeginNode extends Node {
 
     @Override
     public boolean match(ReMatcher matcher, CharSequence input, int cursor) {
-        if (matcher.to - cursor < minInput) {
-            return false;
+        for (int i = cursor, stop = matcher.stop; i <= stop; i++) {
+            matcher.groupVars[0] = i;
+            if (next.match(matcher, input, i)) {
+                return true;
+            }
+            for (int j = 0; j < matcher.localVars.length; j++) {
+                matcher.localVars[j] = -1;
+            }
         }
-        matcher.groupVars[0] = cursor;
-        return next.match(matcher, input, cursor);
+        return false;
     }
 
     @Override
