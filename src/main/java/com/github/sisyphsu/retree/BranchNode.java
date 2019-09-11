@@ -11,7 +11,7 @@ import java.util.List;
  */
 public final class BranchNode extends Node {
 
-    private final List<Node> branches = new ArrayList<>(2);
+    final List<Node> branches = new ArrayList<>(2);
 
     public BranchNode(List<Node> branches) {
         this.branches.addAll(branches);

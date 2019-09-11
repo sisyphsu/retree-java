@@ -20,8 +20,8 @@ import java.util.regex.Pattern;
  * <p>
  * Multiple RE
  * Benchmark         Mode  Cnt     Score    Error  Units
- * BasicTest.regex   avgt    6  1987.309 ± 19.346  ns/op
- * BasicTest.retree  avgt    6  1847.143 ± 44.174  ns/op
+ * BasicTest.regex   avgt    6  1949.107 ± 62.025  ns/op
+ * BasicTest.retree  avgt    6  1830.291 ± 66.126  ns/op
  *
  * @author sulin
  * @since 2019-09-07 10:29:28

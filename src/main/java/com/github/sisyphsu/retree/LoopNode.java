@@ -16,7 +16,7 @@ public final class LoopNode extends Node {
     final int type;
     final int minTimes;
     final int maxTimes;
-    final Node body;
+    Node body;
 
     private final int timesVar;
 

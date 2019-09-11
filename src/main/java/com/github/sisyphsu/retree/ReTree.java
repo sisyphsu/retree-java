@@ -30,7 +30,7 @@ public final class ReTree {
         Node[] roots = new Node[exps.length];
         for (int i = 0; i < exps.length; i++) {
             Node node = ReCompiler.compile(exps[i]).root;
-            this.optimizeLoop(node);
+            node = this.optimizeLoop(node);
             roots[i] = node;
         }
         // calculate the count of localVar, groupVar, crossVar
@@ -89,30 +89,43 @@ public final class ReTree {
      *
      * @param node Node
      */
-    private void optimizeLoop(final Node node) {
-        if (node.next == null) {
-            return;
+    private Node optimizeLoop(Node node) {
+        if (node == null) {
+            return null;
         }
-        if (node.next instanceof LoopNode) {
-            LoopNode loop = (LoopNode) node.next;
+        if (node.optimized) {
+            return node;
+        }
+        node.optimized = true;
+
+        if (node instanceof BranchNode) {
+            BranchNode branchNode = (BranchNode) node;
+            for (int i = 0; i < branchNode.branches.size(); i++) {
+                branchNode.branches.set(i, optimizeLoop(branchNode.branches.get(i)));
+            }
+            branchNode.next = this.optimizeLoop(branchNode.next);
+        } else if (node instanceof LoopNode) {
+            LoopNode loop = (LoopNode) node;
+            loop.next = this.optimizeLoop(loop.next);
+            loop.body = this.optimizeLoop(loop.body);
+            // try to optimize as CurlyNode
             Node body = loop.body;
             while (body != null) {
                 if (body instanceof BranchNode || body instanceof LoopNode || body instanceof CurlyNode) {
                     break; // can't optimize complex loop
                 }
                 if (body.next == loop) {
-                    // replace as CurlyNode
-                    node.next = new CurlyNode(loop.type, loop.minTimes, loop.maxTimes, loop.body, loop.next);
+                    node = new CurlyNode(loop.type, loop.minTimes, loop.maxTimes, loop.body, loop.next);
                     body.next = null;
                     break;
                 }
                 body = body.next;
             }
+        } else {
+            node.next = this.optimizeLoop(node.next);
         }
-        // TODO handle LoopNode in branch
 
-        // reversion next
-        optimizeLoop(node.next);
+        return node;
     }
 
     /**

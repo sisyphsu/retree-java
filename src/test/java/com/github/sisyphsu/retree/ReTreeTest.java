@@ -34,6 +34,13 @@ public class ReTreeTest {
 
         tree = new ReTree("\\d++");
         assert tree.root.next instanceof CurlyNode;
+
+        tree = new ReTree("(\\d{2}|\\d){3,}\\d");
+        assert tree.root.next instanceof LoopNode;
+        LoopNode loopNode = (LoopNode) tree.root.next;
+        assert loopNode.body instanceof GroupNode;
+        BranchNode branchNode = (BranchNode) loopNode.body.next;
+        assert branchNode.branches.get(0) instanceof CurlyNode;
     }
 
     @Test
