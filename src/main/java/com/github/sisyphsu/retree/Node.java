@@ -17,8 +17,10 @@ public abstract class Node {
     public void study() {
         if (minInput < 0) {
             minInput = 0;
-            next.study();
-            minInput = next.minInput;
+            if (next != null) {
+                next.study();
+                minInput = next.minInput;
+            }
         }
     }
 

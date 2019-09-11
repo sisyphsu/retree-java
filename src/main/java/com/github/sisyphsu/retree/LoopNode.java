@@ -11,10 +11,10 @@ import static com.github.sisyphsu.retree.Util.POSSESSIVE;
  */
 public final class LoopNode extends Node {
 
-    private final int type;
-    private final int minTimes;
-    private final int maxTimes;
-    private final Node body;
+    final int type;
+    final int minTimes;
+    final int maxTimes;
+    final Node body;
 
     private final int timesVar;
     private final int offsetVar;

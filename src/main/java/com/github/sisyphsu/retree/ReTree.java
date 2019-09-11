@@ -29,7 +29,9 @@ public final class ReTree {
         // compile regular expressions
         Node[] roots = new Node[exps.length];
         for (int i = 0; i < exps.length; i++) {
-            roots[i] = ReCompiler.compile(exps[i]).matchRoot;
+            Node node = ReCompiler.compile(exps[i]).root;
+            this.optimizeLoop(node);
+            roots[i] = node;
         }
         // calculate the count of localVar, groupVar, crossVar
         int loopVarCount = 0;
@@ -83,6 +85,35 @@ public final class ReTree {
     }
 
     /**
+     * Optimize the LoopNode, if it isn't complex, use CurlyNode replace.
+     *
+     * @param node Node
+     */
+    private void optimizeLoop(final Node node) {
+        if (node.next == null) {
+            return;
+        }
+        if (node.next instanceof LoopNode) {
+            LoopNode loop = (LoopNode) node.next;
+            Node body = loop.body;
+            while (body != null) {
+                if (body instanceof BranchNode || body instanceof LoopNode || body instanceof CurlyNode) {
+                    break; // can't optimize complex loop
+                }
+                if (body.next == loop) {
+                    // replace as CurlyNode
+                    node.next = new CurlyNode(loop.type, loop.minTimes, loop.maxTimes, loop.body, loop.next);
+                    body.next = CURLY_END;
+                    break;
+                }
+                body = body.next;
+            }
+        }
+        // reversion next
+        optimizeLoop(node.next);
+    }
+
+    /**
      * Find the EndNode from the specified node in recusion
      *
      * @param node Any node
@@ -94,5 +125,18 @@ public final class ReTree {
         }
         return findEndNode(node.next);
     }
+
+    private static final Node CURLY_END = new Node() {
+        @Override
+        public boolean match(ReMatcher matcher, CharSequence input, int cursor) {
+            matcher.last = cursor;
+            return true;
+        }
+
+        @Override
+        public boolean alike(Node node) {
+            return true;
+        }
+    };
 
 }

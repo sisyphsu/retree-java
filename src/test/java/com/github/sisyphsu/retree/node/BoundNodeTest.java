@@ -1,6 +1,6 @@
 package com.github.sisyphsu.retree.node;
 
-import com.github.sisyphsu.retree.AnchorBoundNode;
+import com.github.sisyphsu.retree.BoundNode;
 import com.github.sisyphsu.retree.CharSingleNode;
 import org.junit.jupiter.api.Test;
 
@@ -10,16 +10,16 @@ import org.junit.jupiter.api.Test;
  * @author sulin
  * @since 2019-09-06 20:07:23
  */
-public class AnchorBoundNodeTest {
+public class BoundNodeTest {
 
     @Test
     public void alike() {
-        AnchorBoundNode node1 = new AnchorBoundNode(AnchorBoundNode.WORD);
-        AnchorBoundNode node2 = new AnchorBoundNode(AnchorBoundNode.WORD);
+        BoundNode node1 = new BoundNode(BoundNode.WORD);
+        BoundNode node2 = new BoundNode(BoundNode.WORD);
         assert node1.alike(node2);
 
-        node1 = new AnchorBoundNode(AnchorBoundNode.WORD);
-        node2 = new AnchorBoundNode(AnchorBoundNode.NON_WORD);
+        node1 = new BoundNode(BoundNode.WORD);
+        node2 = new BoundNode(BoundNode.NON_WORD);
         assert !node1.alike(node2);
 
         assert !node1.alike(new CharSingleNode(1));

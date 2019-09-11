@@ -6,14 +6,14 @@ package com.github.sisyphsu.retree;
  * @author sulin
  * @since 2019-08-26 11:10:27
  */
-public final class AnchorBoundNode extends Node {
+public final class BoundNode extends Node {
 
     public static int NON_WORD = 0;
     public static int WORD = 1;
 
     private final int type;
 
-    public AnchorBoundNode(int n) {
+    public BoundNode(int n) {
         type = n;
     }
 
@@ -44,8 +44,8 @@ public final class AnchorBoundNode extends Node {
 
     @Override
     public boolean alike(Node node) {
-        if (node instanceof AnchorBoundNode) {
-            return ((AnchorBoundNode) node).type == this.type;
+        if (node instanceof BoundNode) {
+            return ((BoundNode) node).type == this.type;
         }
         return false;
     }

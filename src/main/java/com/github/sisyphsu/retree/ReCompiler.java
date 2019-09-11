@@ -24,7 +24,7 @@ final class ReCompiler {
     private int patternLength;
 
     Node ret;
-    Node matchRoot;
+    Node root;
     EndNode endNode;
 
     private int[] ptnChars;
@@ -49,11 +49,11 @@ final class ReCompiler {
         if (pattern.length() > 0) {
             compile();
         } else {
-            matchRoot = endNode;
+            root = endNode;
         }
         endNode.setLocalCount(localCount);
         endNode.setGroupCount(groupCount);
-        matchRoot = new BeginNode(matchRoot);
+        root = new BeginNode(root);
     }
 
     private void compile() {
@@ -68,7 +68,7 @@ final class ReCompiler {
 
         removeQEQuoting();
 
-        matchRoot = parseExpress(endNode);
+        root = parseExpress(endNode);
 
         // if didn't hit end, throw error
         if (cursor != patternLength) {
@@ -335,10 +335,10 @@ final class ReCompiler {
                 ret = backReferenceEscape(ch - '0');
                 return -1;
             case 'b':
-                ret = new AnchorBoundNode(AnchorBoundNode.WORD);
+                ret = new BoundNode(BoundNode.WORD);
                 return -1;
             case 'B':
-                ret = new AnchorBoundNode(AnchorBoundNode.NON_WORD);
+                ret = new BoundNode(BoundNode.NON_WORD);
                 return -1;
             case 'd':
                 ret = new CharTypeNode(Util.DIGIT, true);

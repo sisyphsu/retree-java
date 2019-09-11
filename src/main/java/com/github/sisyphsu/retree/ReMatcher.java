@@ -13,16 +13,18 @@ public final class ReMatcher implements MatchResult {
     final int[] groupVars;
     final int[] localVars;
 
+    int[] backs = new int[4];
+
     int from;
     int to;
     CharSequence input;
-
-    Node node;
 
     int stop;
     int last;
     private boolean hitEnd;
     private final ReTree tree;
+
+    EndNode endNode;
 
     /**
      * Initialize Matcher by the specified regular expression tree and input.
@@ -109,7 +111,7 @@ public final class ReMatcher implements MatchResult {
 
     @Override
     public int start(int groupIndex) {
-        if (node instanceof EndNode) {
+        if (endNode != null) {
             return this.groupVars[groupIndex * 2];
         }
         throw new IllegalStateException("Invalid MatchResult");
@@ -122,7 +124,7 @@ public final class ReMatcher implements MatchResult {
 
     @Override
     public int end(int groupIndex) {
-        if (node instanceof EndNode) {
+        if (endNode != null) {
             return this.groupVars[groupIndex * 2 + 1];
         }
         throw new IllegalStateException("Invalid MatchResult");
@@ -135,7 +137,7 @@ public final class ReMatcher implements MatchResult {
 
     @Override
     public String group(int groupIndex) {
-        if (node instanceof EndNode) {
+        if (endNode != null) {
             return input.subSequence(start(groupIndex), end(groupIndex)).toString();
         }
         throw new IllegalStateException("Invalid MatchResult");
@@ -143,15 +145,15 @@ public final class ReMatcher implements MatchResult {
 
     @Override
     public int groupCount() {
-        if (node instanceof EndNode) {
-            return ((EndNode) node).getGroupCount() - 1;
+        if (endNode != null) {
+            return endNode.getGroupCount() - 1;
         }
         throw new IllegalStateException("Invalid MatchResult");
     }
 
     public CharSequence group(String groupName) {
-        if (node instanceof EndNode) {
-            Integer groupIndex = ((EndNode) node).getNameMap().get(groupName);
+        if (endNode != null) {
+            Integer groupIndex = endNode.getNameMap().get(groupName);
             if (groupIndex == null) {
                 throw new IllegalArgumentException("groupName is invalid: " + groupName);
             }
@@ -161,8 +163,8 @@ public final class ReMatcher implements MatchResult {
     }
 
     public String re() {
-        if (node instanceof EndNode) {
-            return ((EndNode) node).getRe();
+        if (endNode != null) {
+            return endNode.getRe();
         }
         throw new IllegalStateException("Invalid MatchResult");
     }

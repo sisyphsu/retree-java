@@ -28,6 +28,15 @@ public class ReTreeTest {
     }
 
     @Test
+    public void testLoopOptimized() {
+        ReTree tree = new ReTree("\\d+");
+        assert tree.root.next instanceof CurlyNode;
+
+        tree = new ReTree("\\d++");
+        assert tree.root.next instanceof CurlyNode;
+    }
+
+    @Test
     public void testUnion() {
         String[] res = {"abc\\d{5,}", "abc\\w{10,}"};
         ReTree tree = new ReTree(res);

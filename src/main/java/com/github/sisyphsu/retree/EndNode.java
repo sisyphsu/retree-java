@@ -28,7 +28,7 @@ public final class EndNode extends Node {
 
     @Override
     public boolean match(ReMatcher matcher, CharSequence input, int cursor) {
-        matcher.node = this;
+        matcher.endNode = this;
         matcher.groupVars[1] = cursor;
         return true;
     }
