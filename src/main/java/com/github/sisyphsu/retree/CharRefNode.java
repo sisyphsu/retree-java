@@ -27,19 +27,21 @@ public final class CharRefNode extends Node {
         if (groupStart < 0 || groupLen < 0) {
             return false;
         }
-        // continue if the group referenced is empty
-        if (groupLen == 0) {
-            return next.match(matcher, input, cursor);
-        }
         // fast fail
         if (matcher.to - cursor < groupLen) {
             return false;
         }
         // do match
-        for (int i = 0; i < groupLen; i++) {
-            if (input.charAt(groupStart + i) != input.charAt(cursor++)) {
-                return false;
+        if (groupLen > 0) {
+            for (int i = 0; i < groupLen; i++) {
+                if (input.charAt(groupStart + i) != input.charAt(cursor++)) {
+                    return false;
+                }
             }
+        }
+        if (next == null) {
+            matcher.last = cursor;
+            return true;
         }
         return next.match(matcher, input, cursor);
     }

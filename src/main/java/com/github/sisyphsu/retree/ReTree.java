@@ -103,7 +103,7 @@ public final class ReTree {
                 if (body.next == loop) {
                     // replace as CurlyNode
                     node.next = new CurlyNode(loop.type, loop.minTimes, loop.maxTimes, loop.body, loop.next);
-                    body.next = CURLY_END;
+                    body.next = null;
                     break;
                 }
                 body = body.next;
@@ -125,18 +125,5 @@ public final class ReTree {
         }
         return findEndNode(node.next);
     }
-
-    private static final Node CURLY_END = new Node() {
-        @Override
-        public boolean match(ReMatcher matcher, CharSequence input, int cursor) {
-            matcher.last = cursor;
-            return true;
-        }
-
-        @Override
-        public boolean alike(Node node) {
-            return true;
-        }
-    };
 
 }

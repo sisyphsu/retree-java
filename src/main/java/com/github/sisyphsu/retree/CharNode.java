@@ -17,9 +17,11 @@ public abstract class CharNode extends Node {
     @Override
     public void study() {
         if (minInput < 0) {
-            this.minInput = 0;
-            next.study();
-            this.minInput = next.minInput + 1;
+            this.minInput = 1;
+            if (next != null) {
+                next.study();
+                this.minInput += next.minInput;
+            }
         }
     }
 
@@ -29,6 +31,10 @@ public abstract class CharNode extends Node {
             return false;
         }
         // switch to next
+        if (next == null) {
+            matcher.last = cursor + 1;
+            return true;
+        }
         return next.match(matcher, input, cursor + 1);
     }
 

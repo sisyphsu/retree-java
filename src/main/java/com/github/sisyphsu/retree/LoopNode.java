@@ -70,7 +70,9 @@ public final class LoopNode extends Node {
 
         boolean result = this.doMatch(matcher, input, cursor);
 
-        matcher.localVars[timesVar] = times;
+        if (times < 0) {
+            matcher.localVars[timesVar] = times;
+        }
 
         return result;
     }

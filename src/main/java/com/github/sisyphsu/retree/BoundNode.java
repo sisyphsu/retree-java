@@ -35,6 +35,10 @@ public final class BoundNode extends Node {
             return false; // must not be bound of word
         }
         // switch to next
+        if (next == null) {
+            matcher.last = cursor;
+            return true;
+        }
         return next.match(matcher, input, cursor);
     }
 

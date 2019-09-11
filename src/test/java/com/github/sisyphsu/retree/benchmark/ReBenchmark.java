@@ -18,8 +18,8 @@ import java.util.regex.Pattern;
  * ReBenchmark.retree  avgt    6  2111.911 ±  49.672  ns/op
  * simalar
  * Benchmark           Mode  Cnt    Score    Error  Units
- * ReBenchmark.regex   avgt    6  533.267 ± 30.468  ns/op
- * ReBenchmark.retree  avgt    6  533.700 ± 14.632  ns/op
+ * ReBenchmark.regex   avgt    6  506.318 ± 92.549  ns/op
+ * ReBenchmark.retree  avgt    6  528.263 ±  5.423  ns/op
  *
  * @author sulin
  * @since 2019-09-07 10:29:28
@@ -32,7 +32,7 @@ import java.util.regex.Pattern;
 public class ReBenchmark {
 
     public static final String TEXT = "You have an new email from @Sisyphsu <sisyphsu@gmail.com> and @Sulin <sulin@xxx.com> at 2019-09-07.";
-    public static final String RE = "(\\W)";
+    public static final String RE = "(\\w+)";
 
     public static final Matcher matcher = Pattern.compile(RE).matcher(TEXT);
     public static final ReMatcher reMatcher = new ReMatcher(new ReTree(RE), TEXT);

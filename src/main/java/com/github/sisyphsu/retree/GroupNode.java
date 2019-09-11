@@ -60,6 +60,10 @@ public final class GroupNode extends Node {
             if (groupIndex > 0) {
                 matcher.groupVars[groupEndIndex] = cursor; // mark the end postion of this group
             }
+            if (next == null) {
+                matcher.last = cursor;
+                return true;
+            }
             return next.match(matcher, input, cursor);
         }
 
