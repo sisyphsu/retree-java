@@ -23,7 +23,6 @@ public class BaseBenchmark {
 
     public static final String[] RES = {"\\W@(\\w+)", "<(\\w+@\\w+\\.[a-z]+(\\.[a-z]+)?)>", "(\\d{4}-\\d{2}-\\d{2})"};
     public static final ReTree TREE = new ReTree(RES);
-    public static final ReMatcher MATCHER = new ReMatcher(TREE, "");
 
     @Benchmark
     public void newTree() {
@@ -31,13 +30,8 @@ public class BaseBenchmark {
     }
 
     @Benchmark
-    public void newMatcher() {
-        new ReMatcher(TREE, "");
-    }
-
-    @Benchmark
     public void newMatchContext() {
-        new ReContext(MATCHER, TREE);
+        new ReMatcher(TREE, "");
     }
 
 }

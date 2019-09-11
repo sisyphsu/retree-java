@@ -18,7 +18,7 @@ import static com.github.sisyphsu.retree.Util.*;
  * @author sulin
  * @since 2019-08-26 13:53:50
  */
-final class Pattern {
+final class ReCompiler {
 
     private String pattern;
     private int patternLength;
@@ -35,11 +35,11 @@ final class Pattern {
 
     private int cursor;
 
-    public static Pattern compile(String regex) {
-        return new Pattern(regex);
+    public static ReCompiler compile(String regex) {
+        return new ReCompiler(regex);
     }
 
-    private Pattern(String re) {
+    private ReCompiler(String re) {
         pattern = re;
         groupCount = 1;
         localCount = 1;

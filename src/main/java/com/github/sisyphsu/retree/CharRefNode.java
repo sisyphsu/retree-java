@@ -19,9 +19,9 @@ public final class CharRefNode extends Node {
     }
 
     @Override
-    public boolean match(ReContext cxt, CharSequence input, int cursor) {
-        final int groupStart = cxt.groupVars[refStartOffset];
-        final int groupEnd = cxt.groupVars[refEndOffset];
+    public boolean match(ReMatcher matcher, CharSequence input, int cursor) {
+        final int groupStart = matcher.groupVars[refStartOffset];
+        final int groupEnd = matcher.groupVars[refEndOffset];
         final int groupLen = groupEnd - groupStart;
         // fail if the group referenced is invalid
         if (groupStart < 0 || groupLen < 0) {
@@ -29,10 +29,10 @@ public final class CharRefNode extends Node {
         }
         // continue if the group referenced is empty
         if (groupLen == 0) {
-            return next.match(cxt, input, cursor);
+            return next.match(matcher, input, cursor);
         }
         // fast fail
-        if (cxt.to - cursor < groupLen) {
+        if (matcher.to - cursor < groupLen) {
             return false;
         }
         // do match
@@ -41,7 +41,7 @@ public final class CharRefNode extends Node {
                 return false;
             }
         }
-        return next.match(cxt, input, cursor);
+        return next.match(matcher, input, cursor);
     }
 
     @Override

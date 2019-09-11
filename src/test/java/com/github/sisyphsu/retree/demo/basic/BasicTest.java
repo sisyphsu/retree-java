@@ -68,7 +68,7 @@ public class BasicTest {
         MATCHER.reset(TEXT);
 //        MATCHER.matches();
         while (MATCHER.find()) {
-            results.add(MATCHER.getResult().group(1).toString());
+//            results.add(MATCHER.getResult().group(1).toString());
         }
 
         return results;

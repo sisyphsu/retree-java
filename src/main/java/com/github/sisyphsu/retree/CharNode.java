@@ -24,12 +24,12 @@ public abstract class CharNode extends Node {
     }
 
     @Override
-    public boolean match(ReContext cxt, CharSequence input, int cursor) {
-        if (matched != isMatch(input.charAt(cursor))) {
+    public boolean match(ReMatcher matcher, CharSequence input, int cursor) {
+        if (minInput > matcher.to - cursor || matched != isMatch(input.charAt(cursor))) {
             return false;
         }
         // switch to next
-        return next.match(cxt, input, cursor + 1);
+        return next.match(matcher, input, cursor + 1);
     }
 
     public CharNode complement() {

@@ -27,9 +27,9 @@ public final class EndNode extends Node {
     }
 
     @Override
-    public boolean match(ReContext cxt, CharSequence input, int cursor) {
-        cxt.node = this;
-        cxt.groupVars[1] = cursor;
+    public boolean match(ReMatcher matcher, CharSequence input, int cursor) {
+        matcher.node = this;
+        matcher.groupVars[1] = cursor;
         return true;
     }
 

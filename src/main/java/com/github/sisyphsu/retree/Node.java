@@ -25,21 +25,10 @@ public abstract class Node {
     /**
      * Execute once matching operation
      *
-     * @param cxt The context of matching operation.
+     * @param matcher The context of matching operation.
      * @return result code
      */
-    public abstract boolean match(ReContext cxt, CharSequence input, int cursor);
-
-    /**
-     * The callback of backtracking, this node may need to do some data recovering.
-     *
-     * @param cxt  The context of matching operation.
-     * @param data The data attached on back-point.
-     * @return false means this node didn't want to retry matching.
-     */
-    public boolean onBack(ReContext cxt, long data) {
-        return true;
-    }
+    public abstract boolean match(ReMatcher matcher, CharSequence input, int cursor);
 
     public abstract boolean alike(Node node);
 

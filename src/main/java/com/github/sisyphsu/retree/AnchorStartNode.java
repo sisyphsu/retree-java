@@ -9,11 +9,11 @@ package com.github.sisyphsu.retree;
 public final class AnchorStartNode extends Node {
 
     @Override
-    public boolean match(ReContext cxt, CharSequence input, int cursor) {
-        if (cursor != cxt.from) {
+    public boolean match(ReMatcher matcher, CharSequence input, int cursor) {
+        if (cursor != matcher.from) {
             return false;
         }
-        return next.match(cxt, input, cursor);
+        return next.match(matcher, input, cursor);
     }
 
     @Override

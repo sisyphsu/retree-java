@@ -2,7 +2,6 @@ package com.github.sisyphsu.retree;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -13,21 +12,13 @@ import java.util.List;
  * @author sulin
  * @since 2019-09-03 16:33:35
  */
-@SuppressWarnings("OptionalGetWithoutIsPresent")
 public final class ReTree {
-
-    public static final ResultSelector SHORTEST_SELECTOR = rs -> rs.stream().min(Comparator.comparingInt(Result::end)).get();
-    public static final ResultSelector LONGEST_SELECTOR = rs -> rs.stream().max(Comparator.comparingInt(Result::end)).get();
 
     final int localVarCount;
     final int groupVarCount;
-    final int crossVarCount;
 
     final Node root;
     final Node[] exps;
-    final ResultSelector selector;
-
-    private transient int crossId;
 
     /**
      * Initialize ReTree.
@@ -35,21 +26,10 @@ public final class ReTree {
      * @param exps All regular expression
      */
     public ReTree(String... exps) {
-        this(LONGEST_SELECTOR, exps);
-    }
-
-    /**
-     * Initialize ReTree.
-     *
-     * @param selector The specified selector of multi MatchResult
-     * @param exps     All regular expression
-     */
-    public ReTree(ResultSelector selector, String... exps) {
-        this.selector = selector;
         // compile regular expressions
         Node[] roots = new Node[exps.length];
         for (int i = 0; i < exps.length; i++) {
-            roots[i] = Pattern.compile(exps[i]).matchRoot;
+            roots[i] = ReCompiler.compile(exps[i]).matchRoot;
         }
         // calculate the count of localVar, groupVar, crossVar
         int loopVarCount = 0;
@@ -65,7 +45,6 @@ public final class ReTree {
         this.root.study();
         this.localVarCount = loopVarCount;
         this.groupVarCount = groupVarCount;
-        this.crossVarCount = crossId;
     }
 
     /**
@@ -100,7 +79,7 @@ public final class ReTree {
         if (branches.size() == 1) {
             return branches.get(0);
         }
-        return new MixNode(crossId++, branches.toArray(new Node[]{}));
+        return new BranchNode(branches);
     }
 
     /**
@@ -114,11 +93,6 @@ public final class ReTree {
             return (EndNode) node;
         }
         return findEndNode(node.next);
-    }
-
-    @FunctionalInterface
-    public interface ResultSelector {
-        Result select(List<? extends Result> results);
     }
 
 }

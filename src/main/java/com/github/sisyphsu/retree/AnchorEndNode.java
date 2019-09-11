@@ -15,11 +15,11 @@ public final class AnchorEndNode extends Node {
     }
 
     @Override
-    public boolean match(ReContext cxt, CharSequence input, int cursor) {
-        int rest = cxt.to - cursor;
+    public boolean match(ReMatcher matcher, CharSequence input, int cursor) {
+        int rest = matcher.to - cursor;
 
         if (rest == 0) {
-            return next.match(cxt, input, cursor);
+            return next.match(matcher, input, cursor);
         }
 
         if (this.absolute) {
@@ -35,15 +35,15 @@ public final class AnchorEndNode extends Node {
             if (input.charAt(cursor) != '\r' || input.charAt(cursor + 1) != '\n') {
                 return false;
             }
-            return next.match(cxt, input, cursor + 2);
+            return next.match(matcher, input, cursor + 2);
         }
 
         // if previous char is '\r', so this char must be '\n'
-        if (cursor > cxt.from && input.charAt(cursor - 1) == '\r') {
+        if (cursor > matcher.from && input.charAt(cursor - 1) == '\r') {
             if (input.charAt(cursor) != '\n') {
                 return false;
             }
-            return next.match(cxt, input, cursor + 1);
+            return next.match(matcher, input, cursor + 1);
         }
 
         char ch = input.charAt(cursor);
@@ -51,7 +51,7 @@ public final class AnchorEndNode extends Node {
             return false;
         }
         
-        return next.match(cxt, input, cursor + 1);
+        return next.match(matcher, input, cursor + 1);
     }
 
     @Override

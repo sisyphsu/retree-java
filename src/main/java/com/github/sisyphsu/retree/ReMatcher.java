@@ -1,27 +1,28 @@
 package com.github.sisyphsu.retree;
 
-import java.util.AbstractList;
-import java.util.List;
+import java.util.regex.MatchResult;
 
 /**
- * Matcher could match lots regular expressions concurrently which are merged as ReTree.
- * <p>
- * Matcher shouldn't be used in multiple threads concurrently, it's not thread-safe.
+ * The Context of Matcher and MultiMatcher
  *
  * @author sulin
- * @since 2019-09-02 11:04:22
+ * @since 2019-09-03 15:06:49
  */
-public final class ReMatcher {
+public final class ReMatcher implements MatchResult {
+
+    final int[] localVars;
+    final int[] groupVars;
 
     int from;
     int to;
     CharSequence input;
 
+    Node node;
+
+    int fromMin;
+    int fromMax;
+    int last;
     private boolean hitEnd;
-    private int donePos;
-    private int matchPos;
-    private ReContext[] contexts;
-    private ReContext preResult;
     private final ReTree tree;
 
     /**
@@ -32,12 +33,9 @@ public final class ReMatcher {
      */
     public ReMatcher(ReTree tree, CharSequence input) {
         this.tree = tree;
-        this.from = 0;
-        this.to = input.length();
-        this.input = input;
-        this.donePos = 0;
-        this.matchPos = 0;
-        this.contexts = new ReContext[]{new ReContext(this, tree), null};
+        this.localVars = new int[tree.localVarCount];
+        this.groupVars = new int[tree.groupVarCount * 2];
+        this.reset(input);
     }
 
     /**
@@ -45,23 +43,13 @@ public final class ReMatcher {
      *
      * @param input New input
      */
-    public ReMatcher reset(CharSequence input) {
-        this.from = 0;
-        this.donePos = 0;
-        this.matchPos = 0;
-        this.preResult = null;
-        this.to = input.length();
+    public void reset(CharSequence input) {
         this.input = input;
-        for (ReContext cxt : this.contexts) {
-            if (cxt == null) {
-                continue;
-            }
-            cxt.from = this.from;
-            cxt.to = this.to;
-            cxt.input = this.input;
-            cxt.reset();
+        this.from = 0;
+        this.to = input.length();
+        for (int i = 0; i < this.localVars.length; i++) {
+            this.localVars[i] = -1;
         }
-        return this;
     }
 
     /**
@@ -70,8 +58,10 @@ public final class ReMatcher {
      * @return success of not
      */
     public boolean matches() {
+        this.fromMin = 0;
+        this.fromMax = 0;
         this.hitEnd = true;
-        return search(0);
+        return search();
     }
 
     /**
@@ -80,12 +70,11 @@ public final class ReMatcher {
      * @return success or not
      */
     public boolean find() {
-        ReContext oldResult = (ReContext) this.getResult();
-        if (oldResult == null) {
-            return this.find(0);
-        } else {
-            return this.find(oldResult.groupVars[1]);
+        boolean succ = this.find(last);
+        if (succ) {
+            this.last = groupVars[1];
         }
+        return succ;
     }
 
     /**
@@ -95,135 +84,94 @@ public final class ReMatcher {
      * @return success or not
      */
     public boolean find(int offset) {
+        this.fromMin = offset;
+        this.fromMax = this.to - tree.root.minInput;
         this.hitEnd = false;
-        int endPos = this.to - tree.root.minInput;
-        for (int from = offset; from <= endPos; from++) {
-            if (search(from)) {
-                return true;
-            }
-        }
-        return false;
+        return search();
     }
 
     /**
      * Search the next matched subsequence of input from the specified position.
      *
-     * @param from The beginning position for searching operation.
      * @return Success or not
      */
-    private boolean search(final int from) {
-        this.preResult = null;
-        this.donePos = 0;
-        this.matchPos = 1;
-
-        ReContext cxt = this.contexts[0];
-        cxt.node = tree.root;
-        cxt.cursor = from;
-        cxt.reset();
-
-        for (int i = 0; i < matchPos; i++) {
-            cxt = contexts[i];
-            if (!doSearch(cxt)) {
-                continue;
-            }
-            if (hitEnd && cxt.groupVars[1] != cxt.to) {
-                continue;
-            }
-            // move to done area
-            if (i != donePos) {
-                this.contexts[i] = this.contexts[donePos];
-                this.contexts[donePos] = cxt;
-            }
-            this.donePos++;
+    private boolean search() {
+        for (int i = 0; i < this.localVars.length; i++) {
+            this.localVars[i] = -1;
         }
-        return donePos > 0;
+        boolean success = false;
+        for (int i = fromMin; i <= fromMax && !success; i++) {
+            success = tree.root.match(this, input, i);
+        }
+        if (success && hitEnd && groupVars[1] != this.to) {
+            success = false;
+        }
+        return success;
     }
 
-    /**
-     * Execute matching use the specified MatchContext, until fail or hit offset.
-     * If fail, it would do backtracking
-     *
-     * @param cxt The context of matching operation.
-     * @return result code
-     */
-    private boolean doSearch(ReContext cxt) {
-        while (true) {
-            if (cxt.node.match(cxt, cxt.input, cxt.cursor)) {
-                return true;
-            }
-            while (true) {
-                if (cxt.stackDeep == 0) {
-                    return false;
-                }
-                ReContext.Point point = cxt.stack[--cxt.stackDeep];
-                if (point == null) {
-                    return false;
-                }
-                if (point.node.onBack(cxt, point.data)) {
-                    cxt.node = point.node;
-                    cxt.cursor = point.offset;
-                    break;
-                }
-            }
-        }
+    @Override
+    public int start() {
+        return this.start(0);
     }
 
-    /**
-     * Allocate an new MatchContext, if has old cached contexts, use it directly
-     *
-     * @return New allocated MatchContext
-     */
-    protected ReContext allocContext() {
-        if (this.matchPos >= this.contexts.length) {
-            ReContext[] cxts = new ReContext[this.contexts.length * 2];
-            System.arraycopy(this.contexts, 0, cxts, 0, this.contexts.length);
-            this.contexts = cxts;
+    @Override
+    public int start(int groupIndex) {
+        if (node instanceof EndNode) {
+            return this.groupVars[groupIndex * 2];
         }
-        int offset = this.matchPos++;
-        if (this.contexts[offset] == null) {
-            this.contexts[offset] = new ReContext(this, tree);
-        }
-        return this.contexts[offset];
+        throw new IllegalStateException("Invalid MatchResult");
     }
 
-    /**
-     * Fetch the Result of previously matching operation.
-     *
-     * @return Result instance
-     */
-    public Result getResult() {
-        if (preResult == null && donePos > 0) {
-            if (donePos == 1) {
-                preResult = contexts[0];
-            } else {
-                preResult = (ReContext) tree.selector.select(result);
+    @Override
+    public int end() {
+        return this.end(0);
+    }
+
+    @Override
+    public int end(int groupIndex) {
+        if (node instanceof EndNode) {
+            return this.groupVars[groupIndex * 2 + 1];
+        }
+        throw new IllegalStateException("Invalid MatchResult");
+    }
+
+    @Override
+    public String group() {
+        return group(0);
+    }
+
+    @Override
+    public String group(int groupIndex) {
+        if (node instanceof EndNode) {
+            return input.subSequence(start(groupIndex), end(groupIndex)).toString();
+        }
+        throw new IllegalStateException("Invalid MatchResult");
+    }
+
+    @Override
+    public int groupCount() {
+        if (node instanceof EndNode) {
+            return ((EndNode) node).getGroupCount() - 1;
+        }
+        throw new IllegalStateException("Invalid MatchResult");
+    }
+
+    public CharSequence group(String groupName) {
+        if (node instanceof EndNode) {
+            Integer groupIndex = ((EndNode) node).getNameMap().get(groupName);
+            if (groupIndex == null) {
+                throw new IllegalArgumentException("groupName is invalid: " + groupName);
             }
+            return this.group(groupIndex);
         }
-        return preResult;
+        throw new IllegalStateException("Invalid MatchResult");
     }
 
-    /**
-     * Fetch all MatchResult of the previous match operation.
-     *
-     * @return All MatchResult
-     */
-    public List<? extends Result> getAllResult() {
-        return result;
+    public String re() {
+        if (node instanceof EndNode) {
+            return ((EndNode) node).getRe();
+        }
+        throw new IllegalStateException("Invalid MatchResult");
     }
-
-    private final List<Result> result = new AbstractList<Result>() {
-        @Override
-        public Result get(int index) {
-            if (index >= donePos) {
-                throw new ArrayIndexOutOfBoundsException(String.format("index(%s) > size(%s)", index, donePos));
-            }
-            return contexts[index];
-        }
-
-        @Override
-        public int size() {
-            return donePos;
-        }
-    };
 
 }

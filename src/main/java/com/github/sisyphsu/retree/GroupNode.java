@@ -8,40 +8,37 @@ package com.github.sisyphsu.retree;
  */
 public final class GroupNode extends Node {
 
-    private final int groupStartIndex;
-    private final int groupEndIndex;
+    private final int groupIndex;
     private final Node tailNode;
 
-    private final int groupIndex;
+    private final int groupStartIndex;
+    private final int groupEndIndex;
 
     public GroupNode(int groupIndex) {
         this.groupIndex = groupIndex;
-        this.groupStartIndex = groupIndex * 2;
-        this.groupEndIndex = groupIndex * 2 + 1;
+        if (groupIndex > 0) {
+            this.groupStartIndex = groupIndex * 2;
+            this.groupEndIndex = groupIndex * 2 + 1;
+        } else {
+            this.groupStartIndex = 0;
+            this.groupEndIndex = 0;
+        }
         this.tailNode = new Tail();
     }
 
     @Override
-    public boolean match(ReContext cxt, CharSequence input, int cursor) {
+    public boolean match(ReMatcher matcher, CharSequence input, int cursor) {
+        int startOff = matcher.groupVars[groupStartIndex];
+        int endOff = matcher.groupVars[groupEndIndex];
         if (groupIndex > 0) {
-            if (cxt.stackDeep == 0) {
-                long startOff = cxt.groupVars[groupStartIndex];
-                long endOff = cxt.groupVars[groupEndIndex];
-                cxt.addBackPoint(this, cursor, (startOff << 32) | endOff);
-            }
-            cxt.groupVars[groupStartIndex] = cursor;
+            matcher.groupVars[groupStartIndex] = cursor;
         }
-        return next.match(cxt, input, cursor);
-    }
-
-    @Override
-    public boolean onBack(ReContext cxt, long data) {
-        // restore the old start and end position.
-        if (groupIndex > 0) {
-            cxt.groupVars[groupStartIndex] = (int) (data >>> 32);
-            cxt.groupVars[groupEndIndex] = (int) (data);
+        boolean succ = next.match(matcher, input, cursor);
+        if (!succ && groupIndex > 0) {
+            matcher.groupVars[groupStartIndex] = startOff;
+            matcher.groupVars[groupEndIndex] = endOff;
         }
-        return false;
+        return succ;
     }
 
     @Override
@@ -59,11 +56,11 @@ public final class GroupNode extends Node {
     private class Tail extends Node {
 
         @Override
-        public boolean match(ReContext cxt, CharSequence input, int cursor) {
+        public boolean match(ReMatcher matcher, CharSequence input, int cursor) {
             if (groupIndex > 0) {
-                cxt.groupVars[groupEndIndex] = cursor; // mark the end postion of this group
+                matcher.groupVars[groupEndIndex] = cursor; // mark the end postion of this group
             }
-            return next.match(cxt, input, cursor);
+            return next.match(matcher, input, cursor);
         }
 
         @Override

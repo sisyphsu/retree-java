@@ -2,11 +2,6 @@ package com.github.sisyphsu.retree;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 /**
  * Normal regular expression test, make sure retree works fine for all case.
  *
@@ -350,68 +345,68 @@ public class RagularTest {
         assert !matches(".*+abc", "aabc");//no matches
     }
 
-    @Test
-    public void testCapturingGroup() {
-        String regex = "\\b([A-Za-z\\s]+),\\s([A-Z]{2,2}):\\s([0-9]{3,3})\\b";
-        String input = "This is the list: Baytown, TX: 281, Chapel Hill, NC: 284, Fort Myers, FL: 239";
-
-        ReMatcher matcher = new ReMatcher(new ReTree(regex), input);
-
-        int matchCount = 0;
-        List<String> list = new ArrayList<>();
-        while (matcher.find()) {
-            Result result = matcher.getResult();
-            matchCount++;
-            System.out.printf("Match count: %s, Group Zero Text: '%s'%n", matchCount, result.group(0));
-            for (int i = 1; i <= result.groupCount(); i++) {
-                CharSequence str = result.group(i);
-                System.out.printf("Capture Group Number: %s, Captured Text: '%s'%n", i, str);
-                list.add(str.toString());
-            }
-        }
-        assert list.size() == 9;
-        assert list.get(0).equals("Baytown");
-        assert list.get(1).equals("TX");
-        assert list.get(2).equals("281");
-        assert list.get(3).equals("Chapel Hill");
-        assert list.get(4).equals("NC");
-        assert list.get(5).equals("284");
-        assert list.get(6).equals("Fort Myers");
-        assert list.get(7).equals("FL");
-        assert list.get(8).equals("239");
-    }
-
-    @Test
-    public void testNamedCapturingGroup() {
-        String input = "This is the list: Baytown, TX: 281, Chapel Hill, NC: 284, Fort Myers, FL: 239";
-        String regex = "\\b(?<city>[A-Za-z\\s]+),\\s(?<state>[A-Z]{2,2}):\\s(?<areaCode>[0-9]{3,3})\\b";
-
-
-        ReMatcher matcher = new ReMatcher(new ReTree(regex), input);
-
-        List<Map<String, String>> list = new ArrayList<>();
-
-        while (matcher.find()) {
-            Result result = matcher.getResult();
-            if (result.groupCount() == 3) {
-                Map<String, String> map = new HashMap<>();
-                map.put("city", result.group("city").toString());
-                map.put("state", result.group("state").toString());
-                map.put("areaCode", result.group("areaCode").toString());
-                list.add(map);
-            }
-        }
-        assert list.size() == 3;
-        assert list.get(0).get("city").equals("Baytown");
-        assert list.get(0).get("state").equals("TX");
-        assert list.get(0).get("areaCode").equals("281");
-        assert list.get(1).get("city").equals("Chapel Hill");
-        assert list.get(1).get("state").equals("NC");
-        assert list.get(1).get("areaCode").equals("284");
-        assert list.get(2).get("city").equals("Fort Myers");
-        assert list.get(2).get("state").equals("FL");
-        assert list.get(2).get("areaCode").equals("239");
-    }
+//    @Test
+//    public void testCapturingGroup() {
+//        String regex = "\\b([A-Za-z\\s]+),\\s([A-Z]{2,2}):\\s([0-9]{3,3})\\b";
+//        String input = "This is the list: Baytown, TX: 281, Chapel Hill, NC: 284, Fort Myers, FL: 239";
+//
+//        ReMatcher matcher = new ReMatcher(new ReTree(regex), input);
+//
+//        int matchCount = 0;
+//        List<String> list = new ArrayList<>();
+//        while (matcher.find()) {
+//            Result result = matcher.getResult();
+//            matchCount++;
+//            System.out.printf("Match count: %s, Group Zero Text: '%s'%n", matchCount, result.group(0));
+//            for (int i = 1; i <= result.groupCount(); i++) {
+//                CharSequence str = result.group(i);
+//                System.out.printf("Capture Group Number: %s, Captured Text: '%s'%n", i, str);
+//                list.add(str.toString());
+//            }
+//        }
+//        assert list.size() == 9;
+//        assert list.get(0).equals("Baytown");
+//        assert list.get(1).equals("TX");
+//        assert list.get(2).equals("281");
+//        assert list.get(3).equals("Chapel Hill");
+//        assert list.get(4).equals("NC");
+//        assert list.get(5).equals("284");
+//        assert list.get(6).equals("Fort Myers");
+//        assert list.get(7).equals("FL");
+//        assert list.get(8).equals("239");
+//    }
+//
+//    @Test
+//    public void testNamedCapturingGroup() {
+//        String input = "This is the list: Baytown, TX: 281, Chapel Hill, NC: 284, Fort Myers, FL: 239";
+//        String regex = "\\b(?<city>[A-Za-z\\s]+),\\s(?<state>[A-Z]{2,2}):\\s(?<areaCode>[0-9]{3,3})\\b";
+//
+//
+//        ReMatcher matcher = new ReMatcher(new ReTree(regex), input);
+//
+//        List<Map<String, String>> list = new ArrayList<>();
+//
+//        while (matcher.find()) {
+//            Result result = matcher.getResult();
+//            if (result.groupCount() == 3) {
+//                Map<String, String> map = new HashMap<>();
+//                map.put("city", result.group("city").toString());
+//                map.put("state", result.group("state").toString());
+//                map.put("areaCode", result.group("areaCode").toString());
+//                list.add(map);
+//            }
+//        }
+//        assert list.size() == 3;
+//        assert list.get(0).get("city").equals("Baytown");
+//        assert list.get(0).get("state").equals("TX");
+//        assert list.get(0).get("areaCode").equals("281");
+//        assert list.get(1).get("city").equals("Chapel Hill");
+//        assert list.get(1).get("state").equals("NC");
+//        assert list.get(1).get("areaCode").equals("284");
+//        assert list.get(2).get("city").equals("Fort Myers");
+//        assert list.get(2).get("state").equals("FL");
+//        assert list.get(2).get("areaCode").equals("239");
+//    }
 
     @Test
     public void testNonCapturingGroup() {
@@ -615,7 +610,7 @@ public class RagularTest {
 
     @Test
     public void testSpec() {
-        assert matches("a.+b", "axyb");//matches:  'axyb' at 0-4 'axyb'
+        assert find("a*+z", "abztstaz");
     }
 
     @Test

@@ -8,11 +8,11 @@ import java.util.regex.PatternSyntaxException;
  * @author sulin
  * @since 2019-09-06 14:31:02
  */
-public class PatternTest {
+public class ReCompilerTest {
 
     @Test
     public void testCompile() {
-        Pattern.compile("");
+        ReCompiler.compile("");
 
         assertSyntaxError("(abc");
         assertSyntaxError("(abc))");
