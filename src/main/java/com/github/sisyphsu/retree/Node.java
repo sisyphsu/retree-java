@@ -8,7 +8,8 @@ package com.github.sisyphsu.retree;
  */
 public abstract class Node {
 
-    boolean optimized = false;
+    transient int flag = 0;
+
     protected Node next;
     protected int minInput = -1;
 

@@ -8,7 +8,7 @@ package com.github.sisyphsu.retree;
  */
 public final class CharSingleNode extends CharNode {
 
-    private final int ch;
+    final int ch;
 
     public CharSingleNode(int c) {
         super(true);

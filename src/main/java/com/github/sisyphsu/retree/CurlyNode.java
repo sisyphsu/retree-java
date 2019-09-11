@@ -15,7 +15,7 @@ public class CurlyNode extends Node {
     private final int type;
     private final int minTimes;
     private final int maxTimes;
-    private final Node body;
+    Node body;
 
     public CurlyNode(int type, int minTimes, int maxTimes, Node body, Node next) {
         this.type = type;

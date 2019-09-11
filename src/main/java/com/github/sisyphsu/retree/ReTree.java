@@ -1,7 +1,6 @@
 package com.github.sisyphsu.retree;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -18,7 +17,6 @@ public final class ReTree {
     final int groupVarCount;
 
     final Node root;
-    final Node[] exps;
 
     /**
      * Initialize ReTree.
@@ -27,24 +25,27 @@ public final class ReTree {
      */
     public ReTree(String... exps) {
         // compile regular expressions
-        Node[] roots = new Node[exps.length];
-        for (int i = 0; i < exps.length; i++) {
-            Node node = ReCompiler.compile(exps[i]).root;
+        List<Node> nodes = new ArrayList<>(exps.length);
+        for (String exp : exps) {
+            Node node = ReCompiler.compile(exp).root;
             node = this.optimizeLoop(node);
-            roots[i] = node;
+            nodes.add(node);
         }
         // calculate the count of localVar, groupVar, crossVar
         int loopVarCount = 0;
         int groupVarCount = 0;
-        for (Node root : roots) {
-            EndNode endNode = findEndNode(root);
+        for (Node node : nodes) {
+            EndNode endNode = findEndNode(node);
             loopVarCount = Math.max(loopVarCount, endNode.getLocalCount());
             groupVarCount = Math.max(groupVarCount, endNode.getGroupCount());
         }
         // build tree
-        this.exps = roots;
-        this.root = this.buildTree(new ArrayList<>(Arrays.asList(roots)));
-        this.root.study();
+        Node treeRoot = this.buildTree(nodes);
+        treeRoot = this.optimizeCharSlice(treeRoot);
+        if (treeRoot != null) {
+            treeRoot.study();
+        }
+        this.root = treeRoot;
         this.localVarCount = loopVarCount;
         this.groupVarCount = groupVarCount;
     }
@@ -93,11 +94,11 @@ public final class ReTree {
         if (node == null) {
             return null;
         }
-        if (node.optimized) {
+        if ((node.flag & 1) > 0) {
             return node;
+        } else {
+            node.flag |= 1;
         }
-        node.optimized = true;
-
         if (node instanceof BranchNode) {
             BranchNode branchNode = (BranchNode) node;
             for (int i = 0; i < branchNode.branches.size(); i++) {
@@ -124,6 +125,43 @@ public final class ReTree {
         } else {
             node.next = this.optimizeLoop(node.next);
         }
+
+        return node;
+    }
+
+    private Node optimizeCharSlice(Node node) {
+        if (node == null) {
+            return null;
+        }
+        if ((node.flag & 2) > 0) {
+            return node;
+        } else {
+            node.flag |= 2;
+        }
+        if (node instanceof BranchNode) {
+            BranchNode branchNode = (BranchNode) node;
+            for (int i = 0; i < branchNode.branches.size(); i++) {
+                branchNode.branches.set(i, optimizeCharSlice(branchNode.branches.get(i)));
+            }
+        } else if (node instanceof LoopNode) {
+            LoopNode loopNode = (LoopNode) node;
+            loopNode.body = this.optimizeCharSlice(loopNode.body);
+        } else if (node instanceof CurlyNode) {
+            CurlyNode curlyNode = (CurlyNode) node;
+            curlyNode.body = this.optimizeCharSlice(curlyNode.body);
+        } else if (node instanceof CharSingleNode) {
+            Node next = node;
+            List<Integer> chars = new ArrayList<>();
+            while (next instanceof CharSingleNode) {
+                chars.add(((CharSingleNode) next).ch);
+                next = next.next;
+            }
+            if (chars.size() > 1) {
+                node = new CharSliceNode(chars.stream().mapToInt(i -> i).toArray());
+                node.next = next;
+            }
+        }
+        node.next = this.optimizeCharSlice(node.next);
 
         return node;
     }

@@ -613,7 +613,7 @@ public class RagularTest {
 
     @Test
     public void testSpec() {
-        assert matches("(\\d{2}|\\d){3,}\\d", "012111");
+        assert find("in", "Linux");
     }
 
     @Test

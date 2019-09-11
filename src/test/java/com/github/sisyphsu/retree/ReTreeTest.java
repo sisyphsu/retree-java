@@ -44,6 +44,12 @@ public class ReTreeTest {
     }
 
     @Test
+    public void testCharSliceOptimized() {
+        ReTree tree = new ReTree("abcde\\d");
+        assert tree.root.next instanceof CharSliceNode;
+    }
+
+    @Test
     public void testUnion() {
         String[] res = {"abc\\d{5,}", "abc\\w{10,}"};
         ReTree tree = new ReTree(res);
