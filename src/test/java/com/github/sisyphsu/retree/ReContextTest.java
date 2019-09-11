@@ -58,26 +58,24 @@ public class ReContextTest {
             assert e instanceof IllegalStateException;
         }
 
-//        matcher.matches();
-//        result = matcher.getResult();
-//        assert result != null;
-//        assert "abc".contentEquals(result.group(1));
-//        assert result.start() == 0;
-//        assert result.end() == 3;
-//
-//        try {
-//            result.group(2);
-//            assert false;
-//        } catch (Exception e) {
-//            assert e instanceof IndexOutOfBoundsException;
-//        }
-//
-//        try {
-//            result.group("ss");
-//            assert false;
-//        } catch (Exception e) {
-//            assert e instanceof IllegalArgumentException;
-//        }
+        matcher.matches();
+        assert "abc".contentEquals(matcher.group(1));
+        assert matcher.start() == 0;
+        assert matcher.end() == 3;
+
+        try {
+            matcher.group(2);
+            assert false;
+        } catch (Exception e) {
+            assert e instanceof IndexOutOfBoundsException;
+        }
+
+        try {
+            matcher.group("ss");
+            assert false;
+        } catch (Exception e) {
+            assert e instanceof IllegalArgumentException;
+        }
     }
 
 }

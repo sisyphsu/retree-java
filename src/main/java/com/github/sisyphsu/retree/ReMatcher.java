@@ -43,13 +43,12 @@ public final class ReMatcher implements MatchResult {
      *
      * @param input New input
      */
-    public void reset(CharSequence input) {
+    public ReMatcher reset(CharSequence input) {
         this.input = input;
         this.from = 0;
         this.to = input.length();
-        for (int i = 0; i < this.localVars.length; i++) {
-            this.localVars[i] = -1;
-        }
+        this.last = 0;
+        return this;
     }
 
     /**

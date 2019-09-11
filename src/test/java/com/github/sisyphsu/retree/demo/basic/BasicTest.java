@@ -14,17 +14,14 @@ import java.util.regex.Pattern;
  * Basic demo for Regex vs ReTree's usage and performace.
  * <p>
  * Single RE
- * Benchmark         Mode  Cnt      Score     Error  Units
- * BasicTest.regex   avgt    9    710.717 ±  13.428  ns/op
- * BasicTest.retree  avgt    9  11141.060 ± 171.212  ns/op
+ * Benchmark         Mode  Cnt    Score    Error  Units
+ * BasicTest.regex   avgt    6  265.701 ±  3.632  ns/op
+ * BasicTest.retree  avgt    6  680.169 ± 16.132  ns/op
  * <p>
  * Multiple RE
- * Benchmark         Mode  Cnt      Score     Error  Units
- * BasicTest.regex   avgt    9   1918.083 ±  15.178  ns/op
- * BasicTest.retree  avgt    9  10578.414 ± 328.728  ns/op
- * <p>
- * GOOD: retree's architecture is better, with multiple RE, it didn't has any performance loss.
- * BAD: retree's algorithm implementation has big issue, which makes it slower.
+ * Benchmark         Mode  Cnt     Score     Error  Units
+ * BasicTest.regex   avgt    6  1993.164 ± 120.509  ns/op
+ * BasicTest.retree  avgt    6  2381.663 ±  34.898  ns/op
  *
  * @author sulin
  * @since 2019-09-07 10:29:28
@@ -37,7 +34,7 @@ import java.util.regex.Pattern;
 public class BasicTest {
 
     public static final String TEXT = "You have new emails from @Sisyphsu <sisyphsu@gmail.com> & @Sulin <sulin@xxx.com> at 2019-09-07.";
-    public static final String[] RES = {"\\W@(\\w+)", "<(\\w+@\\w+\\.[a-z]+(\\.[a-z]+)?)>", "(\\d{4}-\\d{2}-\\d{2})"};
+    public static final String[] RES = {"\\W@(\\w+)"};
 
     public static final ReMatcher MATCHER = new ReMatcher(new ReTree(RES), TEXT);
     public static final java.util.regex.Matcher[] MATCHERS = new java.util.regex.Matcher[RES.length];
@@ -68,7 +65,7 @@ public class BasicTest {
         MATCHER.reset(TEXT);
 //        MATCHER.matches();
         while (MATCHER.find()) {
-//            results.add(MATCHER.getResult().group(1).toString());
+            results.add(MATCHER.group(1));
         }
 
         return results;
