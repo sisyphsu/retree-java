@@ -22,6 +22,20 @@ public class CharSingleNodeTest {
 
         node1 = new CharSingleNode('a');
         assert node1.toString().equals("a");
+
+        node1.study();
+        assert node1.getMinInput() == 1;
+
+        node1.study();
+        assert node1.getMinInput() == 1;
+
+        node1.complement();
+        node1.complement();
+    }
+
+    @Test
+    public void test() {
+
     }
 
 }

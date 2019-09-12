@@ -50,6 +50,18 @@ public class ReTreeTest {
     }
 
     @Test
+    public void testGroupOptimized() {
+        ReTree tree = new ReTree("(abc)");
+        assert tree.root.next instanceof GroupNode;
+
+        tree = new ReTree("(?:a)");
+        assert tree.root.next instanceof CharSingleNode;
+
+        tree = new ReTree("(?:abc)");
+        assert tree.root.next instanceof CharSliceNode;
+    }
+
+    @Test
     public void testUnion() {
         String[] res = {"abc\\d{5,}", "abc\\w{10,}"};
         ReTree tree = new ReTree(res);

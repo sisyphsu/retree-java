@@ -341,10 +341,10 @@ final class ReCompiler {
                 ret = new BoundNode(BoundNode.NON_WORD);
                 return -1;
             case 'd':
-                ret = new CharTypeNode(Util.DIGIT, true);
+                ret = new CharTypeNode(CharTypeNode.DIGIT, true);
                 return -1;
             case 'D':
-                ret = new CharTypeNode(Util.DIGIT, false);
+                ret = new CharTypeNode(CharTypeNode.DIGIT, false);
                 return -1;
             case 'h':
                 ret = new CharWhitespaceNode(true, true);
@@ -353,10 +353,10 @@ final class ReCompiler {
                 ret = new CharWhitespaceNode(true, false);
                 return -1;
             case 's':
-                ret = new CharTypeNode(Util.SPACE, true);
+                ret = new CharTypeNode(CharTypeNode.SPACE, true);
                 return -1;
             case 'S':
-                ret = new CharTypeNode(Util.SPACE, false);
+                ret = new CharTypeNode(CharTypeNode.SPACE, false);
                 return -1;
             case 'v':
                 ret = new CharWhitespaceNode(false, true);
@@ -365,10 +365,10 @@ final class ReCompiler {
                 ret = new CharWhitespaceNode(false, false);
                 return -1;
             case 'w':
-                ret = new CharTypeNode(Util.WORD, true);
+                ret = new CharTypeNode(CharTypeNode.WORD, true);
                 return -1;
             case 'W':
-                ret = new CharTypeNode(Util.WORD, false);
+                ret = new CharTypeNode(CharTypeNode.WORD, false);
                 return -1;
             case 'A':
                 ret = new AnchorStartNode();
@@ -523,10 +523,10 @@ final class ReCompiler {
             case 'b':
                 return 8;
             case 'd':
-                if (create) ret = new CharTypeNode(Util.DIGIT, true);
+                if (create) ret = new CharTypeNode(CharTypeNode.DIGIT, true);
                 return -1;
             case 'D':
-                if (create) ret = new CharTypeNode(Util.DIGIT, false);
+                if (create) ret = new CharTypeNode(CharTypeNode.DIGIT, false);
                 return -1;
             case 'h':
                 if (create) ret = new CharWhitespaceNode(true, true);
@@ -535,10 +535,10 @@ final class ReCompiler {
                 if (create) ret = new CharWhitespaceNode(true, false);
                 return -1;
             case 's':
-                if (create) ret = new CharTypeNode(Util.SPACE, true);
+                if (create) ret = new CharTypeNode(CharTypeNode.SPACE, true);
                 return -1;
             case 'S':
-                if (create) ret = new CharTypeNode(Util.SPACE, false);
+                if (create) ret = new CharTypeNode(CharTypeNode.SPACE, false);
                 return -1;
             case 'v':
                 if (isRange) return '\013';
@@ -548,10 +548,10 @@ final class ReCompiler {
                 if (create) ret = new CharWhitespaceNode(false, false);
                 return -1;
             case 'w':
-                if (create) ret = new CharTypeNode(Util.WORD, true);
+                if (create) ret = new CharTypeNode(CharTypeNode.WORD, true);
                 return -1;
             case 'W':
-                if (create) ret = new CharTypeNode(Util.WORD, false);
+                if (create) ret = new CharTypeNode(CharTypeNode.WORD, false);
                 return -1;
             case 'a':
                 return '\007';
@@ -653,7 +653,7 @@ final class ReCompiler {
     private GroupNode createGroup(boolean anonymous) {
         int groupIndex = anonymous ? 0 : groupCount++;
         GroupNode head = new GroupNode(groupIndex);
-        ret = head.getTailNode();
+        ret = head.tailNode;
         return head;
     }
 

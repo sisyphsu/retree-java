@@ -13,6 +13,10 @@ import java.util.List;
  */
 public final class ReTree {
 
+    private static final int F_LOOP = 1 << 1;
+    private static final int F_CHAR = 1 << 2;
+    private static final int F_ANON = 1 << 3;
+
     final int localVarCount;
     final int groupVarCount;
 
@@ -28,6 +32,7 @@ public final class ReTree {
         List<Node> nodes = new ArrayList<>(exps.length);
         for (String exp : exps) {
             Node node = ReCompiler.compile(exp).root;
+            node = this.optimizeGroup(node);
             node = this.optimizeLoop(node);
             nodes.add(node);
         }
@@ -86,18 +91,52 @@ public final class ReTree {
     }
 
     /**
+     * Unwrap anonymous group for better performance, which don't need GroupHead and GroupTail
+     */
+    private Node optimizeGroup(Node node) {
+        if (node == null) {
+            return null;
+        }
+        if ((node.flag & F_ANON) > 0) {
+            return node;
+        } else {
+            node.flag |= F_ANON;
+        }
+        if (node instanceof BranchNode) {
+            BranchNode branchNode = (BranchNode) node;
+            for (int i = 0; i < branchNode.branches.size(); i++) {
+                branchNode.branches.set(i, optimizeGroup(branchNode.branches.get(i)));
+            }
+        } else if (node instanceof LoopNode) {
+            LoopNode loop = (LoopNode) node;
+            loop.body = this.optimizeGroup(loop.body);
+        } else if (node instanceof GroupNode) {
+            GroupNode groupNode = (GroupNode) node;
+            if (groupNode.isAnonymous()) {
+                return this.optimizeGroup(groupNode.next); // unwrap
+            }
+        } else if (node instanceof GroupNode.Tail) {
+            GroupNode.Tail tail = (GroupNode.Tail) node;
+            if (tail.isAnonymous()) {
+                return this.optimizeGroup(tail.next); // unwrap
+            }
+        }
+        node.next = this.optimizeGroup(node.next);
+
+        return node;
+    }
+
+    /**
      * Optimize the LoopNode, if it isn't complex, use CurlyNode replace.
-     *
-     * @param node Node
      */
     private Node optimizeLoop(Node node) {
         if (node == null) {
             return null;
         }
-        if ((node.flag & 1) > 0) {
+        if ((node.flag & F_LOOP) > 0) {
             return node;
         } else {
-            node.flag |= 1;
+            node.flag |= F_LOOP;
         }
         if (node instanceof BranchNode) {
             BranchNode branchNode = (BranchNode) node;
@@ -129,14 +168,17 @@ public final class ReTree {
         return node;
     }
 
+    /**
+     * Try to merge continuous CharSingleNodes into CharSliceNode for better performance.
+     */
     private Node optimizeCharSlice(Node node) {
         if (node == null) {
             return null;
         }
-        if ((node.flag & 2) > 0) {
+        if ((node.flag & F_CHAR) > 0) {
             return node;
         } else {
-            node.flag |= 2;
+            node.flag |= F_CHAR;
         }
         if (node instanceof BranchNode) {
             BranchNode branchNode = (BranchNode) node;

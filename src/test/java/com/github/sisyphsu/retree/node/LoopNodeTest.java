@@ -29,6 +29,8 @@ public class LoopNodeTest {
 
         node1 = new LoopNode(new CharSingleNode(1), new CharSingleNode(10), 1, 100, 1, 3);
         assert !node1.alike(node2);
+
+        assert !node1.alike(new CharSingleNode(1));
     }
 
 }

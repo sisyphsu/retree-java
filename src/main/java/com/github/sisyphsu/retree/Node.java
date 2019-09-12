@@ -36,4 +36,7 @@ public abstract class Node {
 
     public abstract boolean alike(Node node);
 
+    public int getMinInput() {
+        return minInput;
+    }
 }

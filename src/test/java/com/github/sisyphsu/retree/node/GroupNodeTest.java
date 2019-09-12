@@ -2,6 +2,7 @@ package com.github.sisyphsu.retree.node;
 
 import com.github.sisyphsu.retree.CharSingleNode;
 import com.github.sisyphsu.retree.GroupNode;
+import com.github.sisyphsu.retree.ReMatcher;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -19,6 +20,16 @@ public class GroupNodeTest {
         assert node1.alike(node2);
 
         assert !node1.alike(new CharSingleNode(1));
+
+        node1 = new GroupNode(2);
+        assert !node1.alike(node2);
+    }
+
+    @Test
+    public void test() {
+        ReMatcher matcher = new ReMatcher("(\\d+)x+", "(\\d+)z+");
+        assert matcher.reset("123xxx").matches();
+        assert matcher.reset("123zzz").matches();
     }
 
 }

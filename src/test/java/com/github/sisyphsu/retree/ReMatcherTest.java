@@ -66,7 +66,6 @@ public class ReMatcherTest {
         assert "sisyphsu@gmail.com".contentEquals(matcher.group());
     }
 
-
     @Test
     public void testMore() {
         assert !new ReMatcher(new ReTree("^\\d+$"), "s119").find();

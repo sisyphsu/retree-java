@@ -8,9 +8,9 @@ package com.github.sisyphsu.retree;
  */
 public final class GroupNode extends Node {
 
-    private final int groupIndex;
-    private final Node tailNode;
+    final Node tailNode;
 
+    private final int groupIndex;
     private final int groupStartIndex;
     private final int groupEndIndex;
 
@@ -30,11 +30,12 @@ public final class GroupNode extends Node {
     public boolean match(ReMatcher matcher, CharSequence input, int cursor) {
         int startOff = matcher.groupVars[groupStartIndex];
         int endOff = matcher.groupVars[groupEndIndex];
-        if (groupIndex > 0) {
-            matcher.groupVars[groupStartIndex] = cursor;
-        }
+
+        matcher.groupVars[groupStartIndex] = cursor;
+
         boolean succ = next.match(matcher, input, cursor);
-        if (!succ && groupIndex > 0) {
+
+        if (!succ) {
             matcher.groupVars[groupStartIndex] = startOff;
             matcher.groupVars[groupEndIndex] = endOff;
         }
@@ -49,17 +50,15 @@ public final class GroupNode extends Node {
         return false;
     }
 
-    public Node getTailNode() {
-        return tailNode;
+    boolean isAnonymous() {
+        return groupIndex == 0;
     }
 
-    private class Tail extends Node {
+    public class Tail extends Node {
 
         @Override
         public boolean match(ReMatcher matcher, CharSequence input, int cursor) {
-            if (groupIndex > 0) {
-                matcher.groupVars[groupEndIndex] = cursor; // mark the end postion of this group
-            }
+            matcher.groupVars[groupEndIndex] = cursor; // mark the end postion of this group
             if (next == null) {
                 matcher.last = cursor;
                 return true;
@@ -70,6 +69,10 @@ public final class GroupNode extends Node {
         @Override
         public boolean alike(Node node) {
             return node instanceof Tail;
+        }
+
+        boolean isAnonymous() {
+            return GroupNode.this.isAnonymous();
         }
     }
 

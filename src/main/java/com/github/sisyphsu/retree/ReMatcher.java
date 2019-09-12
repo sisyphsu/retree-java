@@ -28,6 +28,15 @@ public final class ReMatcher implements MatchResult {
     EndNode endNode;
 
     /**
+     * Construction for convenience.
+     *
+     * @param res All regular expression
+     */
+    public ReMatcher(String... res) {
+        this(new ReTree(res), "");
+    }
+
+    /**
      * Initialize Matcher by the specified regular expression tree and input.
      *
      * @param tree  ReTree represents multiple regular expression.

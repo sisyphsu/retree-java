@@ -2,6 +2,7 @@ package com.github.sisyphsu.retree.node;
 
 import com.github.sisyphsu.retree.AnchorEndNode;
 import com.github.sisyphsu.retree.CharSingleNode;
+import com.github.sisyphsu.retree.ReMatcher;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -22,6 +23,14 @@ public class AnchorEndNodeTest {
         assert !node1.alike(node2);
 
         assert !node1.alike(new CharSingleNode(0));
+    }
+
+    @Test
+    public void testEnd() {
+        ReMatcher matcher = new ReMatcher("^\\d+\\r$");
+        assert matcher.reset("12345\r\n").matches();
+
+        assert !matcher.reset("12345\r\t").matches();
     }
 
 }

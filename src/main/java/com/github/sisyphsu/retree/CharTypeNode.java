@@ -8,6 +8,10 @@ package com.github.sisyphsu.retree;
  */
 public final class CharTypeNode extends CharNode {
 
+    public static final int DIGIT = 1;
+    public static final int SPACE = 2;
+    public static final int WORD = 3;
+
     private final int ctype;
 
     public CharTypeNode(final int ctype, boolean matched) {
@@ -19,11 +23,11 @@ public final class CharTypeNode extends CharNode {
     protected boolean isMatch(int ch) {
         if (ch < 128) {
             switch (ctype) {
-                case Util.DIGIT:
+                case DIGIT:
                     return DIGIT_MAP[ch];
-                case Util.WORD:
+                case WORD:
                     return WORD_MAP[ch];
-                case Util.SPACE:
+                default:
                     return SPACE_MAP[ch];
             }
         }

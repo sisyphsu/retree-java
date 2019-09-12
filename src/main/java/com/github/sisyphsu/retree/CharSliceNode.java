@@ -30,7 +30,7 @@ public class CharSliceNode extends Node {
 
     @Override
     public boolean match(ReMatcher matcher, CharSequence input, int cursor) {
-        if (matcher.to - cursor < chars.length) {
+        if (matcher.to - cursor < minInput) {
             return false;
         }
         for (int i = 0; i < chars.length; i++) {

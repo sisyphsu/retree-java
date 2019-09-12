@@ -2,6 +2,7 @@ package com.github.sisyphsu.retree.node;
 
 import com.github.sisyphsu.retree.BoundNode;
 import com.github.sisyphsu.retree.CharSingleNode;
+import com.github.sisyphsu.retree.ReMatcher;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -23,6 +24,14 @@ public class BoundNodeTest {
         assert !node1.alike(node2);
 
         assert !node1.alike(new CharSingleNode(1));
+    }
+
+    @Test
+    public void match() {
+        ReMatcher matcher = new ReMatcher("(?:\\w\\B)+");
+        assert matcher.reset("abcdef").find();
+
+        assert matcher.group().equals("abcde");
     }
 
 }

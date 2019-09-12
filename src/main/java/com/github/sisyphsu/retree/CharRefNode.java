@@ -23,10 +23,6 @@ public final class CharRefNode extends Node {
         final int groupStart = matcher.groupVars[refStartOffset];
         final int groupEnd = matcher.groupVars[refEndOffset];
         final int groupLen = groupEnd - groupStart;
-        // fail if the group referenced is invalid
-        if (groupStart < 0 || groupLen < 0) {
-            return false;
-        }
         // fast fail
         if (matcher.to - cursor < groupLen) {
             return false;

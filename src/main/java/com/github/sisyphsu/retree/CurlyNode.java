@@ -76,7 +76,16 @@ public class CurlyNode extends Node {
                     cursor = matcher.last; // body should update last.
                 }
 
-            case GREEDY:
+            case POSSESSIVE:
+                for (; times < maxTimes; times++) {
+                    if (matcher.to - cursor < body.minInput || !body.match(matcher, input, cursor)) {
+                        break;
+                    }
+                    cursor = matcher.last; // body should update last.
+                }
+                break;
+
+            default:
                 for (; times < maxTimes; times++) {
                     if (matcher.to - cursor < body.minInput || !body.match(matcher, input, cursor)) {
                         break;
@@ -86,15 +95,6 @@ public class CurlyNode extends Node {
                     }
                     matcher.backs[backCount++] = cursor;
 
-                    cursor = matcher.last; // body should update last.
-                }
-                break;
-
-            case POSSESSIVE:
-                for (; times < maxTimes; times++) {
-                    if (matcher.to - cursor < body.minInput || !body.match(matcher, input, cursor)) {
-                        break;
-                    }
                     cursor = matcher.last; // body should update last.
                 }
                 break;
