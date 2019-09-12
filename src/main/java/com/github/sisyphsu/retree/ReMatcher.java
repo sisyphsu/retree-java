@@ -66,12 +66,23 @@ public final class ReMatcher implements MatchResult {
     /**
      * Execute regular expression matching operation
      *
-     * @return success of not
+     * @return success or not
      */
     public boolean matches() {
         this.stop = 0;
         this.hitEnd = true;
         return search(0);
+    }
+
+    /**
+     * Reset the current matcher's input, then execute matches.
+     *
+     * @param input New input
+     * @return success or not
+     */
+    public boolean matches(CharSequence input) {
+        this.reset(input);
+        return this.matches();
     }
 
     /**

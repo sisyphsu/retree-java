@@ -43,7 +43,7 @@ public class ReMatcherTest {
         matcher.reset("2019-09-03");
         assert !matcher.matches();
 
-        assert matcher.reset("sisyphsu@gmail.com").matches();
+        assert matcher.matches("sisyphsu@gmail.com");
         assert Objects.equals(matcher.re(), res[1]);
     }
 
