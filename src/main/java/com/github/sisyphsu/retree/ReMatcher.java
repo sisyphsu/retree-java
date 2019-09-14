@@ -116,8 +116,8 @@ public final class ReMatcher implements MatchResult {
      * @return Success or not
      */
     private boolean search(int from) {
-        for (int i = 0; i < loopVars.length; i++) {
-            loopVars[i] = -1;
+        for (int i = 0; i < groupVars.length; i++) {
+            groupVars[i] = -1;
         }
         boolean success = tree.root.match(this, input, from);
         if (success && hitEnd && groupVars[1] != this.to) {
