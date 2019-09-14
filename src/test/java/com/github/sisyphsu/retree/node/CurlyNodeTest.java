@@ -17,7 +17,7 @@ import static com.github.sisyphsu.retree.Util.LAZY;
  */
 public class CurlyNodeTest {
 
-    private static final EndNode endNode = new EndNode("", null);
+    private static final EndNode endNode = new EndNode("");
 
     @Test
     public void study() {

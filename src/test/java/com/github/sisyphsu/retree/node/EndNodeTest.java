@@ -15,8 +15,8 @@ public class EndNodeTest {
 
     @Test
     public void alike() {
-        EndNode node1 = new EndNode("", null);
-        EndNode node2 = new EndNode("", null);
+        EndNode node1 = new EndNode("");
+        EndNode node2 = new EndNode("");
         assert !node1.alike(node2);
     }
 

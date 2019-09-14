@@ -52,6 +52,13 @@ public class ReContextTest {
         }
 
         try {
+            matcher.groupName(0);
+            assert false;
+        } catch (Exception e) {
+            assert e instanceof IllegalStateException;
+        }
+
+        try {
             matcher.group("name");
             assert false;
         } catch (Exception e) {

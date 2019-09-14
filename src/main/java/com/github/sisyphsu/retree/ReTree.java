@@ -41,8 +41,8 @@ public final class ReTree {
         int groupVarCount = 0;
         for (Node node : nodes) {
             EndNode endNode = findEndNode(node);
-            loopVarCount = Math.max(loopVarCount, endNode.getLocalCount());
-            groupVarCount = Math.max(groupVarCount, endNode.getGroupCount());
+            loopVarCount = Math.max(loopVarCount, endNode.localCount);
+            groupVarCount = Math.max(groupVarCount, endNode.groupCount);
         }
         // build tree
         Node treeRoot = this.buildTree(nodes);

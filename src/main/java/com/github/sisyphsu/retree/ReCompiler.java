@@ -45,14 +45,14 @@ final class ReCompiler {
         localCount = 1;
         namedGroups = new HashMap<>(2);
 
-        endNode = new EndNode(re, namedGroups);
+        endNode = new EndNode(re);
         if (pattern.length() > 0) {
             compile();
         } else {
             root = endNode;
         }
-        endNode.setLocalCount(localCount);
-        endNode.setGroupCount(groupCount);
+        endNode.init(localCount, groupCount, namedGroups);
+
         root = new BeginNode(root);
     }
 

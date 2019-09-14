@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
  */
 public class BranchNodeTest {
 
-    private static final EndNode endNode = new EndNode("", null);
+    private static final EndNode endNode = new EndNode("");
 
     @Test
     public void alike() {

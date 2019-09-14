@@ -168,14 +168,20 @@ public final class ReMatcher implements MatchResult {
     @Override
     public int groupCount() {
         if (endNode != null) {
-            return endNode.getGroupCount() - 1;
+            return endNode.groupCount - 1;
         }
         throw new IllegalStateException("Invalid MatchResult");
     }
 
+    /**
+     * Fetch captured group by its name.
+     *
+     * @param groupName Group's name
+     * @return Captured input
+     */
     public CharSequence group(String groupName) {
         if (endNode != null) {
-            Integer groupIndex = endNode.getNameMap().get(groupName);
+            Integer groupIndex = endNode.groupNameMap.get(groupName);
             if (groupIndex == null) {
                 throw new IllegalArgumentException("groupName is invalid: " + groupName);
             }
@@ -184,9 +190,31 @@ public final class ReMatcher implements MatchResult {
         throw new IllegalStateException("Invalid MatchResult");
     }
 
+    /**
+     * Fetch the matched regular expression as string.
+     * Throw exception if didn't match any regular expression.
+     *
+     * @return The regular expression has matched.
+     */
     public String re() {
         if (endNode != null) {
-            return endNode.getRe();
+            return endNode.re;
+        }
+        throw new IllegalStateException("Invalid MatchResult");
+    }
+
+    /**
+     * Fetch the specified capture-group's name by its index.
+     * Return null if this group hasn't name.
+     * Throw exception if the index is invalid.
+     * Throw exception if didn't match any regular expression.
+     *
+     * @param groupIndex group's index
+     * @return return null if the group hasn't name.
+     */
+    public String groupName(int groupIndex) {
+        if (endNode != null) {
+            return endNode.groupNames.get(groupIndex);
         }
         throw new IllegalStateException("Invalid MatchResult");
     }

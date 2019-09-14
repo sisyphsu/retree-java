@@ -61,9 +61,13 @@ public class ReMatcherTest {
         assert "<b>sulin</b>".contentEquals(matcher.group());
         assert "sulin".contentEquals(matcher.group(1));
         assert "sulin".contentEquals(matcher.group("name"));
+        assert "name".equals(matcher.groupName(1));
+        assert null == matcher.groupName(0);
 
         assert matcher.find();
         assert "sisyphsu@gmail.com".contentEquals(matcher.group());
+
+        assert matcher.groupName(0) == null;
     }
 
     @Test
