@@ -84,6 +84,8 @@ public class ReMatcherTest {
         assert !new ReMatcher(new ReTree("^\\d+$"), "s119").find();
 
         assert !new ReMatcher(new ReTree("^\\d{4}"), "119").find();
+
+        assert new ReMatcher(" ?(?<zoneOffset>[-+]\\d{2}:?(?>\\d{2})?)").matches("-00:00");
     }
 
 }

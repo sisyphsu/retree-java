@@ -64,7 +64,7 @@ public class CurlyNode extends Node {
         switch (type) {
             case LAZY:
                 for (; ; times++) {
-                    if (matcher.to - cursor >= next.minInput && next.match(matcher, input, cursor)) {
+                    if (next.match(matcher, input, cursor)) {
                         return true;
                     }
                     if (times >= maxTimes) {
@@ -102,7 +102,7 @@ public class CurlyNode extends Node {
 
         boolean result;
         for (; ; ) {
-            result = (matcher.to - cursor >= next.minInput) && next.match(matcher, input, cursor);
+            result = next.match(matcher, input, cursor);
             if (result || backCount == 0) {
                 break;
             }
