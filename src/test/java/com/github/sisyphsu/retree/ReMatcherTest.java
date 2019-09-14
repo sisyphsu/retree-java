@@ -71,6 +71,15 @@ public class ReMatcherTest {
     }
 
     @Test
+    public void testGroupName() {
+        ReMatcher matcher = new ReMatcher("(?<id>\\d+)(?<name>[a-z]+)");
+        matcher.reset("123abc");
+        assert matcher.matches();
+        assert Objects.equals(matcher.groupName(1), "id");
+        assert Objects.equals(matcher.groupName(2), "name");
+    }
+
+    @Test
     public void testMore() {
         assert !new ReMatcher(new ReTree("^\\d+$"), "s119").find();
 

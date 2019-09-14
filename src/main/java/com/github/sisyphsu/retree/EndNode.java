@@ -32,11 +32,11 @@ public final class EndNode extends Node {
         this.groupCount = groupCount;
         this.groupNameMap.putAll(nameMap);
 
-        for (int i = 0; i <= groupCount; i++) {
+        for (int i = 0; i < groupCount; i++) {
             this.groupNames.add(null); // null as unnamed
         }
         for (Map.Entry<String, Integer> entry : nameMap.entrySet()) {
-            this.groupNames.add(entry.getValue(), entry.getKey());
+            this.groupNames.set(entry.getValue(), entry.getKey());
         }
     }
 
