@@ -68,6 +68,9 @@ public class ReMatcherTest {
         assert "sisyphsu@gmail.com".contentEquals(matcher.group());
 
         assert matcher.groupName(0) == null;
+
+        assert !matcher.reset("Today is 2019-09-05").find(0);
+        assert matcher.reset("Today is 2019-09-05").find(9);
     }
 
     @Test

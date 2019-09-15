@@ -29,7 +29,9 @@ public abstract class Node {
     /**
      * Execute once matching operation
      *
-     * @param matcher The context of matching operation.
+     * @param matcher The context of matching operation
+     * @param input   The original input
+     * @param cursor  The position of matching operation
      * @return result code
      */
     public abstract boolean match(ReMatcher matcher, CharSequence input, int cursor);

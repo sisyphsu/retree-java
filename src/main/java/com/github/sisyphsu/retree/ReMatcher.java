@@ -54,6 +54,7 @@ public final class ReMatcher implements MatchResult {
      * Reset this matcher by another input, could be used for reusing
      *
      * @param input New input
+     * @return This
      */
     public ReMatcher reset(CharSequence input) {
         this.input = input;
@@ -91,7 +92,9 @@ public final class ReMatcher implements MatchResult {
      * @return success or not
      */
     public boolean find() {
-        boolean succ = this.find(last);
+        this.stop = this.to - tree.root.minInput;
+        this.hitEnd = false;
+        boolean succ = this.search(last);
         if (succ) {
             this.last = groupVars[1];
         }
@@ -105,7 +108,7 @@ public final class ReMatcher implements MatchResult {
      * @return success or not
      */
     public boolean find(int offset) {
-        this.stop = this.to - tree.root.minInput;
+        this.stop = offset;
         this.hitEnd = false;
         return search(offset);
     }
