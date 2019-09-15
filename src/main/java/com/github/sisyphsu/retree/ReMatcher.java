@@ -94,7 +94,11 @@ public final class ReMatcher implements MatchResult {
     public boolean find() {
         this.stop = this.to - tree.root.minInput;
         this.hitEnd = false;
-        boolean succ = this.search(last);
+        int offset = last;
+        boolean succ = this.search(offset);
+        if (succ && offset > 0 && offset < this.stop && offset == groupVars[1]) {
+            succ = false; // empty as fail
+        }
         if (succ) {
             this.last = groupVars[1];
         }
