@@ -8,10 +8,11 @@
 `retree` could parse and combine lots of regular expressions as an `regular-expression-tree`, 
 which is very similar to `trie`.
 
-`retree` could parse `regex` as a **node-chain**, for example, 
-`\d+a\W` will be parsed as `CurlyNode(\d+) -> CharNode(a) -> CharNode(\W)`,
-`\d+\s\W` will be parsed as `CurlyNode(\d+) -> CharNode(\s) -> CharNode(\W)`. 
-After that, `retree` will merge those two **node-chain** as one **node-tree**, 
+First, `retree` would parse `regex` as a **node-chain**, for example:
++ `\d+a\W` will be parsed as `CurlyNode(\d+) -> CharNode(a) -> CharNode(\W)`,
++ `\d+\s\W` will be parsed as `CurlyNode(\d+) -> CharNode(\s) -> CharNode(\W)`.
+ 
+After that, `retree` will merge those two **node-chain** as one **node-tree** 
 (there should have an image to explain how it looks)
 
 When performing multiple regex matching, we could use `retree` to reduce useless scan and loop, and avoid lots of backtracking.
