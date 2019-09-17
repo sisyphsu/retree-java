@@ -49,8 +49,10 @@ assert matcher.find();
 assert "sisyphsu@gmail.com".contentEquals(matcher.group());
 ```
 
-In these example, we only need to scan `input` once to complete three different regular expressions' matching: 
-`(\d{4}-\d{1,2}-\d{1,2})`, `<b>(?<name>.*)</b>`, `(\\w+@\\w+\\.[a-z]+(\\.[a-z]+)?)`. 
+In this example, we only need to scan `input` once to complete three different regular expressions' matching: 
++ `(\d{4}-\d{1,2}-\d{1,2})`
++ `<b>(?<name>.*)</b>`
++ `(\\w+@\\w+\\.[a-z]+(\\.[a-z]+)?)` 
 
 # Showcase
 
