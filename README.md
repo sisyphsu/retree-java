@@ -61,9 +61,10 @@ In this example, we only need to scan `input` once to complete three different r
 `dateparser` is a smart and high-performance date parser library, 
 it supports hundreds of different format, nearly all format that we used.
 
-`dateparser` use `retree` to perform the matching operation of lots of different date patterns, 
-even if `dateparser` have thundreds of predefined regular expressions, 
-but it still can parse date very fast(1000~1500ns).
+`dateparser` use `retree` to perform the matching operation of lots of different date patterns. 
+
+Even if `dateparser` have thundreds of predefined regular expressions, 
+it still can parse date very fast(1000~1500ns).
 
 # Performance & Benchmark
 
